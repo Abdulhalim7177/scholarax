@@ -1,21 +1,15 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Teams\TeamInvitationController;
-use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
 
-Route::prefix('{current_team}')
-    ->middleware(['auth', 'verified', EnsureTeamMembership::class])
-    ->group(function () {
-        Route::get('dashboard', DashboardController::class)->name('dashboard');
-    });
+Route::inertia('/coming-soon', 'coming-soon')->name('coming-soon');
 
-Route::middleware(['auth'])->group(function () {
-    Route::post('invitations/{invitation}/accept', [TeamInvitationController::class, 'accept'])->name('invitations.accept');
-    Route::delete('invitations/{invitation}', [TeamInvitationController::class, 'decline'])->name('invitations.decline');
-});
+// Frontend preview only: authentication will be restored when dashboard data is connected.
+Route::get('/dashboard', DashboardController::class)->name('dashboard.simple');
+
+// Team routes are intentionally disabled while Scholarly is learner-first.
 
 require __DIR__.'/settings.php';
