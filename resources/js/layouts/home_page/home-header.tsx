@@ -3,8 +3,8 @@ import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 import { login, register } from '@/routes';
-import BrandMark from '../layouts/home_page/brand-mark';
-import type { HomePageProps } from '../layouts/home_page/types';
+import BrandMark from './brand-mark';
+import type { HomePageProps } from './types';
 
 export default function HomeHeader({ auth, dashboardUrl }: HomePageProps) {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -16,7 +16,7 @@ export default function HomeHeader({ auth, dashboardUrl }: HomePageProps) {
                 <Link href="/" aria-label="Scholarly home">
                     <BrandMark />
                 </Link>
-                <nav className="hidden items-center gap-8 lg:flex">
+                <nav className="hidden items-center gap-8 min-[851px]:flex">
                     <a
                         href="#scholarships"
                         className="text-sm font-semibold text-scholarly-slate transition hover:text-scholarly-blue"
@@ -42,7 +42,7 @@ export default function HomeHeader({ auth, dashboardUrl }: HomePageProps) {
                         Resources
                     </a>
                 </nav>
-                <div className="hidden items-center gap-5 lg:flex">
+                <div className="hidden items-center gap-5 min-[851px]:flex">
                     {auth?.user ? (
                         <Link
                             href={dashboardUrl}
@@ -68,7 +68,7 @@ export default function HomeHeader({ auth, dashboardUrl }: HomePageProps) {
                 <button
                     type="button"
                     onClick={() => setMobileOpen((open) => !open)}
-                    className="rounded-xl p-2 text-scholarly-navy lg:hidden"
+                    className="rounded-xl p-2 text-scholarly-navy min-[851px]:hidden"
                     aria-label="Toggle navigation"
                 >
                     {mobileOpen ? (
@@ -79,7 +79,7 @@ export default function HomeHeader({ auth, dashboardUrl }: HomePageProps) {
                 </button>
             </div>
             {mobileOpen ? (
-                <div className="mx-4 rounded-2xl border border-scholarly-border bg-white p-5 shadow-xl lg:hidden">
+                <div className="mx-4 rounded-2xl border border-scholarly-border bg-white p-5 shadow-xl min-[851px]:hidden">
                     <nav className="flex flex-col gap-4">
                         <a
                             href="#scholarships"

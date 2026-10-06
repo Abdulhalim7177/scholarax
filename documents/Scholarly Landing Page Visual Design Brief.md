@@ -1,8 +1,8 @@
-# Scholarly Landing Page — Visual Design Brief
+# Scholarax Landing Page — Visual Design Brief
 
 ## 1. Project overview
 
-**Product:** Scholarly  
+**Product:** Scholarax  
 **Purpose:** A global scholarship platform that helps learners discover opportunities, build their CV and statement of purpose, connect with mentors, manage application steps, and track deadlines.  
 **Primary deliverable:** A complete landing page from navbar through footer.  
 **Design direction:** Trustworthy, optimistic, international, human, and editorial — avoiding a generic AI-generated SaaS appearance.

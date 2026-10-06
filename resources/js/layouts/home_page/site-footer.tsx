@@ -1,6 +1,6 @@
 import { MessageCircle, UserRound, UsersRound } from 'lucide-react';
 
-import BrandMark from '../layouts/home_page/brand-mark';
+import BrandMark from './brand-mark';
 
 export default function SiteFooter() {
     return (
