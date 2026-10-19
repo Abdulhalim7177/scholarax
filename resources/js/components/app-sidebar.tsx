@@ -38,25 +38,26 @@ const navItems: NavItem[] = [
     { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
     {
         title: 'Find scholarships',
-        href: comingSoon('Scholarship search'),
+        href: '/scholarships',
         icon: Search,
     },
     {
         title: 'My applications',
-        href: comingSoon('My applications'),
+        href: '/applications',
         icon: FileText,
     },
     {
         title: 'CV & SOP builder',
-        href: comingSoon('CV and SOP builder'),
+        href: '/cv-sop-builder',
         icon: FileText,
     },
-    { title: 'Mentors', href: comingSoon('Mentors'), icon: UsersRound },
+    { title: 'Mentors', href: '/mentors', icon: UsersRound },
     {
         title: 'Deadlines',
         href: comingSoon('Deadlines'),
         icon: CalendarDays,
     },
+    { title: 'Settings', href: comingSoon('Settings'), icon: Settings },
 ];
 
 const fallbackUser: User = {

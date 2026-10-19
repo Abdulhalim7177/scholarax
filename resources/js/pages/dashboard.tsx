@@ -26,10 +26,10 @@ export default function Dashboard() {
                     <OverviewMetrics />
                     <ApplicationOverview />
                     <ApplicationStrength />
-                    <SavedScholarships />
+                    {/* <SavedScholarships /> */}
                     <section className="grid gap-6 lg:grid-cols-2">
-                        <ActivityCard />
-                        <TasksCard />
+                        {/* <ActivityCard />
+                        <TasksCard /> */}
                     </section>
                     <MomentumCta />
                 </div>
