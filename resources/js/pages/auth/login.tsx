@@ -155,7 +155,7 @@ export default function Login({
                         <div className="text-center text-sm text-muted-foreground">
                             Don't have an account?{' '}
                             <TextLink
-                                href={register()}
+                                href={register.url()}
                                 data-test="register-link"
                                 tabIndex={6}
                                 className="font-medium text-scholarly-blue hover:underline"
