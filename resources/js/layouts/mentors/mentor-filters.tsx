@@ -37,7 +37,7 @@ export default function MentorFilters({
                 <button
                     type="button"
                     onClick={onReset}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-scholarly-blue hover:text-scholarly-blue-dark"
+                    className="hover:text-scholarly-blue-dark inline-flex items-center gap-1 text-xs font-semibold text-scholarly-blue"
                 >
                     <RotateCcw className="size-3" /> Reset
                 </button>
@@ -52,7 +52,7 @@ export default function MentorFilters({
                         onChange={(event) =>
                             onExpertiseChange(event.target.value)
                         }
-                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                        className="focus:ring-scholarly-blue-soft h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4"
                     >
                         {expertiseOptions.map((option) => (
                             <option key={option}>{option}</option>
@@ -68,7 +68,7 @@ export default function MentorFilters({
                         onChange={(event) =>
                             onCountryChange(event.target.value)
                         }
-                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                        className="focus:ring-scholarly-blue-soft h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4"
                     >
                         {countryOptions.map((option) => (
                             <option key={option}>{option}</option>
@@ -81,7 +81,7 @@ export default function MentorFilters({
                     className="flex w-full items-center gap-3 text-left text-sm text-scholarly-navy"
                 >
                     <span
-                        className={`size-3 rounded-full ${availabilityOnly ? 'bg-scholarly-teal ring-4 ring-scholarly-teal-soft' : 'bg-scholarly-slate-light/40'}`}
+                        className={`size-3 rounded-full ${availabilityOnly ? 'ring-scholarly-teal-soft bg-scholarly-teal ring-4' : 'bg-scholarly-slate-light/40'}`}
                     />
                     <span>
                         <span className="block font-semibold">

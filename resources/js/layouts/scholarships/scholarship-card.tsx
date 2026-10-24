@@ -36,7 +36,7 @@ export default function ScholarshipCard({
             )}
             <div className="flex items-start justify-between gap-4">
                 <div
-                    className="flex size-12 items-center justify-center rounded-xl bg-scholarly-blue-soft text-2xl"
+                    className="bg-scholarly-blue-soft flex size-12 items-center justify-center rounded-xl text-2xl"
                     aria-hidden="true"
                 >
                     {flagFor(scholarship.countryCode)}
@@ -67,7 +67,7 @@ export default function ScholarshipCard({
                     {scholarship.description}
                 </p>
             </div>
-            <div className="mt-5 space-y-2 border-t border-scholarly-border-soft pt-4 text-xs text-scholarly-slate">
+            <div className="border-scholarly-border-soft mt-5 space-y-2 border-t pt-4 text-xs text-scholarly-slate">
                 <span className="flex items-center gap-2">
                     <MapPin className="size-3.5 text-scholarly-blue" />
                     {scholarship.country}
@@ -78,7 +78,7 @@ export default function ScholarshipCard({
                 </span>
             </div>
             <div className="mt-4 flex items-center justify-between gap-3">
-                <span className="rounded-full bg-scholarly-teal-soft px-2.5 py-1 text-[11px] font-bold text-scholarly-teal-dark">
+                <span className="bg-scholarly-teal-soft text-scholarly-teal-dark rounded-full px-2.5 py-1 text-[11px] font-bold">
                     {scholarship.funding}
                 </span>
                 <span

@@ -23,7 +23,7 @@ export default function TemplateCard({
         <button
             type="button"
             onClick={onSelect}
-            className={`relative w-full rounded-xl border p-4 text-left transition ${selected ? 'border-scholarly-blue bg-scholarly-blue-white shadow-sm' : 'border-scholarly-border bg-white hover:border-scholarly-border-strong'}`}
+            className={`relative w-full rounded-xl border p-4 text-left transition ${selected ? 'border-scholarly-blue bg-scholarly-blue-white shadow-sm' : 'hover:border-scholarly-border-strong border-scholarly-border bg-white'}`}
         >
             {template.recommended && (
                 <span className="absolute -top-2.5 right-3 rounded-full bg-scholarly-blue px-2.5 py-1 text-[10px] font-bold text-white">

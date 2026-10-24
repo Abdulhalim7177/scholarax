@@ -86,7 +86,7 @@ export default function CvSopBuilder() {
                                 <span className="text-4xl font-bold tracking-[-0.05em] text-scholarly-navy">
                                     {mode === 'CV' ? '92%' : '84%'}
                                 </span>
-                                <span className="pb-1 text-xs font-bold text-scholarly-teal-dark">
+                                <span className="text-scholarly-teal-dark pb-1 text-xs font-bold">
                                     {mode === 'CV'
                                         ? 'Strong foundation'
                                         : 'Good direction'}

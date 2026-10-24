@@ -52,7 +52,7 @@ export default function DocumentWorkspace({
                     </Link>
                     <Link
                         href={`/coming-soon?feature=Save ${mode}`}
-                        className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-scholarly-blue px-3 text-xs font-bold text-white hover:bg-scholarly-blue-dark"
+                        className="hover:bg-scholarly-blue-dark inline-flex h-9 items-center gap-1.5 rounded-lg bg-scholarly-blue px-3 text-xs font-bold text-white"
                     >
                         <Save className="size-3.5" /> Save draft
                     </Link>
@@ -96,7 +96,7 @@ export default function DocumentWorkspace({
                                                 event.target.value,
                                             )
                                         }
-                                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                                        className="focus:ring-scholarly-blue-soft h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm outline-none focus:border-scholarly-blue focus:ring-4"
                                     />
                                 </label>
                                 <label className="block">
@@ -108,7 +108,7 @@ export default function DocumentWorkspace({
                                         onChange={(event) =>
                                             onHeadlineChange(event.target.value)
                                         }
-                                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                                        className="focus:ring-scholarly-blue-soft h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm outline-none focus:border-scholarly-blue focus:ring-4"
                                     />
                                 </label>
                                 <label className="block">
@@ -123,7 +123,7 @@ export default function DocumentWorkspace({
                                             )
                                         }
                                         rows={7}
-                                        className="w-full resize-none rounded-lg border border-scholarly-border bg-scholarly-blue-white p-3 text-sm leading-6 outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                                        className="focus:ring-scholarly-blue-soft w-full resize-none rounded-lg border border-scholarly-border bg-scholarly-blue-white p-3 text-sm leading-6 outline-none focus:border-scholarly-blue focus:ring-4"
                                     />
                                 </label>
                             </div>
@@ -151,7 +151,7 @@ export default function DocumentWorkspace({
                                             )
                                         }
                                         rows={13}
-                                        className="w-full resize-none rounded-lg border border-scholarly-border bg-scholarly-blue-white p-3 text-sm leading-6 outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                                        className="focus:ring-scholarly-blue-soft w-full resize-none rounded-lg border border-scholarly-border bg-scholarly-blue-white p-3 text-sm leading-6 outline-none focus:border-scholarly-blue focus:ring-4"
                                     />
                                 </label>
                                 <div className="flex items-center justify-between text-xs text-scholarly-slate">
@@ -170,7 +170,7 @@ export default function DocumentWorkspace({
                         )}
                     </div>
                     <aside className="border-t border-scholarly-border bg-scholarly-blue-white/60 p-5 xl:border-t-0 xl:border-l">
-                        <div className="flex size-9 items-center justify-center rounded-lg bg-scholarly-gold-soft text-scholarly-gold-dark">
+                        <div className="bg-scholarly-gold-soft text-scholarly-gold-dark flex size-9 items-center justify-center rounded-lg">
                             <Lightbulb className="size-4" />
                         </div>
                         <h3 className="mt-4 text-sm font-bold text-scholarly-navy">

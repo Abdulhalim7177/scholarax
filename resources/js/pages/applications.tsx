@@ -45,7 +45,7 @@ export default function Applications() {
                         </div>
                         <Link
                             href="/scholarships"
-                            className="inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark lg:self-auto"
+                            className="hover:bg-scholarly-blue-dark inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white transition lg:self-auto"
                         >
                             Find a scholarship <ArrowRight className="size-4" />
                         </Link>
@@ -113,7 +113,7 @@ export default function Applications() {
                                         key={filter}
                                         type="button"
                                         onClick={() => setActiveFilter(filter)}
-                                        className={`rounded-lg px-3 py-2 text-xs font-bold whitespace-nowrap transition sm:px-4 ${activeFilter === filter ? 'bg-scholarly-blue text-white' : 'text-scholarly-slate hover:bg-scholarly-blue-soft hover:text-scholarly-blue'}`}
+                                        className={`rounded-lg px-3 py-2 text-xs font-bold whitespace-nowrap transition sm:px-4 ${activeFilter === filter ? 'bg-scholarly-blue text-white' : 'hover:bg-scholarly-blue-soft text-scholarly-slate hover:text-scholarly-blue'}`}
                                     >
                                         {filter}
                                     </button>

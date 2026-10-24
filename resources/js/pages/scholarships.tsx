@@ -155,7 +155,7 @@ export default function Scholarships() {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="rounded-2xl border border-dashed border-scholarly-border-strong bg-white px-6 py-16 text-center">
+                                <div className="border-scholarly-border-strong rounded-2xl border border-dashed bg-white px-6 py-16 text-center">
                                     <p className="font-display text-2xl text-scholarly-navy">
                                         No scholarships found yet.
                                     </p>
@@ -170,7 +170,7 @@ export default function Scholarships() {
                                             setQuery('');
                                             resetFilters();
                                         }}
-                                        className="mt-5 rounded-lg bg-scholarly-blue px-4 py-2.5 text-sm font-bold text-white hover:bg-scholarly-blue-hover"
+                                        className="hover:bg-scholarly-blue-hover mt-5 rounded-lg bg-scholarly-blue px-4 py-2.5 text-sm font-bold text-white"
                                     >
                                         Clear filters
                                     </button>

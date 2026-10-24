@@ -115,7 +115,7 @@ export default function ApplicationCard({ application }: ApplicationCardProps) {
                 </span>
                 <Link
                     href={`/coming-soon?feature=${encodeURIComponent(`Continue ${application.title}`)}`}
-                    className="inline-flex items-center gap-2 rounded-lg bg-scholarly-blue px-4 py-2.5 text-xs font-bold text-white transition hover:bg-scholarly-blue-dark"
+                    className="hover:bg-scholarly-blue-dark inline-flex items-center gap-2 rounded-lg bg-scholarly-blue px-4 py-2.5 text-xs font-bold text-white transition"
                 >
                     {application.status === 'Offer received'
                         ? 'View offer'

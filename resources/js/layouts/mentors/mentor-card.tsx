@@ -42,7 +42,7 @@ export default function MentorCard({ mentor }: MentorCardProps) {
                     <p className="mt-1 text-xs leading-5 text-scholarly-slate">
                         {mentor.role}
                     </p>
-                    <p className="text-xs text-scholarly-slate-light">
+                    <p className="text-scholarly-slate-light text-xs">
                         {mentor.organization}
                     </p>
                 </div>
@@ -70,7 +70,7 @@ export default function MentorCard({ mentor }: MentorCardProps) {
                     </span>
                 ))}
             </div>
-            <div className="mt-5 border-t border-scholarly-border-soft pt-4">
+            <div className="border-scholarly-border-soft mt-5 border-t pt-4">
                 <div className="flex items-center gap-2 text-xs text-scholarly-slate">
                     <Clock3 className="size-3.5 text-scholarly-blue" />{' '}
                     {mentor.responseTime}
@@ -90,7 +90,7 @@ export default function MentorCard({ mentor }: MentorCardProps) {
                 </Link>
                 <Link
                     href={`/coming-soon?feature=${encodeURIComponent(`Chat with ${mentor.name}`)}`}
-                    className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-scholarly-blue px-3 text-xs font-bold text-white transition hover:bg-scholarly-blue-dark"
+                    className="hover:bg-scholarly-blue-dark inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-scholarly-blue px-3 text-xs font-bold text-white transition"
                 >
                     Message <MessageCircle className="size-3.5" />
                 </Link>

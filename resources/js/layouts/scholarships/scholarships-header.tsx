@@ -28,12 +28,12 @@ export default function ScholarshipsHeader({
             <div className="flex w-full gap-2 lg:max-w-md">
                 <label className="relative block flex-1">
                     <span className="sr-only">Search scholarships</span>
-                    <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-scholarly-slate-light" />
+                    <Search className="text-scholarly-slate-light pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2" />
                     <input
                         value={query}
                         onChange={(event) => onQueryChange(event.target.value)}
                         placeholder="Search by scholarship, country, or field"
-                        className="h-12 w-full rounded-xl border border-scholarly-border bg-white pr-4 pl-11 text-sm text-scholarly-navy transition outline-none placeholder:text-scholarly-slate-light focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                        className="placeholder:text-scholarly-slate-light focus:ring-scholarly-blue-soft h-12 w-full rounded-xl border border-scholarly-border bg-white pr-4 pl-11 text-sm text-scholarly-navy transition outline-none focus:border-scholarly-blue focus:ring-4"
                     />
                 </label>
                 <button

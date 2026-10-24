@@ -80,7 +80,7 @@ export default function ApplicationSummary() {
                 </div>
                 <Link
                     href="/coming-soon?feature=Application checklist"
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-scholarly-blue hover:text-scholarly-blue-dark"
+                    className="hover:text-scholarly-blue-dark mt-6 inline-flex items-center gap-2 text-sm font-bold text-scholarly-blue"
                 >
                     View checklist <ArrowRight className="size-4" />
                 </Link>

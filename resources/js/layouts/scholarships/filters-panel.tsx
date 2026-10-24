@@ -51,7 +51,7 @@ export default function FiltersPanel({
                 <button
                     type="button"
                     onClick={onReset}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-scholarly-blue hover:text-scholarly-blue-dark"
+                    className="hover:text-scholarly-blue-dark inline-flex items-center gap-1 text-xs font-semibold text-scholarly-blue"
                 >
                     <RotateCcw className="size-3" />
                     Reset
@@ -68,7 +68,7 @@ export default function FiltersPanel({
                         onChange={(event) =>
                             onCountryChange(event.target.value)
                         }
-                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                        className="focus:ring-scholarly-blue-soft h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4"
                     >
                         {countries.map((option) => (
                             <option key={option}>{option}</option>
@@ -82,7 +82,7 @@ export default function FiltersPanel({
                     <select
                         value={level}
                         onChange={(event) => onLevelChange(event.target.value)}
-                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                        className="focus:ring-scholarly-blue-soft h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4"
                     >
                         {levels.map((option) => (
                             <option key={option}>{option}</option>
@@ -96,7 +96,7 @@ export default function FiltersPanel({
                     <select
                         value={field}
                         onChange={(event) => onFieldChange(event.target.value)}
-                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                        className="focus:ring-scholarly-blue-soft h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4"
                     >
                         {fields.map((option) => (
                             <option key={option}>{option}</option>
