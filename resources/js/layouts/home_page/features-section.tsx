@@ -18,7 +18,7 @@ export default function FeaturesSection() {
                 {features.map(({ icon: Icon, title, body, tone }) => (
                     <div
                         key={title}
-                        className="group rounded-3xl border border-scholarly-border bg-white p-7 transition hover:border-scholarly-border-strong "
+                        className="group hover:border-scholarly-border-strong rounded-3xl border border-scholarly-border bg-white p-7 transition"
                     >
                         <div
                             className={`mb-8 flex size-12 items-center justify-center rounded-2xl ${tone === 'blue' ? 'bg-scholarly-blue-soft text-scholarly-blue' : tone === 'gold' ? 'bg-scholarly-gold-soft text-scholarly-gold-dark' : 'bg-scholarly-coral-soft text-scholarly-coral-dark'}`}

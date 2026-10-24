@@ -20,14 +20,14 @@ export default function CtaSection({ auth, dashboardUrl }: HomePageProps) {
                         <br />
                         starts here.
                     </h2>
-                    <p className="mt-4 max-w-md text-sm leading-6 text-scholarly-navy-muted">
+                    <p className="text-scholarly-navy-muted mt-4 max-w-md text-sm leading-6">
                         Join a global community of ambitious learners and take
                         your first step toward the opportunity you want.
                     </p>
                 </div>
                 <Link
                     href={auth?.user ? dashboardUrl : register()}
-                    className="inline-flex shrink-0 items-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white transition hover:bg-scholarly-blue-hover"
+                    className="hover:bg-scholarly-blue-hover inline-flex shrink-0 items-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white transition"
                 >
                     Create your free profile <ArrowRight className="size-4" />
                 </Link>

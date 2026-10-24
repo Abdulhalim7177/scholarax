@@ -9,6 +9,7 @@ use App\Http\Responses\PasskeyLoginResponse;
 use App\Http\Responses\RegisterResponse;
 use App\Http\Responses\TwoFactorLoginResponse;
 use App\Http\Responses\VerifyEmailResponse;
+use App\Models\TeamInvitation;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -61,10 +62,19 @@ class FortifyServiceProvider extends ServiceProvider
      */
     private function configureViews(): void
     {
-        Fortify::loginView(fn (Request $request) => Inertia::render('auth/login', [
-            'canResetPassword' => Features::enabled(Features::resetPasswords()),
-            'status' => $request->session()->get('status'),
-        ]));
+        Fortify::loginView(function (Request $request) {
+            $invitation = $request->filled('invitation')
+                ? TeamInvitation::where('code', $request->input('invitation'))->with('team')->first()
+                : null;
+
+            return Inertia::render('auth/login', [
+                'canResetPassword' => Features::enabled(Features::resetPasswords()),
+                'status' => $request->session()->get('status'),
+                'teamInvitation' => $invitation
+                    ? ['code' => $invitation->code, 'teamName' => $invitation->team->name]
+                    : null,
+            ]);
+        });
 
         Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/reset-password', [
             'email' => $request->email,
@@ -79,7 +89,17 @@ class FortifyServiceProvider extends ServiceProvider
             'status' => $request->session()->get('status'),
         ]));
 
-        Fortify::registerView(fn () => Inertia::render('auth/register'));
+        Fortify::registerView(function (Request $request) {
+            $invitation = $request->filled('invitation')
+                ? TeamInvitation::where('code', $request->input('invitation'))->with('team')->first()
+                : null;
+
+            return Inertia::render('auth/register', [
+                'teamInvitation' => $invitation
+                    ? ['code' => $invitation->code, 'teamName' => $invitation->team->name]
+                    : null,
+            ]);
+        });
 
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/two-factor-challenge'));
 
@@ -109,5 +129,4 @@ class FortifyServiceProvider extends ServiceProvider
             );
         });
     }
-
 }

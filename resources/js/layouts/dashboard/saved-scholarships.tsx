@@ -27,7 +27,7 @@ export default function SavedScholarships() {
                         className="flex flex-col rounded-2xl border border-scholarly-border p-4"
                     >
                         <div className="flex items-start justify-between">
-                            <div className="flex size-11 items-center justify-center rounded-xl bg-scholarly-blue-soft font-bold text-scholarly-blue">
+                            <div className="bg-scholarly-blue-soft flex size-11 items-center justify-center rounded-xl font-bold text-scholarly-blue">
                                 {scholarship.initials}
                             </div>
                             <Bookmark className="size-5 fill-scholarly-gold text-scholarly-gold" />

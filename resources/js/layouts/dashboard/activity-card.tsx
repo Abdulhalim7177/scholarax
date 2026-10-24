@@ -48,7 +48,7 @@ export default function ActivityCard() {
             <div className="mt-5 space-y-4">
                 {activity.map(([title, body, Icon, time]) => (
                     <div key={title} className="flex items-center gap-3">
-                        <div className="flex size-9 items-center justify-center rounded-xl bg-scholarly-blue-soft text-scholarly-blue">
+                        <div className="bg-scholarly-blue-soft flex size-9 items-center justify-center rounded-xl text-scholarly-blue">
                             <Icon className="size-4" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -57,7 +57,7 @@ export default function ActivityCard() {
                                 {body}
                             </p>
                         </div>
-                        <span className="shrink-0 text-xs text-scholarly-slate-light">
+                        <span className="text-scholarly-slate-light shrink-0 text-xs">
                             {time}
                         </span>
                     </div>

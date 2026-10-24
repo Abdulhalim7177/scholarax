@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react';
 export default function TestimonialSection() {
     return (
         <section className="mx-auto max-w-4xl px-5 py-24 text-center sm:px-8 lg:py-32">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-scholarly-blue-soft text-scholarly-blue">
+            <div className="bg-scholarly-blue-soft mx-auto flex size-16 items-center justify-center rounded-full text-scholarly-blue">
                 <MessageCircle className="size-7" />
             </div>
             <p className="mt-7 text-[11px] font-bold tracking-[0.2em] text-scholarly-blue uppercase">
@@ -22,7 +22,7 @@ export default function TestimonialSection() {
                     <p className="text-sm font-bold text-scholarly-navy">
                         Daniel Kim
                     </p>
-                    <p className="text-xs text-scholarly-slate-light">
+                    <p className="text-scholarly-slate-light text-xs">
                         Master’s in Computer Science, Canada
                     </p>
                 </div>

@@ -18,25 +18,25 @@ export default function ScholarshipSearchSection() {
                     />
                     <a
                         href="#search-preview"
-                        className="mt-8 inline-flex items-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
+                        className="hover:bg-scholarly-blue-dark mt-8 inline-flex items-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white transition"
                     >
                         Search scholarships <ArrowRight className="size-4" />
                     </a>
                 </div>
                 <div
                     id="search-preview"
-                    className="rounded-[28px] bg-white p-5  sm:p-7"
+                    className="rounded-[28px] bg-white p-5 sm:p-7"
                 >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-scholarly-blue-soft text-scholarly-blue">
+                            <div className="bg-scholarly-blue-soft flex size-10 items-center justify-center rounded-xl text-scholarly-blue">
                                 <Search className="size-5" />
                             </div>
                             <div>
                                 <p className="text-sm font-bold text-scholarly-navy">
                                     Scholarship search
                                 </p>
-                                <p className="text-xs text-scholarly-slate-light">
+                                <p className="text-scholarly-slate-light text-xs">
                                     2,500+ opportunities found
                                 </p>
                             </div>
@@ -50,7 +50,7 @@ export default function ScholarshipSearchSection() {
                     </div>
                     <div className="mt-6 grid gap-3 sm:grid-cols-3">
                         <div className="rounded-xl border border-scholarly-border px-3 py-2.5">
-                            <p className="text-[10px] font-bold tracking-wide text-scholarly-slate-light uppercase">
+                            <p className="text-scholarly-slate-light text-[10px] font-bold tracking-wide uppercase">
                                 Country
                             </p>
                             <p className="mt-1 text-sm font-semibold text-scholarly-navy">
@@ -58,7 +58,7 @@ export default function ScholarshipSearchSection() {
                             </p>
                         </div>
                         <div className="rounded-xl border border-scholarly-border px-3 py-2.5">
-                            <p className="text-[10px] font-bold tracking-wide text-scholarly-slate-light uppercase">
+                            <p className="text-scholarly-slate-light text-[10px] font-bold tracking-wide uppercase">
                                 Study level
                             </p>
                             <p className="mt-1 text-sm font-semibold text-scholarly-navy">
@@ -72,7 +72,7 @@ export default function ScholarshipSearchSection() {
                             Search
                         </button>
                     </div>
-                    <div className="mt-5 divide-y divide-scholarly-border-soft">
+                    <div className="divide-scholarly-border-soft mt-5 divide-y">
                         {scholarships.map((item) => (
                             <div
                                 key={item.name}
@@ -87,7 +87,7 @@ export default function ScholarshipSearchSection() {
                                     <p className="truncate text-sm font-bold text-scholarly-navy">
                                         {item.name}
                                     </p>
-                                    <p className="truncate text-xs text-scholarly-slate-light">
+                                    <p className="text-scholarly-slate-light truncate text-xs">
                                         {item.provider}
                                     </p>
                                 </div>
@@ -95,11 +95,11 @@ export default function ScholarshipSearchSection() {
                                     <p className="text-xs font-semibold text-scholarly-navy">
                                         {item.level}
                                     </p>
-                                    <p className="text-xs text-scholarly-slate-light">
+                                    <p className="text-scholarly-slate-light text-xs">
                                         {item.country}
                                     </p>
                                 </div>
-                                <ChevronRight className="size-4 text-scholarly-slate-light" />
+                                <ChevronRight className="text-scholarly-slate-light size-4" />
                             </div>
                         ))}
                     </div>

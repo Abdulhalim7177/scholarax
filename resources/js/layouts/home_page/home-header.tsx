@@ -60,7 +60,7 @@ export default function HomeHeader({ auth, dashboardUrl }: HomePageProps) {
                     )}
                     <Link
                         href={auth?.user ? dashboardUrl : register()}
-                        className="rounded-full bg-scholarly-blue px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-scholarly-blue-dark"
+                        className="hover:bg-scholarly-blue-dark rounded-full bg-scholarly-blue px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5"
                     >
                         Get started
                     </Link>

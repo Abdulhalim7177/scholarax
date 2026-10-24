@@ -37,18 +37,18 @@ Use the interface to create confidence. Every section should answer one of these
 
 Blue is the primary brand color. Gold is the secondary color because it represents achievement, opportunity, recognition, and aspiration.
 
-| Role | Name | Hex | Recommended usage |
-|---|---|---:|---|
-| Primary | Academic Blue | `#155EEF` | Primary buttons, active states, links, icons, focus states |
-| Dark | Midnight Navy | `#102A43` | Headlines, navigation text, footer, high-contrast content |
-| Secondary | Scholarship Gold | `#F4B942` | Handwritten annotations, stars, highlights, deadline emphasis, small decorative details |
-| Background | Blue White | `#F5F9FF` | Alternating section backgrounds, soft panels, page atmosphere |
-| Supporting accent | Sky Tint | `#DCEBFF` | Search panels, cards, illustration backgrounds, selected states |
-| Success | Calm Teal | `#18A37A` | Fully funded labels, completed steps, positive status indicators |
-| Warm accent | Soft Coral | `#FF8A72` | Mentor/community highlights, supporting illustrations, occasional attention states |
-| White | Pure White | `#FFFFFF` | Cards, navigation, primary content surfaces |
-| Neutral text | Slate | `#52606D` | Body copy, helper text, metadata |
-| Border | Mist Blue | `#D9E6F5` | Card borders, dividers, input outlines |
+| Role              | Name             |       Hex | Recommended usage                                                                       |
+| ----------------- | ---------------- | --------: | --------------------------------------------------------------------------------------- |
+| Primary           | Academic Blue    | `#155EEF` | Primary buttons, active states, links, icons, focus states                              |
+| Dark              | Midnight Navy    | `#102A43` | Headlines, navigation text, footer, high-contrast content                               |
+| Secondary         | Scholarship Gold | `#F4B942` | Handwritten annotations, stars, highlights, deadline emphasis, small decorative details |
+| Background        | Blue White       | `#F5F9FF` | Alternating section backgrounds, soft panels, page atmosphere                           |
+| Supporting accent | Sky Tint         | `#DCEBFF` | Search panels, cards, illustration backgrounds, selected states                         |
+| Success           | Calm Teal        | `#18A37A` | Fully funded labels, completed steps, positive status indicators                        |
+| Warm accent       | Soft Coral       | `#FF8A72` | Mentor/community highlights, supporting illustrations, occasional attention states      |
+| White             | Pure White       | `#FFFFFF` | Cards, navigation, primary content surfaces                                             |
+| Neutral text      | Slate            | `#52606D` | Body copy, helper text, metadata                                                        |
+| Border            | Mist Blue        | `#D9E6F5` | Card borders, dividers, input outlines                                                  |
 
 ### Color usage rules
 
@@ -124,16 +124,16 @@ Avoid using Caveat for buttons, navigation, functional labels, or important info
 
 ### Typography scale
 
-| Element | Font | Size guidance | Weight |
-|---|---|---:|---:|
-| Hero headline | DM Serif Display + Plus Jakarta Sans | 64–76px desktop | Regular/700 combination |
-| Section heading | Plus Jakarta Sans or DM Serif Display | 40–52px desktop | 600/regular |
-| Card heading | Plus Jakarta Sans | 18–22px | 600–700 |
-| Body copy | Plus Jakarta Sans | 16–18px | 400 |
-| Supporting copy | Plus Jakarta Sans | 14–16px | 400–500 |
-| Button text | Plus Jakarta Sans | 15–16px | 600–700 |
-| Annotation | Caveat | 24–32px | Regular |
-| Metadata | Plus Jakarta Sans | 12–14px | 500 |
+| Element         | Font                                  |   Size guidance |                  Weight |
+| --------------- | ------------------------------------- | --------------: | ----------------------: |
+| Hero headline   | DM Serif Display + Plus Jakarta Sans  | 64–76px desktop | Regular/700 combination |
+| Section heading | Plus Jakarta Sans or DM Serif Display | 40–52px desktop |             600/regular |
+| Card heading    | Plus Jakarta Sans                     |         18–22px |                 600–700 |
+| Body copy       | Plus Jakarta Sans                     |         16–18px |                     400 |
+| Supporting copy | Plus Jakarta Sans                     |         14–16px |                 400–500 |
+| Button text     | Plus Jakarta Sans                     |         15–16px |                 600–700 |
+| Annotation      | Caveat                                |         24–32px |                 Regular |
+| Metadata        | Plus Jakarta Sans                     |         12–14px |                     500 |
 
 Use responsive type scaling so the hero does not overwhelm smaller screens.
 
@@ -225,7 +225,7 @@ Accessibility requirement:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  /* Show the annotation immediately and disable drawing animation. */
+    /* Show the annotation immediately and disable drawing animation. */
 }
 ```
 

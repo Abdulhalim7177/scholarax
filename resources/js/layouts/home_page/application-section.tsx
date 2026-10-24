@@ -16,17 +16,17 @@ export default function ApplicationSection() {
                         body="Use guided tools to shape a polished CV and a statement of purpose that sounds like you."
                     />
                     <div className="mt-9 flex flex-wrap gap-3 text-sm font-semibold text-scholarly-slate">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-scholarly-teal-soft px-4 py-2 text-scholarly-teal-dark">
+                        <span className="bg-scholarly-teal-soft text-scholarly-teal-dark inline-flex items-center gap-2 rounded-full px-4 py-2">
                             <Check className="size-4" /> Guided templates
                         </span>
-                        <span className="inline-flex items-center gap-2 rounded-full bg-scholarly-blue-soft px-4 py-2 text-scholarly-blue">
+                        <span className="bg-scholarly-blue-soft inline-flex items-center gap-2 rounded-full px-4 py-2 text-scholarly-blue">
                             <Check className="size-4" /> Mentor feedback
                         </span>
                     </div>
                 </div>
                 <div className="rounded-[30px] bg-scholarly-navy p-4 shadow-xl sm:p-6">
                     <div className="rounded-2xl bg-white p-5 sm:p-7">
-                        <div className="flex items-center justify-between border-b border-scholarly-border-soft pb-5">
+                        <div className="border-scholarly-border-soft flex items-center justify-between border-b pb-5">
                             <div>
                                 <p className="text-xs font-bold tracking-wider text-scholarly-blue uppercase">
                                     My application
@@ -39,12 +39,12 @@ export default function ApplicationSection() {
                                 <p className="text-2xl font-bold text-scholarly-blue">
                                     72%
                                 </p>
-                                <p className="text-[11px] font-semibold text-scholarly-slate-light">
+                                <p className="text-scholarly-slate-light text-[11px] font-semibold">
                                     complete
                                 </p>
                             </div>
                         </div>
-                        <div className="mt-6 h-2 rounded-full bg-scholarly-blue-soft">
+                        <div className="bg-scholarly-blue-soft mt-6 h-2 rounded-full">
                             <div className="h-2 w-[72%] rounded-full bg-scholarly-blue" />
                         </div>
                         <div className="mt-7 grid gap-3 sm:grid-cols-2">

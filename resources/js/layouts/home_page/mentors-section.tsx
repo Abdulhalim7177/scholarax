@@ -10,7 +10,7 @@ export default function MentorsSection() {
         >
             <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
                 <div className="order-2 lg:order-1">
-                    <div className="relative rounded-[30px]  bg-white p-6 shadow-xl">
+                    <div className="relative rounded-[30px] bg-white p-6 shadow-xl">
                         <div className="flex items-center gap-4">
                             <div className="flex size-14 items-center justify-center rounded-full bg-scholarly-sky text-lg font-bold text-scholarly-blue">
                                 SM
@@ -19,7 +19,7 @@ export default function MentorsSection() {
                                 <p className="font-bold text-scholarly-navy">
                                     Dr. Sarah Malik
                                 </p>
-                                <p className="text-xs text-scholarly-slate-light">
+                                <p className="text-scholarly-slate-light text-xs">
                                     Education consultant · United Kingdom
                                 </p>
                                 <div className="mt-1 flex items-center gap-1 text-scholarly-gold">
@@ -28,14 +28,14 @@ export default function MentorsSection() {
                                     <Star className="size-3.5 fill-current" />
                                     <Star className="size-3.5 fill-current" />
                                     <Star className="size-3.5 fill-current" />
-                                    <span className="ml-1 text-[11px] font-semibold text-scholarly-slate-light">
+                                    <span className="text-scholarly-slate-light ml-1 text-[11px] font-semibold">
                                         4.9 (120 reviews)
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div className="mt-7 space-y-3">
-                            <div className="ml-auto max-w-[78%] rounded-2xl rounded-br-md bg-scholarly-blue-soft p-4 text-xs leading-5 text-scholarly-navy">
+                            <div className="bg-scholarly-blue-soft ml-auto max-w-[78%] rounded-2xl rounded-br-md p-4 text-xs leading-5 text-scholarly-navy">
                                 I’m planning to apply for a Master’s in
                                 Environmental Science. Could you give me some
                                 advice on my SOP?
@@ -46,13 +46,13 @@ export default function MentorsSection() {
                             </div>
                         </div>
                         <div className="mt-6 flex flex-wrap gap-2">
-                            <span className="rounded-full bg-scholarly-gold-soft px-3 py-1.5 text-[11px] font-bold text-scholarly-gold-dark">
+                            <span className="bg-scholarly-gold-soft text-scholarly-gold-dark rounded-full px-3 py-1.5 text-[11px] font-bold">
                                 SOP review
                             </span>
-                            <span className="rounded-full bg-scholarly-blue-soft px-3 py-1.5 text-[11px] font-bold text-scholarly-blue">
+                            <span className="bg-scholarly-blue-soft rounded-full px-3 py-1.5 text-[11px] font-bold text-scholarly-blue">
                                 Career advice
                             </span>
-                            <span className="rounded-full bg-scholarly-coral-soft px-3 py-1.5 text-[11px] font-bold text-scholarly-coral-dark">
+                            <span className="bg-scholarly-coral-soft text-scholarly-coral-dark rounded-full px-3 py-1.5 text-[11px] font-bold">
                                 Study abroad
                             </span>
                         </div>
@@ -66,7 +66,7 @@ export default function MentorsSection() {
                     />
                     <a
                         href="#footer"
-                        className="mt-8 inline-flex items-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
+                        className="hover:bg-scholarly-blue-dark mt-8 inline-flex items-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white transition"
                     >
                         Meet our mentors <ArrowRight className="size-4" />
                     </a>

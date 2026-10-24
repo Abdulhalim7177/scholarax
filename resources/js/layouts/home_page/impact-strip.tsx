@@ -2,8 +2,8 @@ import { BookOpen, Globe2, UsersRound } from 'lucide-react';
 
 export default function ImpactStrip() {
     return (
-        <section className="mt-15  bg-white">
-            <div className="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-scholarly-border-soft px-5 py-7 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-8 lg:px-10">
+        <section className="mt-15 bg-white">
+            <div className="divide-scholarly-border-soft mx-auto grid max-w-7xl grid-cols-1 divide-y px-5 py-7 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-8 lg:px-10">
                 {[
                     ['500,000+', 'students supported', UsersRound],
                     ['190+', 'countries', Globe2],
