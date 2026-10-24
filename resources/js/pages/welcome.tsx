@@ -12,11 +12,12 @@ import ProcessSection from '@/layouts/home_page/process-section';
 import ScholarshipSearchSection from '@/layouts/home_page/scholarship-search-section';
 import SiteFooter from '@/layouts/home_page/site-footer';
 import TestimonialSection from '@/layouts/home_page/testimonial-section';
+import { dashboard } from '@/routes';
 import type { HomePageProps } from '@/layouts/home_page/types';
 
 export default function Welcome() {
     const { auth, currentTeam } = usePage<HomePageProps>().props;
-    const dashboardUrl = '/dashboard';
+    const dashboardUrl = dashboard.url();
     const pageProps = { auth, currentTeam, dashboardUrl };
 
     return (

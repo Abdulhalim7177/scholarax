@@ -8,6 +8,7 @@ import MomentumCta from '@/layouts/dashboard/momentum-cta';
 import OverviewMetrics from '@/layouts/dashboard/overview-metrics';
 import SavedScholarships from '@/layouts/dashboard/saved-scholarships';
 import TasksCard from '@/layouts/dashboard/tasks-card';
+import { dashboard } from '@/routes';
 
 type PageProps = {
     auth?: { user?: { name?: string } | null };
@@ -42,7 +43,7 @@ Dashboard.layout = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Dashboard',
-            href: '/dashboard',
+            href: dashboard.url(),
         },
     ],
 });

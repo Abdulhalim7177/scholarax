@@ -12,6 +12,7 @@ import {
 
 import aminaAvatar from '../../images/amina-avatar.png';
 import { UserMenuContent } from '@/components/user-menu-content';
+import { dashboard } from '@/routes';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem, User } from '@/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -35,7 +36,7 @@ const comingSoon = (feature: string) =>
     `/coming-soon?feature=${encodeURIComponent(feature)}`;
 
 const navItems: NavItem[] = [
-    { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
+    { title: 'Dashboard', href: dashboard.url(), icon: LayoutGrid },
     {
         title: 'Find scholarships',
         href: '/scholarships',
@@ -141,7 +142,7 @@ export function AppSidebar() {
                             asChild
                             className="h-10 rounded-lg px-0 text-white hover:bg-transparent hover:text-white"
                         >
-                            <Link href="/dashboard" prefetch>
+                            <Link href={dashboard.url()} prefetch>
                                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-scholarly-blue text-white">
                                     <BookOpen className="size-[18px] fill-current" />
                                 </span>
