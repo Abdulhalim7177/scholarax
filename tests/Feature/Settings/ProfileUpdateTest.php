@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
@@ -82,4 +84,44 @@ test('correct password must be provided to delete account', function () {
         ->assertRedirect(route('profile.edit'));
 
     expect($user->fresh())->not->toBeNull();
+});
+
+test('profile avatar can be uploaded', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    $response = $this
+        ->actingAs($user)
+        ->patch(route('profile.update'), [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'avatar' => UploadedFile::fake()->create('avatar.jpg', 100),
+        ]);
+
+    $response
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('profile.edit'));
+
+    $user->refresh();
+
+    expect($user->avatar)->not->toBeNull();
+    expect(Storage::disk('public')->exists($user->avatar))->toBeTrue();
+});
+
+test('profile avatar is deleted when account is deleted', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create(['avatar' => 'avatars/avatar.jpg']);
+
+    Storage::disk('public')->put('avatars/avatar.jpg', 'fake-contents');
+
+    $this
+        ->actingAs($user)
+        ->delete(route('profile.destroy'), [
+            'password' => 'password',
+        ]);
+
+    expect(Storage::disk('public')->exists('avatars/avatar.jpg'))->toBeFalse();
+    expect($user->fresh())->toBeNull();
 });
