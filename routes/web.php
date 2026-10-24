@@ -16,7 +16,7 @@ Route::inertia('mentors', 'mentors')->name('mentors');
 Route::inertia('cv-sop-builder', 'cv-sop-builder')->name('cv-sop-builder');
 
 // Frontend preview only: authentication will be restored when dashboard data is connected.
-Route::get('/{current_team?}/dashboard', DashboardController::class)
+Route::get('/dashboard', DashboardController::class)
     ->middleware('auth')
     ->name('dashboard');
 
