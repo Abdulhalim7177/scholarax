@@ -7,6 +7,15 @@ Route::inertia('/', 'welcome')->name('home');
 
 Route::inertia('coming-soon', 'coming-soon')->name('coming-soon');
 
+Route::inertia('mentor-coming-soon', 'mentor-coming-soon')->name('mentor-coming-soon');
+
+Route::inertia('mentor-review-queue', 'mentor-review-queue')->name('mentor-review-queue');
+Route::inertia('mentor-learners', 'mentor-learners')->name('mentor-learners');
+Route::inertia('mentor-messages', 'mentor-messages')->name('mentor-messages');
+Route::inertia('mentor-sessions', 'mentor-sessions')->name('mentor-sessions');
+Route::inertia('mentor-impact', 'mentor-impact')->name('mentor-impact');
+Route::inertia('mentor-profile', 'mentor-profile')->name('mentor-profile');
+
 Route::inertia('scholarships', 'scholarships')->name('scholarships');
 
 Route::inertia('applications', 'applications')->name('applications');
@@ -16,11 +25,10 @@ Route::inertia('mentors', 'mentors')->name('mentors');
 Route::inertia('cv-sop-builder', 'cv-sop-builder')->name('cv-sop-builder');
 
 // Frontend preview only: authentication will be restored when dashboard data is connected.
-Route::get('/dashboard', DashboardController::class)
-    ->middleware('auth')
-    ->name('dashboard');
+Route::get('dashboard', DashboardController::class)->name('dashboard.simple');
+
+Route::inertia('mentor-dashboard', 'mentor-dashboard')->name('mentor-dashboard');
 
 // Team routes are intentionally disabled while Scholarly is learner-first.
 
 require __DIR__.'/settings.php';
-require __DIR__.'/teams.php';
