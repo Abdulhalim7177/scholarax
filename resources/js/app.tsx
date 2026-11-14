@@ -4,6 +4,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import AdminLayout from '@/layouts/admin-layout';
 import MentorLayout from '@/layouts/mentor-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
@@ -17,6 +18,10 @@ void createInertiaApp({
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
+            case name === 'admin-dashboard':
+            case name === 'admin-coming-soon':
+            case name.startsWith('admin-'):
+                return AdminLayout;
             case name === 'mentor-dashboard':
             case name === 'mentor-coming-soon':
             case name.startsWith('mentor-'):

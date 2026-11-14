@@ -9,6 +9,15 @@ Route::inertia('coming-soon', 'coming-soon')->name('coming-soon');
 
 Route::inertia('mentor-coming-soon', 'mentor-coming-soon')->name('mentor-coming-soon');
 
+Route::inertia('admin-coming-soon', 'admin-coming-soon')->name('admin-coming-soon');
+Route::inertia('admin-dashboard', 'admin-dashboard')->name('admin-dashboard');
+Route::inertia('admin-users', 'admin-users')->name('admin-users');
+Route::inertia('admin-scholarships', 'admin-scholarships')->name('admin-scholarships');
+Route::inertia('admin-mentors', 'admin-mentors')->name('admin-mentors');
+Route::inertia('admin-applications', 'admin-applications')->name('admin-applications');
+Route::inertia('admin-reports', 'admin-reports')->name('admin-reports');
+Route::inertia('admin-settings', 'admin-settings')->name('admin-settings');
+
 Route::inertia('mentor-review-queue', 'mentor-review-queue')->name('mentor-review-queue');
 Route::inertia('mentor-learners', 'mentor-learners')->name('mentor-learners');
 Route::inertia('mentor-messages', 'mentor-messages')->name('mentor-messages');
