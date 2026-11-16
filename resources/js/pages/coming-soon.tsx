@@ -1,8 +1,9 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 
 export default function ComingSoon() {
-    const params = new URLSearchParams(window.location.search);
+    const { url } = usePage();
+    const params = new URLSearchParams(url.split('?')[1] ?? '');
     const feature = params.get('feature') ?? 'This feature';
 
     return (

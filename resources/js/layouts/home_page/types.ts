@@ -1,4 +1,4 @@
-import { dashboard } from '@/routes';
+import dashboardRoutes from '@/routes/dashboard';
 import type { LucideIcon } from 'lucide-react';
 
 export type HomePageProps = {
@@ -6,7 +6,7 @@ export type HomePageProps = {
         user?: { name?: string } | null;
     };
     currentTeam?: { slug: string } | null;
-    dashboardUrl: string | ReturnType<typeof dashboard>;
+    dashboardUrl: string | ReturnType<typeof dashboardRoutes.simple>;
 };
 
 export type Feature = {

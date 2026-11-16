@@ -30,7 +30,7 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { UserMenuContent } from '@/components/user-menu-content';
-import { dashboard } from '@/routes';
+import dashboardRoutes from '@/routes/dashboard';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useInitials } from '@/hooks/use-initials';
 import { cn, toUrl } from '@/lib/utils';
@@ -61,7 +61,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
     const { auth } = page.props;
     const getInitials = useInitials();
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
-    const dashboardUrl = dashboard.url();
+    const dashboardUrl = dashboardRoutes.simple.url();
 
     const mainNavItems: NavItem[] = [
         {

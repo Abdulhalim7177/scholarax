@@ -11,7 +11,8 @@ export default defineConfig({
     plugins: lazyPlugins(() => [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
-            refresh: true,
+            ssr: 'resources/js/ssr.tsx',
+            refresh: false,
             fonts: [
                 bunny('Plus Jakarta Sans', {
                     weights: [400, 500, 600, 700],
@@ -35,6 +36,7 @@ export default defineConfig({
         }),
     ]),
     server: {
+        host: '127.0.0.1',
         watch: {
             ignored: [
                 '**/.agents/**',
