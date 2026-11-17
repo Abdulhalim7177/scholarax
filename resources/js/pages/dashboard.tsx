@@ -8,7 +8,7 @@ import MomentumCta from '@/layouts/dashboard/momentum-cta';
 import OverviewMetrics from '@/layouts/dashboard/overview-metrics';
 import SavedScholarships from '@/layouts/dashboard/saved-scholarships';
 import TasksCard from '@/layouts/dashboard/tasks-card';
-import dashboardRoutes from '@/routes/dashboard';
+import { dashboard } from '@/routes';
 
 type PageProps = {
     auth?: { user?: { name?: string } | null };
@@ -27,10 +27,10 @@ export default function Dashboard() {
                     <OverviewMetrics />
                     <ApplicationOverview />
                     <ApplicationStrength />
-                    {/* <SavedScholarships /> */}
+                    <SavedScholarships />
                     <section className="grid gap-6 lg:grid-cols-2">
-                        {/* <ActivityCard />
-                        <TasksCard /> */}
+                        <ActivityCard />
+                        <TasksCard />
                     </section>
                     <MomentumCta />
                 </div>
@@ -39,11 +39,11 @@ export default function Dashboard() {
     );
 }
 
-Dashboard.layout = (props: { currentTeam?: { slug: string } | null }) => ({
+Dashboard.layout = () => ({
     breadcrumbs: [
         {
             title: 'Dashboard',
-            href: dashboardRoutes.simple.url(),
+            href: dashboard.url(),
         },
     ],
 });

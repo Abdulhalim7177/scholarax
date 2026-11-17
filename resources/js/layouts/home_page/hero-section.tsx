@@ -45,7 +45,7 @@ export default function HeroSection({ auth, dashboardUrl }: HomePageProps) {
                     <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                         <a
                             href="#scholarships"
-                            className="hover:bg-scholarly-blue-dark inline-flex items-center justify-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:text-scholarly-gold"
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:bg-scholarly-blue-dark hover:text-scholarly-gold"
                         >
                             Explore scholarships{' '}
                             <ArrowRight className="size-4" />
@@ -69,7 +69,7 @@ export default function HeroSection({ auth, dashboardUrl }: HomePageProps) {
                     </div>
                 </div>
                 <div className="relative mx-auto w-full max-w-[650px] lg:justify-self-end">
-                    <div className="border-scholarly-border-strong bg-scholarly-blue-soft absolute top-1/2 left-1/2 size-[min(76vw,520px)] -translate-x-1/2 -translate-y-1/2 rounded-full border" />
+                    <div className="absolute top-1/2 left-1/2 size-[min(76vw,520px)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-scholarly-border-strong bg-scholarly-blue-soft" />
                     <div className="absolute top-[3%] right-[6%] rounded-2xl border border-white bg-white px-4 py-3 shadow-xl">
                         <div className="flex items-center gap-2">
                             <span className="size-2 rounded-full bg-scholarly-teal" />
@@ -78,13 +78,13 @@ export default function HeroSection({ auth, dashboardUrl }: HomePageProps) {
                             </span>
                         </div>
                     </div>
-                    <div className="from-scholarly-sky-strong relative mx-auto aspect-[1.1/0.85] max-w-[590px] overflow-hidden rounded-[42%_58%_48%_52%/48%_42%_58%_52%] bg-gradient-to-br via-scholarly-sky to-white shadow-xl">
-                        <div className="bg-scholarly-skin-light absolute inset-x-[16%] top-[20%] bottom-0 rounded-t-[45%]" />
-                        <div className="bg-scholarly-navy-dark absolute top-[17%] left-[23%] h-[28%] w-[19%] rounded-[50%_50%_45%_45%]" />
+                    <div className="relative mx-auto aspect-[1.1/0.85] max-w-[590px] overflow-hidden rounded-[42%_58%_48%_52%/48%_42%_58%_52%] bg-gradient-to-br from-scholarly-sky-strong via-scholarly-sky to-white shadow-xl">
+                        <div className="absolute inset-x-[16%] top-[20%] bottom-0 rounded-t-[45%] bg-scholarly-skin-light" />
+                        <div className="absolute top-[17%] left-[23%] h-[28%] w-[19%] rounded-[50%_50%_45%_45%] bg-scholarly-navy-dark" />
                         <div className="absolute top-[31%] left-[22%] h-[53%] w-[21%] rounded-t-[45%] bg-scholarly-blue" />
-                        <div className="bg-scholarly-skin-dark absolute top-[19%] left-[40%] h-[34%] w-[25%] rounded-[48%]" />
+                        <div className="absolute top-[19%] left-[40%] h-[34%] w-[25%] rounded-[48%] bg-scholarly-skin-dark" />
                         <div className="absolute top-[38%] left-[39%] h-[50%] w-[27%] rounded-t-[48%] bg-scholarly-gold" />
-                        <div className="bg-scholarly-skin-mid absolute top-[24%] right-[18%] h-[30%] w-[22%] rounded-[50%]" />
+                        <div className="absolute top-[24%] right-[18%] h-[30%] w-[22%] rounded-[50%] bg-scholarly-skin-mid" />
                         <div className="absolute top-[42%] right-[16%] h-[48%] w-[25%] rounded-t-[48%] bg-scholarly-navy" />
                         <div className="absolute bottom-[12%] left-[8%] rounded-2xl border border-white/80 bg-white/90 px-4 py-3 shadow-lg backdrop-blur">
                             <p className="text-[10px] font-bold tracking-wider text-scholarly-blue uppercase">
@@ -97,7 +97,7 @@ export default function HeroSection({ auth, dashboardUrl }: HomePageProps) {
                     </div>
                     <div className="absolute bottom-[6%] left-[-3%] rounded-2xl border border-scholarly-border bg-white p-4 shadow-lg">
                         <div className="flex items-center gap-3">
-                            <div className="bg-scholarly-gold-soft text-scholarly-gold-dark flex size-10 items-center justify-center rounded-xl">
+                            <div className="flex size-10 items-center justify-center rounded-xl bg-scholarly-gold-soft text-scholarly-gold-dark">
                                 <Star className="size-5 fill-current" />
                             </div>
                             <div>
@@ -112,7 +112,7 @@ export default function HeroSection({ auth, dashboardUrl }: HomePageProps) {
                     </div>
                     <div className="absolute right-[-2%] bottom-[16%] rounded-2xl border border-scholarly-border bg-white p-4 shadow-lg">
                         <div className="flex items-center gap-3">
-                            <div className="bg-scholarly-teal-soft flex size-10 items-center justify-center rounded-xl text-scholarly-teal">
+                            <div className="flex size-10 items-center justify-center rounded-xl bg-scholarly-teal-soft text-scholarly-teal">
                                 <Check className="size-5" />
                             </div>
                             <div>

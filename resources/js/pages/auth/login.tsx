@@ -18,25 +18,22 @@ type Props = {
     canResetPassword: boolean;
 };
 
-export default function Login({
-    status,
-    canResetPassword,
-}: Props) {
+export default function Login({ status, canResetPassword }: Props) {
     return (
         <>
             <Head title="Log in" />
 
-            <div className="min-h-screen flex items-center justify-center bg-scholarly-blue-white px-4 sm:px-6 lg:px-8 py-12">
+            <div className="flex min-h-screen items-center justify-center bg-scholarly-blue-white px-4 py-12 sm:px-6 lg:px-8">
                 <PasskeyVerify />
 
-                <div className="max-w-md w-full space-y-8">
+                <div className="w-full max-w-md space-y-8">
                     <div className="text-center">
                         <div className="flex justify-center">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-scholarly-blue text-white shadow-lg">
                                 <span className="text-xl">S</span>
                             </div>
                         </div>
-                        <h2 className="mt-6 text-2xl font-bold text-scholarly-navy tracking-tight">
+                        <h2 className="mt-6 text-2xl font-bold tracking-tight text-scholarly-navy">
                             Welcome back
                         </h2>
                         <p className="mt-2 text-sm text-muted-foreground">
@@ -59,7 +56,9 @@ export default function Login({
                             {({ processing, errors }) => (
                                 <>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email">Email address</Label>
+                                        <Label htmlFor="email">
+                                            Email address
+                                        </Label>
                                         <Input
                                             id="email"
                                             type="email"
@@ -75,7 +74,9 @@ export default function Login({
 
                                     <div className="grid gap-2">
                                         <div className="flex items-center justify-between">
-                                            <Label htmlFor="password">Password</Label>
+                                            <Label htmlFor="password">
+                                                Password
+                                            </Label>
                                             {canResetPassword && (
                                                 <TextLink
                                                     href={request()}
@@ -103,7 +104,9 @@ export default function Login({
                                             name="remember"
                                             tabIndex={3}
                                         />
-                                        <Label htmlFor="remember">Remember me</Label>
+                                        <Label htmlFor="remember">
+                                            Remember me
+                                        </Label>
                                     </div>
 
                                     <Button
@@ -114,43 +117,12 @@ export default function Login({
                                         data-test="login-button"
                                     >
                                         {processing && <Spinner />}
-                                        Sign in <ArrowRight className="ml-2 size-4" />
+                                        Sign in{' '}
+                                        <ArrowRight className="ml-2 size-4" />
                                     </Button>
                                 </>
                             )}
                         </Form>
-
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <span className="w-full border-t" />
-                            </div>
-                            <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-scholarly-blue-white px-2 text-muted-foreground">
-                                    Or continue with
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 pt-6">
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                asChild
-                            >
-                                <a href="#" rel="noopener noreferrer">
-                                    Google
-                                </a>
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="w-full"
-                                asChild
-                            >
-                                <a href="#" rel="noopener noreferrer">
-                                    GitHub
-                                </a>
-                            </Button>
-                        </div>
 
                         <div className="text-center text-sm text-muted-foreground">
                             Don't have an account?{' '}

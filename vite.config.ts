@@ -11,7 +11,6 @@ export default defineConfig({
     plugins: lazyPlugins(() => [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
-            ssr: 'resources/js/ssr.tsx',
             refresh: false,
             fonts: [
                 bunny('Plus Jakarta Sans', {

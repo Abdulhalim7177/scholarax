@@ -12,7 +12,7 @@ import {
 
 import aminaAvatar from '../../images/amina-avatar.png';
 import { UserMenuContent } from '@/components/user-menu-content';
-import dashboardRoutes from '@/routes/dashboard';
+import { dashboard } from '@/routes';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem, User } from '@/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -32,11 +32,8 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 
-const comingSoon = (feature: string) =>
-    `/coming-soon?feature=${encodeURIComponent(feature)}`;
-
 const navItems: NavItem[] = [
-    { title: 'Dashboard', href: dashboardRoutes.simple.url(), icon: LayoutGrid },
+    { title: 'Dashboard', href: dashboard.url(), icon: LayoutGrid },
     {
         title: 'Find scholarships',
         href: '/scholarships',
@@ -55,10 +52,10 @@ const navItems: NavItem[] = [
     { title: 'Mentors', href: '/mentors', icon: UsersRound },
     {
         title: 'Deadlines',
-        href: comingSoon('Deadlines'),
+        href: '/scholarships',
         icon: CalendarDays,
     },
-    { title: 'Settings', href: comingSoon('Settings'), icon: Settings },
+    { title: 'Settings', href: '/settings/profile', icon: Settings },
 ];
 
 const fallbackUser: User = {
@@ -66,6 +63,8 @@ const fallbackUser: User = {
     name: 'Amina Yusuf',
     email: 'amina@example.com',
     avatar: aminaAvatar,
+    avatar_url: aminaAvatar,
+    role: 'student',
     email_verified_at: null,
     created_at: '',
     updated_at: '',
@@ -87,7 +86,11 @@ function SidebarProfile() {
                         >
                             <Avatar className="size-9 shrink-0 overflow-hidden rounded-full border-2 border-white/60">
                                 <AvatarImage
-                                    src={user.avatar || aminaAvatar}
+                                    src={
+                                        user.avatar_url ||
+                                        user.avatar ||
+                                        aminaAvatar
+                                    }
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="bg-scholarly-blue text-white">
@@ -142,7 +145,7 @@ export function AppSidebar() {
                             asChild
                             className="h-10 rounded-lg px-0 text-white hover:bg-transparent hover:text-white"
                         >
-                            <Link href={dashboardRoutes.simple.url()} prefetch>
+                            <Link href={dashboard.url()} prefetch>
                                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-scholarly-blue text-white">
                                     <BookOpen className="size-[18px] fill-current" />
                                 </span>

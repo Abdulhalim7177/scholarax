@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
     Bell,
     Check,
@@ -196,12 +196,12 @@ export default function AdminSettings() {
                                     Review admin access and authentication
                                     controls.
                                 </p>
-                                <button
-                                    type="button"
-                                    className="mt-4 text-xs font-bold text-scholarly-blue"
+                                <Link
+                                    href="/settings/security"
+                                    className="mt-4 inline-block text-xs font-bold text-scholarly-blue"
                                 >
                                     Manage security
-                                </button>
+                                </Link>
                             </section>
                         </aside>
                     </section>

@@ -20,40 +20,49 @@ export default function Scholarships() {
     const [fundingOnly, setFundingOnly] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
     const [saved, setSaved] = useState<string[]>(['daad']);
+    const [sortOrder, setSortOrder] = useState<'soonest' | 'latest'>('soonest');
 
     const filteredScholarships = useMemo(() => {
         const normalizedQuery = query.trim().toLowerCase();
 
-        return scholarships.filter((scholarship) => {
-            const matchesQuery =
-                !normalizedQuery ||
-                [
-                    scholarship.title,
-                    scholarship.provider,
-                    scholarship.country,
-                    scholarship.field,
-                ].some((value) =>
-                    value.toLowerCase().includes(normalizedQuery),
-                );
-            const matchesCountry =
-                country === scholarshipCountries[0] ||
-                scholarship.country === country;
-            const matchesLevel =
-                level === scholarshipLevels[0] || scholarship.level === level;
-            const matchesField =
-                field === scholarshipFields[0] || scholarship.field === field;
-            const matchesFunding =
-                !fundingOnly || scholarship.funding === 'Fully funded';
+        return scholarships
+            .filter((scholarship) => {
+                const matchesQuery =
+                    !normalizedQuery ||
+                    [
+                        scholarship.title,
+                        scholarship.provider,
+                        scholarship.country,
+                        scholarship.field,
+                    ].some((value) =>
+                        value.toLowerCase().includes(normalizedQuery),
+                    );
+                const matchesCountry =
+                    country === scholarshipCountries[0] ||
+                    scholarship.country === country;
+                const matchesLevel =
+                    level === scholarshipLevels[0] ||
+                    scholarship.level === level;
+                const matchesField =
+                    field === scholarshipFields[0] ||
+                    scholarship.field === field;
+                const matchesFunding =
+                    !fundingOnly || scholarship.funding === 'Fully funded';
 
-            return (
-                matchesQuery &&
-                matchesCountry &&
-                matchesLevel &&
-                matchesField &&
-                matchesFunding
+                return (
+                    matchesQuery &&
+                    matchesCountry &&
+                    matchesLevel &&
+                    matchesField &&
+                    matchesFunding
+                );
+            })
+            .sort((a, b) =>
+                sortOrder === 'soonest'
+                    ? a.daysLeft - b.daysLeft
+                    : b.daysLeft - a.daysLeft,
             );
-        });
-    }, [country, field, fundingOnly, level, query]);
+    }, [country, field, fundingOnly, level, query, sortOrder]);
 
     const resetFilters = () => {
         setCountry(scholarshipCountries[0]);
@@ -126,10 +135,20 @@ export default function Scholarships() {
                                 </div>
                                 <button
                                     type="button"
+                                    onClick={() =>
+                                        setSortOrder((current) =>
+                                            current === 'soonest'
+                                                ? 'latest'
+                                                : 'soonest',
+                                        )
+                                    }
                                     className="inline-flex items-center gap-2 self-start rounded-lg border border-scholarly-border bg-white px-3 py-2 text-xs font-bold text-scholarly-slate transition hover:border-scholarly-blue hover:text-scholarly-blue"
                                 >
                                     <SlidersHorizontal className="size-3.5" />
-                                    Sort: Deadline soonest
+                                    Sort:{' '}
+                                    {sortOrder === 'soonest'
+                                        ? 'Deadline soonest'
+                                        : 'Deadline latest'}
                                 </button>
                             </div>
                             {filteredScholarships.length > 0 ? (
@@ -155,7 +174,7 @@ export default function Scholarships() {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="border-scholarly-border-strong rounded-2xl border border-dashed bg-white px-6 py-16 text-center">
+                                <div className="rounded-2xl border border-dashed border-scholarly-border-strong bg-white px-6 py-16 text-center">
                                     <p className="font-display text-2xl text-scholarly-navy">
                                         No scholarships found yet.
                                     </p>
@@ -170,7 +189,7 @@ export default function Scholarships() {
                                             setQuery('');
                                             resetFilters();
                                         }}
-                                        className="hover:bg-scholarly-blue-hover mt-5 rounded-lg bg-scholarly-blue px-4 py-2.5 text-sm font-bold text-white"
+                                        className="mt-5 rounded-lg bg-scholarly-blue px-4 py-2.5 text-sm font-bold text-white hover:bg-scholarly-blue-hover"
                                     >
                                         Clear filters
                                     </button>

@@ -147,13 +147,13 @@ export default function MentorLearners() {
                                             </p>
                                         </div>
                                     </div>
-                                    <button
-                                        type="button"
+                                    <Link
+                                        href={`/mentor-coming-soon?feature=${encodeURIComponent(`Message ${learner.name}`)}`}
                                         aria-label={`Message ${learner.name}`}
                                         className="rounded-lg p-2 text-scholarly-slate hover:bg-scholarly-blue-soft hover:text-scholarly-blue"
                                     >
                                         <MessageCircle className="size-4" />
-                                    </button>
+                                    </Link>
                                 </div>
                                 <p className="mt-5 text-sm font-semibold text-scholarly-navy">
                                     {learner.goal}

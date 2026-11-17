@@ -1,4 +1,5 @@
 import { createInertiaApp } from '@inertiajs/react';
+import { FlashToasts } from '@/components/flash-toasts';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme } from '@/hooks/use-appearance';
@@ -10,11 +11,21 @@ import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+const selfContainedAuthPages = [
+    'auth/login',
+    'auth/register',
+    'auth/forgot-password',
+    'auth/reset-password',
+    'auth/verify-email',
+];
+
 void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
             case name === 'welcome':
+                return null;
+            case selfContainedAuthPages.includes(name):
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
@@ -37,6 +48,7 @@ void createInertiaApp({
     withApp(app) {
         return (
             <TooltipProvider delayDuration={0}>
+                <FlashToasts />
                 {app}
                 <Toaster />
             </TooltipProvider>

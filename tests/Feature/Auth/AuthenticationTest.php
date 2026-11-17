@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -34,6 +35,22 @@ test('users can authenticate using the login screen', function () {
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard'));
 });
+
+test('users are redirected to the home for their role after login', function (UserRole $role, string $path) {
+    $user = User::factory()->create(['role' => $role]);
+
+    $response = $this->post(route('login.store'), [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect($path);
+})->with([
+    'student' => [UserRole::Student, '/dashboard'],
+    'mentor' => [UserRole::Mentor, '/mentor-dashboard'],
+    'admin' => [UserRole::Admin, '/admin-dashboard'],
+]);
 
 test('passkey login response redirects to the current team dashboard', function () {
     $user = User::factory()->create();

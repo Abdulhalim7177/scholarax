@@ -10,7 +10,7 @@ import {
     Save,
     Star,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function MentorProfile() {
     const [name, setName] = useState('Dr. Maya Chen');
@@ -18,6 +18,29 @@ export default function MentorProfile() {
         'I help ambitious learners shape thoughtful scholarship applications, especially for UK programmes, public policy, and research-led degrees.',
     );
     const [saved, setSaved] = useState(false);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const avatarInputRef = useRef<HTMLInputElement>(null);
+    const [expertise, setExpertise] = useState([
+        'SOP review',
+        'UK scholarships',
+        'Research plans',
+        'Public policy',
+        'Interview preparation',
+    ]);
+    const [showExpertiseInput, setShowExpertiseInput] = useState(false);
+    const [newExpertise, setNewExpertise] = useState('');
+
+    const addExpertise = () => {
+        const trimmed = newExpertise.trim();
+
+        if (trimmed && !expertise.includes(trimmed)) {
+            setExpertise((current) => [...current, trimmed]);
+        }
+
+        setNewExpertise('');
+        setShowExpertiseInput(false);
+    };
+
     return (
         <>
             <Head title="Mentor profile" />
@@ -48,11 +71,37 @@ export default function MentorProfile() {
                     <section className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm sm:p-8">
                         <div className="flex flex-col gap-6 border-b border-scholarly-border pb-7 sm:flex-row sm:items-center">
                             <div className="relative">
-                                <div className="flex size-24 items-center justify-center rounded-3xl bg-scholarly-blue text-2xl font-bold text-white">
-                                    MC
-                                </div>
+                                {avatarPreview ? (
+                                    <img
+                                        src={avatarPreview}
+                                        alt={name}
+                                        className="size-24 rounded-3xl object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex size-24 items-center justify-center rounded-3xl bg-scholarly-blue text-2xl font-bold text-white">
+                                        MC
+                                    </div>
+                                )}
+                                <input
+                                    ref={avatarInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="sr-only"
+                                    onChange={(event) => {
+                                        const file = event.target.files?.[0];
+
+                                        if (file) {
+                                            setAvatarPreview(
+                                                URL.createObjectURL(file),
+                                            );
+                                        }
+                                    }}
+                                />
                                 <button
                                     type="button"
+                                    onClick={() =>
+                                        avatarInputRef.current?.click()
+                                    }
                                     aria-label="Change profile photo"
                                     className="absolute -right-2 -bottom-2 flex size-8 items-center justify-center rounded-full border-2 border-white bg-scholarly-navy text-white"
                                 >
@@ -135,19 +184,43 @@ export default function MentorProfile() {
                                 </div>
                                 <button
                                     type="button"
+                                    onClick={() =>
+                                        setShowExpertiseInput(
+                                            (current) => !current,
+                                        )
+                                    }
                                     className="inline-flex items-center gap-1 text-xs font-bold text-scholarly-blue"
                                 >
                                     <Plus className="size-3.5" /> Add expertise
                                 </button>
                             </div>
+                            {showExpertiseInput && (
+                                <div className="mt-4 flex gap-2">
+                                    <input
+                                        value={newExpertise}
+                                        onChange={(event) =>
+                                            setNewExpertise(event.target.value)
+                                        }
+                                        onKeyDown={(event) => {
+                                            if (event.key === 'Enter') {
+                                                event.preventDefault();
+                                                addExpertise();
+                                            }
+                                        }}
+                                        placeholder="e.g. CV feedback"
+                                        className="flex-1 rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 py-2 text-sm outline-none focus:border-scholarly-blue"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={addExpertise}
+                                        className="rounded-lg bg-scholarly-blue px-3 py-2 text-xs font-bold text-white"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                            )}
                             <div className="mt-4 flex flex-wrap gap-2">
-                                {[
-                                    'SOP review',
-                                    'UK scholarships',
-                                    'Research plans',
-                                    'Public policy',
-                                    'Interview preparation',
-                                ].map((tag) => (
+                                {expertise.map((tag) => (
                                     <span
                                         key={tag}
                                         className="inline-flex items-center gap-1.5 rounded-full bg-scholarly-blue-soft px-3 py-2 text-xs font-semibold text-scholarly-blue"
@@ -155,6 +228,13 @@ export default function MentorProfile() {
                                         {tag}
                                         <button
                                             type="button"
+                                            onClick={() =>
+                                                setExpertise((current) =>
+                                                    current.filter(
+                                                        (item) => item !== tag,
+                                                    ),
+                                                )
+                                            }
                                             aria-label={`Remove ${tag}`}
                                             className="text-scholarly-blue/60 hover:text-scholarly-blue"
                                         >

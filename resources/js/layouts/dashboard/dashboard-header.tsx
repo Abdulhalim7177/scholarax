@@ -26,7 +26,7 @@ export default function DashboardHeader({ firstName }: { firstName: string }) {
                 </ActionLink>
                 <ActionLink
                     href={comingSoon('Explore scholarships')}
-                    className="hover:bg-scholarly-blue-dark inline-flex items-center gap-2 rounded-xl bg-scholarly-blue px-5 py-3 text-sm font-bold text-white shadow-lg transition"
+                    className="inline-flex items-center gap-2 rounded-xl bg-scholarly-blue px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-scholarly-blue-dark"
                 >
                     Explore scholarships <ArrowRight className="size-4" />
                 </ActionLink>

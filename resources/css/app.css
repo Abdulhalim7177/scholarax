@@ -14,14 +14,35 @@
 
     --color-scholarly-blue: #155eef;
     --color-scholarly-blue-dark: #0d3bb3;
+    --color-scholarly-blue-hover: #0f4fd1;
+    --color-scholarly-blue-soft: #e8efff;
     --color-scholarly-navy: #102a43;
+    --color-scholarly-navy-dark: #0a1f33;
+    --color-scholarly-navy-light: #1e4366;
+    --color-scholarly-navy-muted: #b9c9db;
     --color-scholarly-gold: #efa615;
+    --color-scholarly-gold-dark: #a9740a;
+    --color-scholarly-gold-soft: #fdf4dc;
+    --color-scholarly-gold-white: #fffaf0;
     --color-scholarly-blue-white: #f5f9ff;
     --color-scholarly-sky: #dcebff;
+    --color-scholarly-sky-strong: #b9d9ff;
     --color-scholarly-teal: #18a37a;
+    --color-scholarly-teal-dark: #0f7d5d;
+    --color-scholarly-teal-soft: #e6f8f2;
+    --color-scholarly-teal-border: #a8e3d2;
+    --color-scholarly-teal-white: #f3fcf9;
     --color-scholarly-coral: #ff8a72;
+    --color-scholarly-coral-dark: #cf5a45;
+    --color-scholarly-coral-soft: #fff0ec;
     --color-scholarly-slate: #52606d;
+    --color-scholarly-slate-light: #7b8794;
     --color-scholarly-border: #d9e6f5;
+    --color-scholarly-border-soft: #e7eef8;
+    --color-scholarly-border-strong: #bfd4ea;
+    --color-scholarly-skin-light: #f6d7c4;
+    --color-scholarly-skin-mid: #e0a887;
+    --color-scholarly-skin-dark: #a96f52;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);

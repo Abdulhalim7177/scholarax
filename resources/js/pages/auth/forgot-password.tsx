@@ -13,8 +13,8 @@ export default function ForgotPassword({ status }: { status?: string }) {
         <>
             <Head title="Forgot password" />
 
-            <div className="min-h-screen flex items-center justify-center bg-scholarly-blue-white px-4 py-12">
-                <div className="max-w-md w-full space-y-8">
+            <div className="flex min-h-screen items-center justify-center bg-scholarly-blue-white px-4 py-12">
+                <div className="w-full max-w-md space-y-8">
                     <div className="flex items-center gap-2">
                         <Button
                             variant="ghost"
@@ -34,10 +34,10 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                 <span className="text-xl">🔑</span>
                             </div>
                         </div>
-                        <h2 className="mt-6 text-2xl font-bold text-scholarly-navy tracking-tight">
+                        <h2 className="mt-6 text-2xl font-bold tracking-tight text-scholarly-navy">
                             Forgot password
                         </h2>
-                        <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
+                        <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
                             Enter your email and we'll send you a link to reset
                             your password.
                         </p>
@@ -54,7 +54,9 @@ export default function ForgotPassword({ status }: { status?: string }) {
                             {({ processing, errors }) => (
                                 <>
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email">Email address</Label>
+                                        <Label htmlFor="email">
+                                            Email address
+                                        </Label>
                                         <Input
                                             id="email"
                                             type="email"

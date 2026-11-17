@@ -138,7 +138,7 @@ export default function MentorSessions() {
                                 ))}
                             </div>
                             <Link
-                                href="/mentor-coming-soon?feature=Availability%20settings"
+                                href="/mentor-profile"
                                 className="mt-5 inline-flex text-xs font-bold text-scholarly-blue"
                             >
                                 Edit availability

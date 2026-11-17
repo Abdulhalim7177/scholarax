@@ -63,7 +63,7 @@ export default function ApplicationOverview() {
                                 <h3 className="text-lg font-bold">
                                     Chevening Scholarships
                                 </h3>
-                                <span className="bg-scholarly-blue-soft rounded-full px-3 py-1 text-xs font-bold text-scholarly-blue">
+                                <span className="rounded-full bg-scholarly-blue-soft px-3 py-1 text-xs font-bold text-scholarly-blue">
                                     Draft in progress
                                 </span>
                             </div>
@@ -83,7 +83,7 @@ export default function ApplicationOverview() {
                         </div>
                         <ActionLink
                             href={comingSoon('Continue application')}
-                            className="hover:bg-scholarly-blue-dark inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-scholarly-blue px-4 py-3 text-sm font-bold text-white transition"
+                            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-scholarly-blue px-4 py-3 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
                         >
                             Continue application{' '}
                             <ArrowRight className="size-4" />
@@ -121,7 +121,7 @@ export default function ApplicationOverview() {
                                 className="flex items-center gap-3 py-3"
                             >
                                 <div className="w-12 rounded-lg border border-scholarly-border text-center">
-                                    <p className="bg-scholarly-gold-soft text-scholarly-gold-dark py-1 text-[10px] font-bold">
+                                    <p className="bg-scholarly-gold-soft py-1 text-[10px] font-bold text-scholarly-gold-dark">
                                         {month}
                                     </p>
                                     <p className="py-1 text-lg font-bold">
@@ -136,7 +136,7 @@ export default function ApplicationOverview() {
                                         {label}
                                     </p>
                                 </div>
-                                <ChevronRight className="text-scholarly-slate-light size-4" />
+                                <ChevronRight className="size-4 text-scholarly-slate-light" />
                             </ActionLink>
                         ))}
                     </div>
@@ -152,7 +152,7 @@ export default function ApplicationOverview() {
                         </ActionLink>
                     </div>
                     <div className="mt-5 flex items-center gap-3">
-                        <div className="bg-scholarly-coral-soft text-scholarly-coral-dark flex size-12 items-center justify-center rounded-full">
+                        <div className="flex size-12 items-center justify-center rounded-full bg-scholarly-coral-soft text-scholarly-coral-dark">
                             <UsersRound className="size-6" />
                         </div>
                         <div className="min-w-0 flex-1">

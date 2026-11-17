@@ -14,14 +14,14 @@ export default function MomentumCta() {
                         Keep your momentum going
                     </h2>
                 </div>
-                <p className="text-scholarly-navy-muted mt-3 max-w-xl text-sm leading-6">
+                <p className="mt-3 max-w-xl text-sm leading-6 text-scholarly-navy-muted">
                     Discover more scholarships, update your applications, and
                     get closer to your goals.
                 </p>
             </div>
             <ActionLink
                 href={comingSoon('Explore more scholarships')}
-                className="hover:bg-scholarly-blue-hover inline-flex shrink-0 items-center gap-2 rounded-xl bg-scholarly-blue px-5 py-3 text-sm font-bold text-white transition"
+                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-scholarly-blue px-5 py-3 text-sm font-bold text-white transition hover:bg-scholarly-blue-hover"
             >
                 Explore more scholarships <ArrowRight className="size-4" />
             </ActionLink>

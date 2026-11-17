@@ -6,7 +6,6 @@ import {
     CheckSquare,
     ChevronRight,
     LayoutDashboard,
-    MessageCircle,
     Settings,
     UserRound,
     UsersRound,
@@ -32,9 +31,6 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 
-const comingSoon = (feature: string) =>
-    `/mentor-coming-soon?feature=${encodeURIComponent(feature)}`;
-
 const mentorNavItems: NavItem[] = [
     { title: 'Overview', href: '/mentor-dashboard', icon: LayoutDashboard },
     {
@@ -58,14 +54,16 @@ const mentorNavItems: NavItem[] = [
         href: '/mentor-profile',
         icon: UserRound,
     },
-    { title: 'Settings', href: comingSoon('Mentor settings'), icon: Settings },
+    { title: 'Settings', href: '/settings/profile', icon: Settings },
 ];
 
 const fallbackMentor: User = {
     id: 0,
     name: 'Dr. Maya Chen',
     email: 'maya@example.com',
-    // avatar: null,
+    avatar: null,
+    avatar_url: null,
+    role: 'mentor',
     email_verified_at: null,
     created_at: '',
     updated_at: '',
@@ -87,7 +85,11 @@ function MentorSidebarProfile() {
                         >
                             <Avatar className="size-9 shrink-0 overflow-hidden rounded-full border-2 border-white/60">
                                 <AvatarImage
-                                    src={user.avatar ?? undefined}
+                                    src={
+                                        user.avatar_url ??
+                                        user.avatar ??
+                                        undefined
+                                    }
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="bg-scholarly-blue text-xs font-bold text-white">

@@ -19,15 +19,15 @@ export default function Register({ passwordRules }: Props) {
         <>
             <Head title="Register" />
 
-            <div className="min-h-screen flex items-center justify-center bg-scholarly-blue-white px-4 sm:px-6 lg:px-8 py-12">
-                <div className="max-w-md w-full space-y-8">
+            <div className="flex min-h-screen items-center justify-center bg-scholarly-blue-white px-4 py-12 sm:px-6 lg:px-8">
+                <div className="w-full max-w-md space-y-8">
                     <div className="text-center">
                         <div className="flex justify-center">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-scholarly-blue text-white shadow-lg">
                                 <span className="text-xl">S</span>
                             </div>
                         </div>
-                        <h2 className="mt-6 text-2xl font-bold text-scholarly-navy tracking-tight">
+                        <h2 className="mt-6 text-2xl font-bold tracking-tight text-scholarly-navy">
                             Create an account
                         </h2>
                         <p className="mt-2 text-sm text-muted-foreground">
@@ -38,7 +38,10 @@ export default function Register({ passwordRules }: Props) {
                     <div className="mt-8 space-y-1">
                         <Form
                             {...store.form()}
-                            resetOnSuccess={['password', 'password_confirmation']}
+                            resetOnSuccess={[
+                                'password',
+                                'password_confirmation',
+                            ]}
                             disableWhileProcessing
                             className="space-y-6"
                         >
@@ -63,7 +66,9 @@ export default function Register({ passwordRules }: Props) {
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email">Email address</Label>
+                                        <Label htmlFor="email">
+                                            Email address
+                                        </Label>
                                         <Input
                                             id="email"
                                             type="email"
@@ -77,7 +82,9 @@ export default function Register({ passwordRules }: Props) {
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="password">Password</Label>
+                                        <Label htmlFor="password">
+                                            Password
+                                        </Label>
                                         <PasswordInput
                                             id="password"
                                             required
@@ -104,7 +111,9 @@ export default function Register({ passwordRules }: Props) {
                                             passwordrules={passwordRules}
                                         />
                                         <InputError
-                                            message={errors.password_confirmation}
+                                            message={
+                                                errors.password_confirmation
+                                            }
                                         />
                                     </div>
 
@@ -115,7 +124,8 @@ export default function Register({ passwordRules }: Props) {
                                         data-test="register-user-button"
                                     >
                                         {processing && <Spinner />}
-                                        Create account <ArrowRight className="ml-2 size-4" />
+                                        Create account{' '}
+                                        <ArrowRight className="ml-2 size-4" />
                                     </Button>
                                 </>
                             )}

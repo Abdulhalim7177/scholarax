@@ -11,18 +11,18 @@ export default function VerifyEmail({ status }: { status?: string }) {
         <>
             <Head title="Verify your email" />
 
-            <div className="min-h-screen flex items-center justify-center bg-scholarly-blue-white px-4 py-12">
-                <div className="max-w-md w-full text-center space-y-8">
+            <div className="flex min-h-screen items-center justify-center bg-scholarly-blue-white px-4 py-12">
+                <div className="w-full max-w-md space-y-8 text-center">
                     <div className="flex justify-center">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-scholarly-blue text-white shadow-lg">
                             <span className="text-xl">✓</span>
                         </div>
                     </div>
 
-                    <h2 className="mt-6 text-2xl font-bold text-scholarly-navy tracking-tight">
+                    <h2 className="mt-6 text-2xl font-bold tracking-tight text-scholarly-navy">
                         Verify your email
                     </h2>
-                    <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
+                    <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
                         Please check your inbox and click the verification link
                         we just sent to activate your account.
                     </p>
@@ -43,7 +43,8 @@ export default function VerifyEmail({ status }: { status?: string }) {
                                     className="w-full bg-scholarly-blue text-white hover:bg-scholarly-blue-dark"
                                 >
                                     {processing && <Spinner />}
-                                    Resend verification email <ArrowRight className="ml-2 size-4" />
+                                    Resend verification email{' '}
+                                    <ArrowRight className="ml-2 size-4" />
                                 </Button>
                             )}
                         </Form>

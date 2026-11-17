@@ -19,18 +19,18 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
         <>
             <Head title="Reset password" />
 
-            <div className="min-h-screen flex items-center justify-center bg-scholarly-blue-white px-4 py-12">
-                <div className="max-w-md w-full space-y-8">
+            <div className="flex min-h-screen items-center justify-center bg-scholarly-blue-white px-4 py-12">
+                <div className="w-full max-w-md space-y-8">
                     <div className="text-center">
                         <div className="flex justify-center">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-scholarly-blue text-white shadow-lg">
                                 <span className="text-xl">🔑</span>
                             </div>
                         </div>
-                        <h2 className="mt-6 text-2xl font-bold text-scholarly-navy tracking-tight">
+                        <h2 className="mt-6 text-2xl font-bold tracking-tight text-scholarly-navy">
                             Reset password
                         </h2>
-                        <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
+                        <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
                             Enter your new password below to regain access to
                             your account.
                         </p>
@@ -61,7 +61,9 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password">New password</Label>
+                                    <Label htmlFor="password">
+                                        New password
+                                    </Label>
                                     <PasswordInput
                                         id="password"
                                         name="password"
@@ -99,7 +101,8 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                                     data-test="reset-password-button"
                                 >
                                     {processing && <Spinner />}
-                                    Reset password <ArrowRight className="ml-2 size-4" />
+                                    Reset password{' '}
+                                    <ArrowRight className="ml-2 size-4" />
                                 </Button>
                             </div>
                         )}

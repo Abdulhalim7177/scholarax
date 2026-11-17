@@ -61,6 +61,8 @@ const fallbackAdmin: User = {
     name: 'Sarah Admin',
     email: 'admin@scholarly.test',
     avatar: null,
+    avatar_url: null,
+    role: 'admin',
     email_verified_at: null,
     created_at: '',
     updated_at: '',
@@ -82,7 +84,11 @@ function AdminSidebarProfile() {
                         >
                             <Avatar className="size-9 shrink-0 overflow-hidden rounded-full border-2 border-white/60">
                                 <AvatarImage
-                                    src={user.avatar ?? undefined}
+                                    src={
+                                        user.avatar_url ??
+                                        user.avatar ??
+                                        undefined
+                                    }
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="bg-scholarly-blue text-xs font-bold text-white">

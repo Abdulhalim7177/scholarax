@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { Bell, ChevronRight } from 'lucide-react';
 
 import SectionIntro from './section-intro';
@@ -9,13 +10,13 @@ export default function DeadlineSection() {
                 <div className="flex justify-center">
                     <div className="w-full max-w-[330px] rounded-3xl bg-white p-5 shadow-xl">
                         <div className="flex items-center justify-between">
-                            <ChevronRight className="text-scholarly-slate-light size-4 rotate-180" />
+                            <ChevronRight className="size-4 rotate-180 text-scholarly-slate-light" />
                             <p className="text-sm font-bold text-scholarly-navy">
                                 April 2026
                             </p>
-                            <ChevronRight className="text-scholarly-slate-light size-4" />
+                            <ChevronRight className="size-4 text-scholarly-slate-light" />
                         </div>
-                        <div className="text-scholarly-slate-light mt-5 grid grid-cols-7 gap-2 text-center text-[10px] font-semibold">
+                        <div className="mt-5 grid grid-cols-7 gap-2 text-center text-[10px] font-semibold text-scholarly-slate-light">
                             <span>Sun</span>
                             <span>Mon</span>
                             <span>Tue</span>
@@ -26,7 +27,7 @@ export default function DeadlineSection() {
                             {Array.from({ length: 35 }, (_, index) => (
                                 <span
                                     key={index}
-                                    className={`flex size-7 items-center justify-center rounded-full ${index === 17 ? 'bg-scholarly-blue font-bold text-white' : index === 24 ? 'bg-scholarly-gold-soft text-scholarly-gold-dark font-bold' : 'text-scholarly-slate'}`}
+                                    className={`flex size-7 items-center justify-center rounded-full ${index === 17 ? 'bg-scholarly-blue font-bold text-white' : index === 24 ? 'bg-scholarly-gold-soft font-bold text-scholarly-gold-dark' : 'text-scholarly-slate'}`}
                                 >
                                     {((index + 29) % 30) + 1}
                                 </span>
@@ -40,12 +41,12 @@ export default function DeadlineSection() {
                         title="Never miss a deadline."
                         body="Get personalized reminders for application deadlines, interviews, and important updates."
                     />
-                    <button
-                        type="button"
-                        className="mt-8 inline-flex items-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white transition hover:bg-scholarly-blue-white hover:text-scholarly-blue"
+                    <Link
+                        href="/scholarships"
+                        className="mt-8 inline-flex items-center gap-2 rounded-full bg-scholarly-blue px-6 py-3.5 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
                     >
                         <Bell className="size-4" /> Set up deadline alerts
-                    </button>
+                    </Link>
                 </div>
             </div>
         </section>

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\TeamRole;
+use App\Enums\UserRole;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -31,6 +32,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => UserRole::Student,
             'remember_token' => Str::random(10),
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
@@ -75,6 +77,26 @@ class UserFactory extends Factory
             'two_factor_secret' => encrypt('secret'),
             'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code-1'])),
             'two_factor_confirmed_at' => now(),
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a mentor.
+     */
+    public function mentor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::Mentor,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is an administrator.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::Admin,
         ]);
     }
 }
