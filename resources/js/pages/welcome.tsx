@@ -16,7 +16,14 @@ import { dashboard } from '@/routes';
 import type { HomePageProps } from '@/layouts/home_page/types';
 
 export default function Welcome() {
-    const { auth, currentTeam } = usePage<HomePageProps>().props;
+    const {
+        auth,
+        currentTeam,
+        featuredScholarships = [],
+        scholarshipCount = 0,
+        countryCount = 0,
+        studentCount = 0,
+    } = usePage<HomePageProps>().props;
     const dashboardUrl = dashboard.url();
     const pageProps = { auth, currentTeam, dashboardUrl };
 
@@ -27,9 +34,16 @@ export default function Welcome() {
                 <HomeHeader {...pageProps} />
                 <main>
                     <HeroSection {...pageProps} />
-                    <ImpactStrip />
+                    <ImpactStrip
+                        scholarshipCount={scholarshipCount}
+                        countryCount={countryCount}
+                        studentCount={studentCount}
+                    />
                     <FeaturesSection />
-                    <ScholarshipSearchSection />
+                    <ScholarshipSearchSection
+                        scholarships={featuredScholarships}
+                        total={scholarshipCount}
+                    />
                     <ApplicationSection />
                     <MentorsSection />
                     <ProcessSection />

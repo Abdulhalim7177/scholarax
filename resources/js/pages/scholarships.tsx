@@ -1,88 +1,109 @@
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { SlidersHorizontal } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import FiltersPanel from '@/layouts/scholarships/filters-panel';
-import ScholarshipsHeader from '@/layouts/scholarships/scholarships-header';
+import Pagination from '@/layouts/scholarships/pagination';
 import ScholarshipCard from '@/layouts/scholarships/scholarship-card';
-import {
+import ScholarshipsHeader from '@/layouts/scholarships/scholarships-header';
+import type {
+    ScholarshipFilters,
+    ScholarshipIndexProps,
+    ScholarshipSummary,
+} from '@/types/domain';
+
+export default function Scholarships({
     scholarships,
-    scholarshipCountries,
-    scholarshipFields,
-    scholarshipLevels,
-} from '@/layouts/scholarships/data';
-
-export default function Scholarships() {
-    const [query, setQuery] = useState('');
-    const [country, setCountry] = useState(scholarshipCountries[0]);
-    const [level, setLevel] = useState(scholarshipLevels[0]);
-    const [field, setField] = useState(scholarshipFields[0]);
-    const [fundingOnly, setFundingOnly] = useState(false);
+    filters,
+    options,
+    savedCount,
+}: ScholarshipIndexProps) {
+    const [query, setQuery] = useState(filters.q);
     const [showFilters, setShowFilters] = useState(false);
-    const [saved, setSaved] = useState<string[]>(['daad']);
-    const [sortOrder, setSortOrder] = useState<'soonest' | 'latest'>('soonest');
 
-    const filteredScholarships = useMemo(() => {
-        const normalizedQuery = query.trim().toLowerCase();
+    useEffect(() => {
+        setQuery(filters.q);
+    }, [filters.q]);
 
-        return scholarships
-            .filter((scholarship) => {
-                const matchesQuery =
-                    !normalizedQuery ||
-                    [
-                        scholarship.title,
-                        scholarship.provider,
-                        scholarship.country,
-                        scholarship.field,
-                    ].some((value) =>
-                        value.toLowerCase().includes(normalizedQuery),
-                    );
-                const matchesCountry =
-                    country === scholarshipCountries[0] ||
-                    scholarship.country === country;
-                const matchesLevel =
-                    level === scholarshipLevels[0] ||
-                    scholarship.level === level;
-                const matchesField =
-                    field === scholarshipFields[0] ||
-                    scholarship.field === field;
-                const matchesFunding =
-                    !fundingOnly || scholarship.funding === 'Fully funded';
+    const applyFilters = useCallback(
+        (next: Partial<ScholarshipFilters>) => {
+            const merged = { ...filters, ...next };
 
-                return (
-                    matchesQuery &&
-                    matchesCountry &&
-                    matchesLevel &&
-                    matchesField &&
-                    matchesFunding
-                );
-            })
-            .sort((a, b) =>
-                sortOrder === 'soonest'
-                    ? a.daysLeft - b.daysLeft
-                    : b.daysLeft - a.daysLeft,
+            router.get(
+                '/scholarships',
+                {
+                    q: merged.q || undefined,
+                    country: merged.country || undefined,
+                    level: merged.level || undefined,
+                    field: merged.field || undefined,
+                    funding: merged.funding ? 1 : undefined,
+                    sort: merged.sort === 'latest' ? 'latest' : undefined,
+                },
+                { preserveState: true, preserveScroll: true, replace: true },
             );
-    }, [country, field, fundingOnly, level, query, sortOrder]);
+        },
+        [filters],
+    );
+
+    useEffect(() => {
+        if (query === filters.q) {
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            applyFilters({ q: query });
+        }, 350);
+
+        return () => window.clearTimeout(timer);
+    }, [applyFilters, filters.q, query]);
 
     const resetFilters = () => {
-        setCountry(scholarshipCountries[0]);
-        setLevel(scholarshipLevels[0]);
-        setField(scholarshipFields[0]);
-        setFundingOnly(false);
+        setQuery('');
+        applyFilters({
+            q: '',
+            country: '',
+            level: '',
+            field: '',
+            funding: false,
+            sort: 'soonest',
+        });
     };
 
-    const filters = {
-        country,
-        level,
-        field,
-        fundingOnly,
-        countries: scholarshipCountries,
-        levels: scholarshipLevels,
-        fields: scholarshipFields,
-        onCountryChange: setCountry,
-        onLevelChange: setLevel,
-        onFieldChange: setField,
-        onFundingOnlyChange: setFundingOnly,
+    const toggleSaved = (scholarship: ScholarshipSummary) => {
+        const requestOptions = {
+            preserveScroll: true,
+            preserveState: true,
+        };
+
+        if (scholarship.saved) {
+            router.delete(
+                `/saved-scholarships/${scholarship.id}`,
+                requestOptions,
+            );
+
+            return;
+        }
+
+        router.post(
+            `/saved-scholarships/${scholarship.id}`,
+            {},
+            requestOptions,
+        );
+    };
+
+    const panelProps = {
+        country: filters.country,
+        level: filters.level,
+        field: filters.field,
+        fundingOnly: filters.funding,
+        countries: options.countries,
+        levels: options.levels,
+        fields: options.fields,
+        onCountryChange: (value: string) => applyFilters({ country: value }),
+        onLevelChange: (value: string) => applyFilters({ level: value }),
+        onFieldChange: (value: string) => applyFilters({ field: value }),
+        onFundingOnlyChange: (value: boolean) =>
+            applyFilters({ funding: value }),
         onReset: resetFilters,
     };
 
@@ -106,13 +127,13 @@ export default function Scholarships() {
                                 className="w-full"
                                 onClick={(event) => event.stopPropagation()}
                             >
-                                <FiltersPanel {...filters} mobile />
+                                <FiltersPanel {...panelProps} mobile />
                                 <button
                                     type="button"
                                     onClick={() => setShowFilters(false)}
                                     className="mt-3 h-11 w-full rounded-xl bg-scholarly-blue text-sm font-bold text-white"
                                 >
-                                    Show results
+                                    Show {scholarships.total} results
                                 </button>
                             </div>
                         </div>
@@ -120,59 +141,58 @@ export default function Scholarships() {
 
                     <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
                         <div className="hidden lg:block">
-                            <FiltersPanel {...filters} />
+                            <FiltersPanel {...panelProps} />
                         </div>
                         <main>
                             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
                                     <p className="text-sm text-scholarly-slate">
                                         <span className="font-bold text-scholarly-navy">
-                                            {filteredScholarships.length}{' '}
-                                            scholarships
+                                            {scholarships.total} scholarships
                                         </span>{' '}
                                         matched to your search
+                                        {savedCount > 0 && (
+                                            <span className="text-scholarly-slate-light">
+                                                {' '}
+                                                · {savedCount} saved
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={() =>
-                                        setSortOrder((current) =>
-                                            current === 'soonest'
-                                                ? 'latest'
-                                                : 'soonest',
-                                        )
+                                        applyFilters({
+                                            sort:
+                                                filters.sort === 'soonest'
+                                                    ? 'latest'
+                                                    : 'soonest',
+                                        })
                                     }
                                     className="inline-flex items-center gap-2 self-start rounded-lg border border-scholarly-border bg-white px-3 py-2 text-xs font-bold text-scholarly-slate transition hover:border-scholarly-blue hover:text-scholarly-blue"
                                 >
                                     <SlidersHorizontal className="size-3.5" />
                                     Sort:{' '}
-                                    {sortOrder === 'soonest'
+                                    {filters.sort === 'soonest'
                                         ? 'Deadline soonest'
                                         : 'Deadline latest'}
                                 </button>
                             </div>
-                            {filteredScholarships.length > 0 ? (
-                                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                                    {filteredScholarships.map((scholarship) => (
-                                        <ScholarshipCard
-                                            key={scholarship.id}
-                                            scholarship={scholarship}
-                                            saved={saved.includes(
-                                                scholarship.id,
-                                            )}
-                                            onToggleSaved={(id) =>
-                                                setSaved((current) =>
-                                                    current.includes(id)
-                                                        ? current.filter(
-                                                              (item) =>
-                                                                  item !== id,
-                                                          )
-                                                        : [...current, id],
-                                                )
-                                            }
-                                        />
-                                    ))}
-                                </div>
+                            {scholarships.data.length > 0 ? (
+                                <>
+                                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                                        {scholarships.data.map(
+                                            (scholarship) => (
+                                                <ScholarshipCard
+                                                    key={scholarship.id}
+                                                    scholarship={scholarship}
+                                                    onToggleSaved={toggleSaved}
+                                                />
+                                            ),
+                                        )}
+                                    </div>
+                                    <Pagination paginator={scholarships} />
+                                </>
                             ) : (
                                 <div className="rounded-2xl border border-dashed border-scholarly-border-strong bg-white px-6 py-16 text-center">
                                     <p className="font-display text-2xl text-scholarly-navy">
@@ -185,10 +205,7 @@ export default function Scholarships() {
                                     </p>
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            setQuery('');
-                                            resetFilters();
-                                        }}
+                                        onClick={resetFilters}
                                         className="mt-5 rounded-lg bg-scholarly-blue px-4 py-2.5 text-sm font-bold text-white hover:bg-scholarly-blue-hover"
                                     >
                                         Clear filters

@@ -1,30 +1,37 @@
 import { ArrowUpRight, Bookmark, CalendarDays, MapPin } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 
-import type { Scholarship } from './data';
+import type { ScholarshipSummary } from '@/types/domain';
 
 type ScholarshipCardProps = {
-    scholarship: Scholarship;
-    saved: boolean;
-    onToggleSaved: (id: string) => void;
+    scholarship: ScholarshipSummary;
+    onToggleSaved: (scholarship: ScholarshipSummary) => void;
 };
 
 const flagFor = (code: string) => {
-    const flags: Record<string, string> = {
-        GB: '🇬🇧',
-        DE: '🇩🇪',
-        US: '🇺🇸',
-        AU: '🇦🇺',
-        EU: '🇪🇺',
-    };
-    return flags[code] ?? '🌍';
+    if (code === 'EU') {
+        return '🇪🇺';
+    }
+
+    if (code.length !== 2) {
+        return '🌍';
+    }
+
+    return String.fromCodePoint(
+        ...code
+            .toUpperCase()
+            .split('')
+            .map((character) => 0x1f1e6 + character.charCodeAt(0) - 65),
+    );
 };
 
 export default function ScholarshipCard({
     scholarship,
-    saved,
     onToggleSaved,
 }: ScholarshipCardProps) {
+    const saved = scholarship.saved;
+    const daysLeft = scholarship.daysLeft ?? Number.MAX_SAFE_INTEGER;
+
     return (
         <article
             className={`relative flex h-full flex-col rounded-2xl border bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-[0_14px_35px_rgba(16,42,67,0.08)] ${scholarship.featured ? 'border-scholarly-blue shadow-[0_8px_25px_rgba(21,94,239,0.1)]' : 'border-scholarly-border'}`}
@@ -43,7 +50,7 @@ export default function ScholarshipCard({
                 </div>
                 <button
                     type="button"
-                    onClick={() => onToggleSaved(scholarship.id)}
+                    onClick={() => onToggleSaved(scholarship)}
                     aria-label={
                         saved
                             ? `Remove ${scholarship.title} from saved scholarships`
@@ -82,13 +89,13 @@ export default function ScholarshipCard({
                     {scholarship.funding}
                 </span>
                 <span
-                    className={`text-xs font-semibold ${scholarship.daysLeft <= 14 ? 'text-scholarly-coral-dark' : 'text-scholarly-slate'}`}
+                    className={`text-xs font-semibold ${daysLeft <= 14 ? 'text-scholarly-coral-dark' : 'text-scholarly-slate'}`}
                 >
                     {scholarship.deadlineLabel}
                 </span>
             </div>
             <Link
-                href={`/coming-soon?feature=${encodeURIComponent(scholarship.title)}`}
+                href={`/scholarships/${scholarship.slug}`}
                 className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-scholarly-blue px-4 text-sm font-bold text-scholarly-blue transition hover:bg-scholarly-blue hover:text-white"
             >
                 View scholarship <ArrowUpRight className="size-4" />

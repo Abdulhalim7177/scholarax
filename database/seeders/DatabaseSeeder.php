@@ -29,5 +29,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Sarah Admin',
             'email' => 'admin@scholarly.test',
         ]);
+
+        $this->call([
+            ReferenceDataSeeder::class,
+            ScholarshipSeeder::class,
+        ]);
     }
 }

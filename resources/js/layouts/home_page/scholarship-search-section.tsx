@@ -1,10 +1,33 @@
 import { Link } from '@inertiajs/react';
 import { ArrowRight, ChevronDown, ChevronRight, Search } from 'lucide-react';
 
-import { scholarships } from './data';
+import type { ScholarshipSummary } from '@/types/domain';
 import SectionIntro from './section-intro';
 
-export default function ScholarshipSearchSection() {
+type ScholarshipSearchSectionProps = {
+    scholarships: ScholarshipSummary[];
+    total: number;
+};
+
+const tones = [
+    'bg-scholarly-navy-light text-white',
+    'bg-scholarly-blue-soft text-scholarly-blue',
+    'bg-scholarly-gold-soft text-scholarly-gold-dark',
+];
+
+const initialsFor = (title: string) =>
+    title
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((word) => word[0])
+        .join('')
+        .toUpperCase();
+
+export default function ScholarshipSearchSection({
+    scholarships,
+    total,
+}: ScholarshipSearchSectionProps) {
     return (
         <section
             id="scholarships"
@@ -38,7 +61,11 @@ export default function ScholarshipSearchSection() {
                                     Scholarship search
                                 </p>
                                 <p className="text-xs text-scholarly-slate-light">
-                                    2,500+ opportunities found
+                                    {total}{' '}
+                                    {total === 1
+                                        ? 'opportunity'
+                                        : 'opportunities'}{' '}
+                                    found
                                 </p>
                             </div>
                         </div>
@@ -75,35 +102,42 @@ export default function ScholarshipSearchSection() {
                         </Link>
                     </div>
                     <div className="mt-5 divide-y divide-scholarly-border-soft">
-                        {scholarships.map((item) => (
-                            <div
-                                key={item.name}
-                                className="flex items-center gap-3 py-4"
-                            >
-                                <div
-                                    className={`flex size-10 shrink-0 items-center justify-center rounded-xl text-xs font-extrabold ${item.tone}`}
+                        {scholarships.length > 0 ? (
+                            scholarships.map((scholarship, index) => (
+                                <Link
+                                    key={scholarship.id}
+                                    href={`/scholarships/${scholarship.slug}`}
+                                    className="flex items-center gap-3 py-4 transition hover:bg-scholarly-blue-white/60"
                                 >
-                                    {item.initials}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-bold text-scholarly-navy">
-                                        {item.name}
-                                    </p>
-                                    <p className="truncate text-xs text-scholarly-slate-light">
-                                        {item.provider}
-                                    </p>
-                                </div>
-                                <div className="hidden text-right sm:block">
-                                    <p className="text-xs font-semibold text-scholarly-navy">
-                                        {item.level}
-                                    </p>
-                                    <p className="text-xs text-scholarly-slate-light">
-                                        {item.country}
-                                    </p>
-                                </div>
-                                <ChevronRight className="size-4 text-scholarly-slate-light" />
-                            </div>
-                        ))}
+                                    <div
+                                        className={`flex size-10 shrink-0 items-center justify-center rounded-xl text-xs font-extrabold ${tones[index % tones.length]}`}
+                                    >
+                                        {initialsFor(scholarship.title)}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-bold text-scholarly-navy">
+                                            {scholarship.title}
+                                        </p>
+                                        <p className="truncate text-xs text-scholarly-slate-light">
+                                            {scholarship.provider}
+                                        </p>
+                                    </div>
+                                    <div className="hidden text-right sm:block">
+                                        <p className="text-xs font-semibold text-scholarly-navy">
+                                            {scholarship.level}
+                                        </p>
+                                        <p className="text-xs text-scholarly-slate-light">
+                                            {scholarship.country}
+                                        </p>
+                                    </div>
+                                    <ChevronRight className="size-4 text-scholarly-slate-light" />
+                                </Link>
+                            ))
+                        ) : (
+                            <p className="py-8 text-center text-sm text-scholarly-slate">
+                                New opportunities are being added soon.
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>

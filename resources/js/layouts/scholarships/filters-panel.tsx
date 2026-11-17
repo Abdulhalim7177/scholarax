@@ -1,13 +1,15 @@
 import { Check, RotateCcw } from 'lucide-react';
 
+import type { ScholarshipOption } from '@/types/domain';
+
 type FiltersPanelProps = {
     country: string;
     level: string;
     field: string;
     fundingOnly: boolean;
-    countries: string[];
-    levels: string[];
-    fields: string[];
+    countries: ScholarshipOption[];
+    levels: ScholarshipOption[];
+    fields: ScholarshipOption[];
     onCountryChange: (value: string) => void;
     onLevelChange: (value: string) => void;
     onFieldChange: (value: string) => void;
@@ -71,7 +73,9 @@ export default function FiltersPanel({
                         className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
                     >
                         {countries.map((option) => (
-                            <option key={option}>{option}</option>
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
                         ))}
                     </select>
                 </label>
@@ -85,7 +89,9 @@ export default function FiltersPanel({
                         className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
                     >
                         {levels.map((option) => (
-                            <option key={option}>{option}</option>
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
                         ))}
                     </select>
                 </label>
@@ -99,7 +105,9 @@ export default function FiltersPanel({
                         className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
                     >
                         {fields.map((option) => (
-                            <option key={option}>{option}</option>
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
                         ))}
                     </select>
                 </label>

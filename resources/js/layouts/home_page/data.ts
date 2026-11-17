@@ -20,30 +20,3 @@ export const features = [
         tone: 'coral',
     },
 ] as const;
-
-export const scholarships = [
-    {
-        initials: 'C',
-        name: 'Chevening Scholarships',
-        provider: 'UK Government',
-        country: 'United Kingdom',
-        level: "Master's",
-        tone: 'bg-scholarly-navy-light text-white',
-    },
-    {
-        initials: 'D',
-        name: 'DAAD Scholarships',
-        provider: 'German Academic Exchange Service',
-        country: 'Germany',
-        level: "Master's / PhD",
-        tone: 'bg-scholarly-blue-soft text-scholarly-blue',
-    },
-    {
-        initials: 'EU',
-        name: 'Erasmus+ Programme',
-        provider: 'European Union',
-        country: 'Multiple countries',
-        level: "Bachelor's / Master's",
-        tone: 'bg-scholarly-gold-soft text-scholarly-gold-dark',
-    },
-] as const;

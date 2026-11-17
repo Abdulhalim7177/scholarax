@@ -1,4 +1,5 @@
 import { dashboard } from '@/routes';
+import type { ScholarshipSummary } from '@/types/domain';
 import type { LucideIcon } from 'lucide-react';
 
 export type HomePageProps = {
@@ -7,6 +8,10 @@ export type HomePageProps = {
     };
     currentTeam?: { slug: string } | null;
     dashboardUrl: string | ReturnType<typeof dashboard>;
+    featuredScholarships?: ScholarshipSummary[];
+    scholarshipCount?: number;
+    countryCount?: number;
+    studentCount?: number;
 };
 
 export type Feature = {
