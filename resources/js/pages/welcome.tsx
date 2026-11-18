@@ -23,6 +23,7 @@ export default function Welcome() {
         scholarshipCount = 0,
         countryCount = 0,
         studentCount = 0,
+        featuredMentor = null,
     } = usePage<HomePageProps>().props;
     const dashboardUrl = dashboard.url();
     const pageProps = { auth, currentTeam, dashboardUrl };
@@ -45,7 +46,7 @@ export default function Welcome() {
                         total={scholarshipCount}
                     />
                     <ApplicationSection />
-                    <MentorsSection />
+                    <MentorsSection mentor={featuredMentor} />
                     <ProcessSection />
                     <DeadlineSection />
                     <TestimonialSection />

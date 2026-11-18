@@ -1,7 +1,6 @@
 import { dashboard } from '@/routes';
-import type { ScholarshipSummary } from '@/types/domain';
+import type { MentorSummary, ScholarshipSummary } from '@/types/domain';
 import type { LucideIcon } from 'lucide-react';
-
 export type HomePageProps = {
     auth?: {
         user?: { name?: string } | null;
@@ -12,6 +11,7 @@ export type HomePageProps = {
     scholarshipCount?: number;
     countryCount?: number;
     studentCount?: number;
+    featuredMentor?: MentorSummary | null;
 };
 
 export type Feature = {

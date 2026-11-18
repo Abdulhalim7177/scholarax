@@ -523,3 +523,121 @@ export type CvSopBuilderProps = {
     templates: BuilderTemplatePayload[];
     applications: BuilderApplicationOption[];
 };
+
+export type MentorAvailabilityValue = 'available' | 'limited' | 'unavailable';
+
+export type MentorAccent = 'blue' | 'teal' | 'coral' | 'gold';
+
+export type MentorSummary = {
+    id: number;
+    name: string;
+    headline: string | null;
+    role: string | null;
+    organization: string | null;
+    country: string;
+    countryCode: string | null;
+    expertise: string[];
+    languages: string[];
+    rating: string;
+    reviews: number;
+    sessions: number;
+    learners: number;
+    responseTime: string;
+    availability: MentorAvailabilityValue;
+    availabilityLabel: string;
+    accent: MentorAccent;
+    avatarUrl: string | null;
+    featured: boolean;
+    verified: boolean;
+};
+
+export type MentorAvailabilitySlotPayload = {
+    id: number;
+    weekday: number;
+    weekdayLabel: string;
+    startTime: string;
+    endTime: string;
+    timezone: string;
+    isActive: boolean;
+    label: string;
+};
+
+export type MentorDetail = MentorSummary & {
+    bio: string | null;
+    yearsExperience: number | null;
+    linkedinUrl: string | null;
+    websiteUrl: string | null;
+    introVideoUrl: string | null;
+    verifiedAt: string | null;
+    slots: MentorAvailabilitySlotPayload[];
+};
+
+export type MentorFilterState = {
+    q: string;
+    expertise: string;
+    country: string;
+    availability: boolean;
+};
+
+export type MentorDirectoryStats = {
+    mentors: number;
+    sessions: number;
+    rating: string;
+    reviews: number;
+};
+
+export type MentorDirectoryProps = {
+    mentors: Paginated<MentorSummary>;
+    filters: MentorFilterState;
+    options: {
+        expertise: ScholarshipOption[];
+        countries: ScholarshipOption[];
+    };
+    stats: MentorDirectoryStats;
+    recommended: MentorSummary | null;
+};
+
+export type MentorExpertiseTag = {
+    id: number;
+    name: string;
+    slug: string;
+};
+
+export type MentorProfileForm = {
+    name: string;
+    headline: string;
+    current_role: string;
+    organization: string;
+    country_id: string;
+    bio: string;
+    languages: string;
+    years_experience: string;
+    linkedin_url: string;
+    website_url: string;
+    availability_status: MentorAvailabilityValue;
+    avatar_url: string | null;
+    intro_video_url: string | null;
+};
+
+export type MentorOwnProfileProps = {
+    profile: MentorProfileForm;
+    verification: {
+        status: 'pending' | 'verified' | 'rejected';
+        label: string;
+        verifiedAt: string | null;
+    };
+    expertise: MentorExpertiseTag[];
+    availableExpertise: MentorExpertiseTag[];
+    slots: MentorAvailabilitySlotPayload[];
+    options: {
+        countries: ScholarshipOption[];
+        availabilityStatuses: ScholarshipOption[];
+        weekdays: ScholarshipOption[];
+    };
+    completion: ProfileCompletion;
+    publicUrl: string;
+};
+
+export type MentorShowProps = {
+    mentor: MentorDetail;
+};

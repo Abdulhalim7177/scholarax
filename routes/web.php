@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminMentorVerificationController;
 use App\Http\Controllers\AdminScholarshipController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationDocumentController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\CvSopDocumentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MentorDirectoryController;
+use App\Http\Controllers\MentorProfileController;
 use App\Http\Controllers\SavedScholarshipController;
 use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\Student\EducationController;
@@ -54,7 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('applications/{application}/documents/{document}', [ApplicationDocumentController::class, 'destroy'])->name('application-documents.destroy');
     Route::get('applications/{application}/documents/{document}/download', [ApplicationDocumentController::class, 'download'])->name('application-documents.download');
 
-    Route::inertia('mentors', 'mentors')->name('mentors');
+    Route::get('mentors', [MentorDirectoryController::class, 'index'])->name('mentors.index');
+    Route::get('mentors/{mentorProfile}', [MentorDirectoryController::class, 'show'])->name('mentors.show');
     Route::get('cv-sop-builder', [BuilderController::class, 'index'])->name('cv-sop-builder');
     Route::patch('cv-sop-builder/documents/{document}', [CvSopDocumentController::class, 'update'])->name('builder-documents.update');
     Route::post('cv-sop-builder/documents/{document}/applications', [CvSopDocumentController::class, 'attach'])->name('builder-documents.attach');
@@ -73,6 +77,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('admin-scholarships/{scholarship}', [AdminScholarshipController::class, 'destroy'])->name('admin-scholarships.destroy');
     Route::post('admin-scholarships/{scholarship}/approve', [AdminScholarshipController::class, 'approve'])->name('admin-scholarships.approve');
     Route::inertia('admin-mentors', 'admin-mentors')->name('admin-mentors');
+    Route::post('admin-mentors/{mentorProfile}/verify', [AdminMentorVerificationController::class, 'verify'])->name('admin-mentors.verify');
+    Route::post('admin-mentors/{mentorProfile}/reject', [AdminMentorVerificationController::class, 'reject'])->name('admin-mentors.reject');
     Route::inertia('admin-applications', 'admin-applications')->name('admin-applications');
     Route::inertia('admin-reports', 'admin-reports')->name('admin-reports');
     Route::inertia('admin-settings', 'admin-settings')->name('admin-settings');
@@ -85,7 +91,13 @@ Route::middleware(['auth', 'role:mentor,admin'])->group(function () {
     Route::inertia('mentor-learners', 'mentor-learners')->name('mentor-learners');
     Route::inertia('mentor-sessions', 'mentor-sessions')->name('mentor-sessions');
     Route::inertia('mentor-impact', 'mentor-impact')->name('mentor-impact');
-    Route::inertia('mentor-profile', 'mentor-profile')->name('mentor-profile');
+    Route::get('mentor-profile', [MentorProfileController::class, 'edit'])->name('mentor-profile.edit');
+    Route::patch('mentor-profile', [MentorProfileController::class, 'update'])->name('mentor-profile.update');
+    Route::post('mentor-profile/expertise', [MentorProfileController::class, 'storeExpertise'])->name('mentor-profile.expertise.store');
+    Route::delete('mentor-profile/expertise/{expertiseTag}', [MentorProfileController::class, 'destroyExpertise'])->name('mentor-profile.expertise.destroy');
+    Route::post('mentor-profile/availability', [MentorProfileController::class, 'storeAvailability'])->name('mentor-profile.availability.store');
+    Route::patch('mentor-profile/availability/{slot}', [MentorProfileController::class, 'updateAvailability'])->name('mentor-profile.availability.update');
+    Route::delete('mentor-profile/availability/{slot}', [MentorProfileController::class, 'destroyAvailability'])->name('mentor-profile.availability.destroy');
 });
 
 require __DIR__.'/teams.php';

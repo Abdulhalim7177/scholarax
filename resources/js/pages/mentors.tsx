@@ -1,66 +1,83 @@
-import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, MessageCircle, Search, Sparkles } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
+import {
+    ArrowRight,
+    MessageCircle,
+    Search,
+    Sparkles,
+    Star,
+} from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 import MentorCard from '@/layouts/mentors/mentor-card';
 import MentorFilters from '@/layouts/mentors/mentor-filters';
-import {
-    mentorCountries,
-    mentorExpertise,
-    mentors,
-} from '@/layouts/mentors/data';
+import Pagination from '@/layouts/scholarships/pagination';
+import type { MentorDirectoryProps, MentorFilterState } from '@/types/domain';
 
-export default function Mentors() {
-    const [query, setQuery] = useState('');
-    const [expertise, setExpertise] = useState(mentorExpertise[0]);
-    const [country, setCountry] = useState(mentorCountries[0]);
-    const [availabilityOnly, setAvailabilityOnly] = useState(false);
+export default function Mentors({
+    mentors,
+    filters,
+    options,
+    stats,
+    recommended,
+}: MentorDirectoryProps) {
+    const [query, setQuery] = useState(filters.q);
     const [showFilters, setShowFilters] = useState(false);
 
-    const filteredMentors = useMemo(() => {
-        const normalizedQuery = query.trim().toLowerCase();
-        return mentors.filter((mentor) => {
-            const matchesQuery =
-                !normalizedQuery ||
-                [
-                    mentor.name,
-                    mentor.role,
-                    mentor.organization,
-                    ...mentor.expertise,
-                ].some((value) =>
-                    value.toLowerCase().includes(normalizedQuery),
-                );
-            const matchesExpertise =
-                expertise === mentorExpertise[0] ||
-                mentor.expertise.includes(expertise);
-            const matchesCountry =
-                country === mentorCountries[0] || mentor.country === country;
-            const matchesAvailability =
-                !availabilityOnly || mentor.availability === 'Available';
-            return (
-                matchesQuery &&
-                matchesExpertise &&
-                matchesCountry &&
-                matchesAvailability
+    useEffect(() => {
+        setQuery(filters.q);
+    }, [filters.q]);
+
+    const applyFilters = useCallback(
+        (next: Partial<MentorFilterState>) => {
+            const merged = { ...filters, ...next };
+
+            router.get(
+                '/mentors',
+                {
+                    q: merged.q || undefined,
+                    expertise: merged.expertise || undefined,
+                    country: merged.country || undefined,
+                    availability: merged.availability ? 1 : undefined,
+                },
+                { preserveState: true, preserveScroll: true, replace: true },
             );
-        });
-    }, [availabilityOnly, country, expertise, query]);
+        },
+        [filters],
+    );
+
+    useEffect(() => {
+        if (query === filters.q) {
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            applyFilters({ q: query });
+        }, 350);
+
+        return () => window.clearTimeout(timer);
+    }, [applyFilters, filters.q, query]);
 
     const resetFilters = () => {
-        setExpertise(mentorExpertise[0]);
-        setCountry(mentorCountries[0]);
-        setAvailabilityOnly(false);
+        setQuery('');
+        applyFilters({
+            q: '',
+            expertise: '',
+            country: '',
+            availability: false,
+        });
     };
 
     const filterProps = {
-        expertise,
-        country,
-        availabilityOnly,
-        expertiseOptions: mentorExpertise,
-        countryOptions: mentorCountries,
-        onExpertiseChange: setExpertise,
-        onCountryChange: setCountry,
-        onAvailabilityChange: setAvailabilityOnly,
+        expertise: filters.expertise,
+        country: filters.country,
+        availabilityOnly: filters.availability,
+        expertiseOptions: options.expertise,
+        countryOptions: options.countries,
+        onExpertiseChange: (value: string) =>
+            applyFilters({ expertise: value }),
+        onCountryChange: (value: string) => applyFilters({ country: value }),
+        onAvailabilityChange: (value: boolean) =>
+            applyFilters({ availability: value }),
         onReset: resetFilters,
     };
 
@@ -112,42 +129,52 @@ export default function Mentors() {
                             <div className="flex items-start justify-between gap-3">
                                 <div>
                                     <p className="text-xs font-bold tracking-[0.14em] text-scholarly-sky uppercase">
-                                        Your mentor match
+                                        {recommended?.featured
+                                            ? 'Recommended mentor'
+                                            : 'Top rated mentor'}
                                     </p>
                                     <h2 className="mt-2 font-display text-2xl">
-                                        Dr. Maya Chen
+                                        {recommended?.name ??
+                                            'Mentors joining soon'}
                                     </h2>
                                     <p className="mt-2 text-xs leading-5 text-white/65">
-                                        A strong fit for your UK scholarship and
-                                        personal statement goals.
+                                        {recommended?.headline ??
+                                            'Verified mentors will appear here as soon as they join the directory.'}
                                     </p>
                                 </div>
                                 <div className="flex size-11 items-center justify-center rounded-xl bg-white/10">
                                     <MessageCircle className="size-5 text-scholarly-gold" />
                                 </div>
                             </div>
-                            <Link
-                                href="/coming-soon?feature=Maya Chen mentor profile"
-                                className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-white hover:text-scholarly-gold"
-                            >
-                                View recommended mentor{' '}
-                                <ArrowRight className="size-3.5" />
-                            </Link>
+                            {recommended ? (
+                                <Link
+                                    href={`/mentors/${recommended.id}`}
+                                    className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-white hover:text-scholarly-gold"
+                                >
+                                    View {recommended.name.split(' ')[0]}’s
+                                    profile <ArrowRight className="size-3.5" />
+                                </Link>
+                            ) : (
+                                <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-white/60">
+                                    Check back soon
+                                </span>
+                            )}
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <p className="text-3xl font-bold tracking-[-0.04em] text-scholarly-navy">
-                                126
+                                {stats.sessions}
                             </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Mentor sessions
                             </p>
                             <p className="mt-1 text-xs text-scholarly-slate">
-                                Completed by our community this month
+                                Delivered by {stats.mentors} verified{' '}
+                                {stats.mentors === 1 ? 'mentor' : 'mentors'}
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <p className="text-3xl font-bold tracking-[-0.04em] text-scholarly-navy">
-                                4.9
+                                {stats.rating}
                                 <span className="text-lg text-scholarly-gold">
                                     {' '}
                                     ★
@@ -157,7 +184,8 @@ export default function Mentors() {
                                 Average mentor rating
                             </p>
                             <p className="mt-1 text-xs text-scholarly-slate">
-                                From 180+ learner reviews
+                                From {stats.reviews} learner{' '}
+                                {stats.reviews === 1 ? 'review' : 'reviews'}
                             </p>
                         </div>
                     </section>
@@ -177,7 +205,7 @@ export default function Mentors() {
                                     onClick={() => setShowFilters(false)}
                                     className="mt-3 h-11 w-full rounded-xl bg-scholarly-blue text-sm font-bold text-white"
                                 >
-                                    Show mentors
+                                    Show {mentors.total} mentors
                                 </button>
                             </div>
                         </div>
@@ -195,24 +223,34 @@ export default function Mentors() {
                                     </h2>
                                     <p className="mt-1 text-sm text-scholarly-slate">
                                         <span className="font-bold text-scholarly-navy">
-                                            {filteredMentors.length} mentors
+                                            {mentors.total}{' '}
+                                            {mentors.total === 1
+                                                ? 'mentor'
+                                                : 'mentors'}
                                         </span>{' '}
                                         ready to help with your next step.
                                     </p>
                                 </div>
                             </div>
-                            {filteredMentors.length > 0 ? (
-                                <div className="grid gap-5 md:grid-cols-2">
-                                    {filteredMentors.map((mentor) => (
-                                        <MentorCard
-                                            key={mentor.id}
-                                            mentor={mentor}
-                                        />
-                                    ))}
-                                </div>
+                            {mentors.data.length > 0 ? (
+                                <>
+                                    <div className="grid gap-5 md:grid-cols-2">
+                                        {mentors.data.map((mentor) => (
+                                            <MentorCard
+                                                key={mentor.id}
+                                                mentor={mentor}
+                                            />
+                                        ))}
+                                    </div>
+                                    <Pagination
+                                        paginator={mentors}
+                                        label="Mentor pages"
+                                    />
+                                </>
                             ) : (
                                 <div className="rounded-2xl border border-dashed border-scholarly-border-strong bg-white px-6 py-16 text-center">
-                                    <p className="font-display text-2xl">
+                                    <Star className="mx-auto size-7 fill-scholarly-gold-soft text-scholarly-gold" />
+                                    <p className="mt-3 font-display text-2xl">
                                         No mentors found yet.
                                     </p>
                                     <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-scholarly-slate">
@@ -221,11 +259,8 @@ export default function Mentors() {
                                     </p>
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            setQuery('');
-                                            resetFilters();
-                                        }}
-                                        className="mt-5 rounded-lg bg-scholarly-blue px-4 py-2.5 text-sm font-bold text-white hover:bg-scholarly-blue-hover"
+                                        onClick={resetFilters}
+                                        className="mt-5 rounded-lg bg-scholarly-blue px-4 py-2.5 text-sm font-bold text-white hover:bg-scholarly-blue-dark"
                                     >
                                         Clear filters
                                     </button>

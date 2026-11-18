@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Models\Country;
 use App\Models\Scholarship;
 use App\Models\User;
+use App\Support\MentorData;
 use App\Support\ScholarshipData;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -44,6 +45,7 @@ class HomeController extends Controller
             'studentCount' => User::query()
                 ->where('role', UserRole::Student->value)
                 ->count(),
+            'featuredMentor' => MentorData::featured(),
         ]);
     }
 }

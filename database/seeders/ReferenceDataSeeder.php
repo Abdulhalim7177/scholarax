@@ -18,6 +18,7 @@ class ReferenceDataSeeder extends Seeder
             ['name' => 'United Kingdom', 'iso2' => 'GB', 'iso3' => 'GBR'],
             ['name' => 'Germany', 'iso2' => 'DE', 'iso3' => 'DEU'],
             ['name' => 'United States', 'iso2' => 'US', 'iso3' => 'USA'],
+            ['name' => 'France', 'iso2' => 'FR', 'iso3' => 'FRA'],
             ['name' => 'Australia', 'iso2' => 'AU', 'iso3' => 'AUS'],
             ['name' => 'Canada', 'iso2' => 'CA', 'iso3' => 'CAN'],
             ['name' => 'Netherlands', 'iso2' => 'NL', 'iso3' => 'NLD'],

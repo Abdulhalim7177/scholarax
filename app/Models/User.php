@@ -42,6 +42,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property-read Collection<int, Team> $teams
  * @property-read Collection<int, Scholarship> $savedScholarships
  * @property-read StudentProfile|null $studentProfile
+ * @property-read MentorProfile|null $mentorProfile
  * @property-read Collection<int, Education> $educations
  * @property-read Collection<int, WorkExperience> $workExperiences
  * @property-read Collection<int, TestScore> $testScores
@@ -95,6 +96,16 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function studentProfile(): HasOne
     {
         return $this->hasOne(StudentProfile::class);
+    }
+
+    /**
+     * Get the user's mentor profile.
+     *
+     * @return HasOne<MentorProfile, $this>
+     */
+    public function mentorProfile(): HasOne
+    {
+        return $this->hasOne(MentorProfile::class);
     }
 
     /**

@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             ReferenceDataSeeder::class,
             ScholarshipSeeder::class,
             BuilderTemplateSeeder::class,
+            MentorSeeder::class,
             StudentDataSeeder::class,
         ]);
     }

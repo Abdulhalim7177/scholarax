@@ -1,11 +1,13 @@
 import { RotateCcw } from 'lucide-react';
 
+import type { ScholarshipOption } from '@/types/domain';
+
 type MentorFiltersProps = {
     expertise: string;
     country: string;
     availabilityOnly: boolean;
-    expertiseOptions: string[];
-    countryOptions: string[];
+    expertiseOptions: ScholarshipOption[];
+    countryOptions: ScholarshipOption[];
     onExpertiseChange: (value: string) => void;
     onCountryChange: (value: string) => void;
     onAvailabilityChange: (value: boolean) => void;
@@ -55,7 +57,9 @@ export default function MentorFilters({
                         className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
                     >
                         {expertiseOptions.map((option) => (
-                            <option key={option}>{option}</option>
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
                         ))}
                     </select>
                 </label>
@@ -71,7 +75,9 @@ export default function MentorFilters({
                         className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
                     >
                         {countryOptions.map((option) => (
-                            <option key={option}>{option}</option>
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
                         ))}
                     </select>
                 </label>

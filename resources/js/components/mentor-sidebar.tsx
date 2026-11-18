@@ -59,8 +59,8 @@ const mentorNavItems: NavItem[] = [
 
 const fallbackMentor: User = {
     id: 0,
-    name: 'Dr. Maya Chen',
-    email: 'maya@example.com',
+    name: 'Mentor',
+    email: '',
     avatar: null,
     avatar_url: null,
     role: 'mentor',
@@ -73,6 +73,13 @@ function MentorSidebarProfile() {
     const { auth } = usePage().props as { auth?: { user?: User } };
     const { state, isMobile } = useSidebar();
     const user = auth?.user ?? fallbackMentor;
+    const initials = user.name
+        .split(' ')
+        .map((part) => part[0])
+        .filter(Boolean)
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
 
     return (
         <SidebarMenu>
@@ -93,12 +100,12 @@ function MentorSidebarProfile() {
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="bg-scholarly-blue text-xs font-bold text-white">
-                                    MC
+                                    {initials || 'M'}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid min-w-0 flex-1 text-left leading-tight">
                                 <span className="truncate text-[13px] font-semibold text-white">
-                                    {user.name || 'Dr. Maya Chen'}
+                                    {user.name}
                                 </span>
                                 <span className="truncate text-[11px] text-white/55">
                                     Mentor

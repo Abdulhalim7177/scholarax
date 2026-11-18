@@ -4,16 +4,20 @@ import type { Paginated } from '@/types/domain';
 
 type PaginationProps = {
     paginator: Paginated<unknown>;
+    label?: string;
 };
 
-export default function Pagination({ paginator }: PaginationProps) {
+export default function Pagination({
+    paginator,
+    label = 'Pagination',
+}: PaginationProps) {
     if (paginator.last_page <= 1) {
         return null;
     }
 
     return (
         <nav
-            aria-label="Scholarship pages"
+            aria-label={label}
             className="mt-8 flex flex-wrap items-center justify-center gap-2"
         >
             {paginator.links.map((link, index) => {
