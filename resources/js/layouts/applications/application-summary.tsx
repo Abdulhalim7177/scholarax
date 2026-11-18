@@ -1,20 +1,43 @@
 import { Link } from '@inertiajs/react';
-import type { LucideIcon } from 'lucide-react';
 import {
     ArrowRight,
     CheckCircle2,
     Clock3,
     FileCheck2,
     ListChecks,
+    UserRound,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-export default function ApplicationSummary() {
-    const checklist: Array<[string, boolean, LucideIcon]> = [
-        ['Complete your profile', true, CheckCircle2],
-        ['Upload your CV', true, FileCheck2],
-        ['Draft your SOP', false, Clock3],
-        ['Request recommendation', false, Clock3],
-    ];
+import type { ApplicationChecklistItem } from '@/types/domain';
+
+type Props = {
+    summary: {
+        overallProgress: number;
+        checklist: ApplicationChecklistItem[];
+        completedChecks: number;
+        totalChecks: number;
+    };
+};
+
+const iconFor = (key: string): LucideIcon => {
+    switch (key) {
+        case 'profile':
+            return UserRound;
+        case 'cv':
+            return FileCheck2;
+        default:
+            return Clock3;
+    }
+};
+
+export default function ApplicationSummary({ summary }: Props) {
+    const momentum =
+        summary.overallProgress >= 80
+            ? 'You’re almost submission ready.'
+            : summary.overallProgress >= 40
+              ? 'You’re making real progress.'
+              : 'Your applications are just getting started.';
 
     return (
         <aside className="space-y-5">
@@ -25,7 +48,7 @@ export default function ApplicationSummary() {
                             Your momentum
                         </p>
                         <h2 className="mt-3 font-display text-3xl leading-tight">
-                            You’re making progress.
+                            {momentum}
                         </h2>
                     </div>
                     <div className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-scholarly-gold">
@@ -34,55 +57,65 @@ export default function ApplicationSummary() {
                 </div>
                 <div className="mt-7 flex items-end justify-between">
                     <span className="text-5xl font-bold tracking-[-0.06em]">
-                        68%
+                        {summary.overallProgress}%
                     </span>
                     <span className="pb-1 text-xs text-white/60">
-                        overall completion
+                        average completion
                     </span>
                 </div>
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/15">
-                    <div className="h-full w-[68%] rounded-full bg-scholarly-blue" />
+                    <div
+                        className="h-full rounded-full bg-scholarly-blue"
+                        style={{ width: `${summary.overallProgress}%` }}
+                    />
                 </div>
                 <p className="mt-4 text-sm leading-6 text-white/65">
-                    Keep your personal statement moving and you’ll be ready to
-                    submit your first application soon.
+                    Complete the checklist items below to keep every application
+                    moving toward submission.
                 </p>
             </section>
+
             <section className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between">
                     <h2 className="text-base font-bold text-scholarly-navy">
                         Application checklist
                     </h2>
                     <span className="text-xs font-bold text-scholarly-blue">
-                        2 of 5 done
+                        {summary.completedChecks} of {summary.totalChecks} done
                     </span>
                 </div>
                 <div className="mt-5 space-y-4">
-                    {checklist.map(([label, complete, Icon]) => (
-                        <div
-                            key={label}
-                            className="flex items-center gap-3 text-sm"
-                        >
-                            <Icon
-                                className={`size-4 ${complete ? 'text-scholarly-teal' : 'text-scholarly-slate-light'}`}
-                            />
-                            <span
-                                className={
-                                    complete
-                                        ? 'text-scholarly-slate line-through'
-                                        : 'font-semibold text-scholarly-navy'
-                                }
+                    {summary.checklist.map((item) => {
+                        const Icon = item.complete
+                            ? CheckCircle2
+                            : iconFor(item.key);
+
+                        return (
+                            <div
+                                key={item.key}
+                                className="flex items-center gap-3 text-sm"
                             >
-                                {label}
-                            </span>
-                        </div>
-                    ))}
+                                <Icon
+                                    className={`size-4 ${item.complete ? 'text-scholarly-teal' : 'text-scholarly-slate-light'}`}
+                                />
+                                <span
+                                    className={
+                                        item.complete
+                                            ? 'text-scholarly-slate line-through'
+                                            : 'font-semibold text-scholarly-navy'
+                                    }
+                                >
+                                    {item.label}
+                                </span>
+                            </div>
+                        );
+                    })}
                 </div>
                 <Link
-                    href="/coming-soon?feature=Application checklist"
+                    href="/profile"
                     className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-scholarly-blue hover:text-scholarly-blue-dark"
                 >
-                    View checklist <ArrowRight className="size-4" />
+                    Complete your profile <ArrowRight className="size-4" />
                 </Link>
             </section>
         </aside>

@@ -7,10 +7,10 @@ import {
     LayoutGrid,
     Search,
     Settings,
+    UserRound,
     UsersRound,
 } from 'lucide-react';
 
-import aminaAvatar from '../../images/amina-avatar.png';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { dashboard } from '@/routes';
 import { useCurrentUrl } from '@/hooks/use-current-url';
@@ -45,6 +45,11 @@ const navItems: NavItem[] = [
         icon: FileText,
     },
     {
+        title: 'My profile',
+        href: '/profile',
+        icon: UserRound,
+    },
+    {
         title: 'CV & SOP builder',
         href: '/cv-sop-builder',
         icon: FileText,
@@ -58,22 +63,21 @@ const navItems: NavItem[] = [
     { title: 'Settings', href: '/settings/profile', icon: Settings },
 ];
 
-const fallbackUser: User = {
-    id: 0,
-    name: 'Amina Yusuf',
-    email: 'amina@example.com',
-    avatar: aminaAvatar,
-    avatar_url: aminaAvatar,
-    role: 'student',
-    email_verified_at: null,
-    created_at: '',
-    updated_at: '',
-};
-
 function SidebarProfile() {
     const { auth } = usePage().props as { auth?: { user?: User } };
     const { state, isMobile } = useSidebar();
-    const user = auth?.user ?? fallbackUser;
+    const user = auth?.user;
+
+    if (!user) {
+        return null;
+    }
+
+    const initials = user.name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join('');
 
     return (
         <SidebarMenu>
@@ -89,20 +93,21 @@ function SidebarProfile() {
                                     src={
                                         user.avatar_url ||
                                         user.avatar ||
-                                        aminaAvatar
+                                        undefined
                                     }
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="bg-scholarly-blue text-white">
-                                    AY
+                                    {initials}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid min-w-0 flex-1 text-left leading-tight">
                                 <span className="truncate text-[13px] font-semibold text-white">
-                                    {user.name || 'Amina Yusuf'}
+                                    {user.name}
                                 </span>
                                 <span className="truncate text-[11px] text-white/55">
-                                    Student
+                                    {user.role.charAt(0).toUpperCase() +
+                                        user.role.slice(1)}
                                 </span>
                             </div>
                             <ChevronRight className="ml-auto size-4 text-white/65" />

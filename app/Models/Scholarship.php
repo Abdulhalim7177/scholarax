@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -48,6 +49,7 @@ use Illuminate\Support\Carbon;
  * @property-read User|null $creator
  * @property-read User|null $approver
  * @property-read Collection<int, User> $savedByUsers
+ * @property-read Collection<int, Application> $applications
  */
 #[Fillable([
     'slug',
@@ -171,6 +173,16 @@ class Scholarship extends Model
     public function savedByUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'saved_scholarships')->withTimestamps();
+    }
+
+    /**
+     * Get the applications submitted for the scholarship.
+     *
+     * @return HasMany<Application, $this>
+     */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
     }
 
     /**

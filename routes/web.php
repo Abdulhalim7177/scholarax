@@ -1,10 +1,17 @@
 <?php
 
 use App\Http\Controllers\AdminScholarshipController;
+use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\ApplicationDocumentController;
+use App\Http\Controllers\ApplicationTaskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SavedScholarshipController;
 use App\Http\Controllers\ScholarshipController;
+use App\Http\Controllers\Student\EducationController;
+use App\Http\Controllers\Student\StudentProfileController;
+use App\Http\Controllers\Student\TestScoreController;
+use App\Http\Controllers\Student\WorkExperienceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -17,7 +24,34 @@ Route::middleware(['auth'])->group(function () {
     Route::get('scholarships/{scholarship}', [ScholarshipController::class, 'show'])->name('scholarships.show');
     Route::post('saved-scholarships/{scholarship}', [SavedScholarshipController::class, 'store'])->name('saved-scholarships.store');
     Route::delete('saved-scholarships/{scholarship}', [SavedScholarshipController::class, 'destroy'])->name('saved-scholarships.destroy');
-    Route::inertia('applications', 'applications')->name('applications');
+
+    Route::get('profile', [StudentProfileController::class, 'edit'])->name('student-profile.edit');
+    Route::patch('profile', [StudentProfileController::class, 'update'])->name('student-profile.update');
+    Route::post('profile/educations', [EducationController::class, 'store'])->name('student-profile.educations.store');
+    Route::patch('profile/educations/{education}', [EducationController::class, 'update'])->name('student-profile.educations.update');
+    Route::delete('profile/educations/{education}', [EducationController::class, 'destroy'])->name('student-profile.educations.destroy');
+    Route::post('profile/work-experiences', [WorkExperienceController::class, 'store'])->name('student-profile.work-experiences.store');
+    Route::patch('profile/work-experiences/{workExperience}', [WorkExperienceController::class, 'update'])->name('student-profile.work-experiences.update');
+    Route::delete('profile/work-experiences/{workExperience}', [WorkExperienceController::class, 'destroy'])->name('student-profile.work-experiences.destroy');
+    Route::post('profile/test-scores', [TestScoreController::class, 'store'])->name('student-profile.test-scores.store');
+    Route::patch('profile/test-scores/{testScore}', [TestScoreController::class, 'update'])->name('student-profile.test-scores.update');
+    Route::delete('profile/test-scores/{testScore}', [TestScoreController::class, 'destroy'])->name('student-profile.test-scores.destroy');
+
+    Route::get('applications', [ApplicationController::class, 'index'])->name('applications.index');
+    Route::get('applications/create', [ApplicationController::class, 'create'])->name('applications.create');
+    Route::post('applications', [ApplicationController::class, 'store'])->name('applications.store');
+    Route::get('applications/{application}', [ApplicationController::class, 'show'])->name('applications.show');
+    Route::patch('applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
+
+    Route::post('applications/{application}/tasks', [ApplicationTaskController::class, 'store'])->name('application-tasks.store');
+    Route::patch('applications/{application}/tasks/{task}', [ApplicationTaskController::class, 'update'])->name('application-tasks.update');
+    Route::delete('applications/{application}/tasks/{task}', [ApplicationTaskController::class, 'destroy'])->name('application-tasks.destroy');
+
+    Route::post('applications/{application}/documents', [ApplicationDocumentController::class, 'store'])->name('application-documents.store');
+    Route::patch('applications/{application}/documents/{document}', [ApplicationDocumentController::class, 'update'])->name('application-documents.update');
+    Route::delete('applications/{application}/documents/{document}', [ApplicationDocumentController::class, 'destroy'])->name('application-documents.destroy');
+    Route::get('applications/{application}/documents/{document}/download', [ApplicationDocumentController::class, 'download'])->name('application-documents.download');
+
     Route::inertia('mentors', 'mentors')->name('mentors');
     Route::inertia('cv-sop-builder', 'cv-sop-builder')->name('cv-sop-builder');
 });

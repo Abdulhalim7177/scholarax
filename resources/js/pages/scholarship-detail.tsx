@@ -1,6 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import {
     ArrowLeft,
+    ArrowRight,
     ArrowUpRight,
     Bookmark,
     CalendarDays,
@@ -14,6 +15,7 @@ import type { ScholarshipShowProps } from '@/types/domain';
 
 export default function ScholarshipDetail({
     scholarship,
+    application,
 }: ScholarshipShowProps) {
     const toggleSaved = () => {
         const requestOptions = {
@@ -184,6 +186,29 @@ export default function ScholarshipDetail({
                                 <p className="mt-1 text-sm text-scholarly-slate">
                                     {scholarship.deadlineLabel}
                                 </p>
+
+                                {application ? (
+                                    <div className="mt-5 space-y-3">
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-scholarly-teal-soft px-3 py-1.5 text-xs font-bold text-scholarly-teal-dark">
+                                            {application.statusLabel}
+                                        </span>
+                                        <Link
+                                            href={`/applications/${application.id}`}
+                                            className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
+                                        >
+                                            Continue application{' '}
+                                            <ArrowRight className="size-4" />
+                                        </Link>
+                                    </div>
+                                ) : (
+                                    <Link
+                                        href={`/applications/create?scholarship=${scholarship.id}`}
+                                        className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
+                                    >
+                                        Start application{' '}
+                                        <ArrowRight className="size-4" />
+                                    </Link>
+                                )}
 
                                 {scholarship.applicationUrl ? (
                                     <a

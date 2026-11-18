@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -39,6 +41,12 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property-read Collection<int, Membership> $teamMemberships
  * @property-read Collection<int, Team> $teams
  * @property-read Collection<int, Scholarship> $savedScholarships
+ * @property-read StudentProfile|null $studentProfile
+ * @property-read Collection<int, Education> $educations
+ * @property-read Collection<int, WorkExperience> $workExperiences
+ * @property-read Collection<int, TestScore> $testScores
+ * @property-read Collection<int, Application> $applications
+ * @property-read Collection<int, ActivityEvent> $activityEvents
  */
 #[Fillable(['name', 'email', 'password', 'role', 'avatar', 'current_team_id'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
@@ -77,6 +85,66 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function savedScholarships(): BelongsToMany
     {
         return $this->belongsToMany(Scholarship::class, 'saved_scholarships')->withTimestamps();
+    }
+
+    /**
+     * Get the user's student profile.
+     *
+     * @return HasOne<StudentProfile, $this>
+     */
+    public function studentProfile(): HasOne
+    {
+        return $this->hasOne(StudentProfile::class);
+    }
+
+    /**
+     * Get the user's education history.
+     *
+     * @return HasMany<Education, $this>
+     */
+    public function educations(): HasMany
+    {
+        return $this->hasMany(Education::class)->orderByDesc('started_at');
+    }
+
+    /**
+     * Get the user's work experience.
+     *
+     * @return HasMany<WorkExperience, $this>
+     */
+    public function workExperiences(): HasMany
+    {
+        return $this->hasMany(WorkExperience::class)->orderByDesc('started_at');
+    }
+
+    /**
+     * Get the user's test scores.
+     *
+     * @return HasMany<TestScore, $this>
+     */
+    public function testScores(): HasMany
+    {
+        return $this->hasMany(TestScore::class)->orderByDesc('tested_at');
+    }
+
+    /**
+     * Get the scholarship applications submitted by the user.
+     *
+     * @return HasMany<Application, $this>
+     */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class, 'student_id');
+    }
+
+    /**
+     * Get the user's activity feed.
+     *
+     * @return HasMany<ActivityEvent, $this>
+     */
+    public function activityEvents(): HasMany
+    {
+        return $this->hasMany(ActivityEvent::class)->latest();
     }
 
     /**

@@ -9,14 +9,24 @@ import OverviewMetrics from '@/layouts/dashboard/overview-metrics';
 import SavedScholarships from '@/layouts/dashboard/saved-scholarships';
 import TasksCard from '@/layouts/dashboard/tasks-card';
 import { dashboard } from '@/routes';
-
-type PageProps = {
-    auth?: { user?: { name?: string } | null };
-};
+import type { StudentDashboardProps } from '@/types/domain';
+import type { Auth } from '@/types';
 
 export default function Dashboard() {
-    const { auth } = usePage<PageProps>().props;
-    const firstName = auth?.user?.name?.split(' ')[0] ?? 'Amina';
+    const {
+        auth,
+        metrics,
+        currentApplication,
+        journey,
+        strength,
+        savedScholarships,
+        deadlines,
+        tasks,
+        activity,
+        focus,
+    } = usePage<StudentDashboardProps & { auth: Auth }>().props;
+
+    const firstName = auth?.user?.name?.split(' ')[0] ?? 'there';
 
     return (
         <>
@@ -24,15 +34,19 @@ export default function Dashboard() {
             <div className="min-h-screen bg-scholarly-blue-white p-4 text-scholarly-navy sm:p-6 lg:p-8">
                 <div className="mx-auto max-w-7xl space-y-6">
                     <DashboardHeader firstName={firstName} />
-                    <OverviewMetrics />
-                    <ApplicationOverview />
-                    <ApplicationStrength />
-                    <SavedScholarships />
+                    <OverviewMetrics metrics={metrics} />
+                    <ApplicationOverview
+                        currentApplication={currentApplication}
+                        deadlines={deadlines}
+                        journey={journey}
+                    />
+                    <ApplicationStrength strength={strength} />
+                    <SavedScholarships scholarships={savedScholarships} />
                     <section className="grid gap-6 lg:grid-cols-2">
-                        <ActivityCard />
-                        <TasksCard />
+                        <ActivityCard activity={activity} />
+                        <TasksCard tasks={tasks} />
                     </section>
-                    <MomentumCta />
+                    <MomentumCta focus={focus} />
                 </div>
             </div>
         </>

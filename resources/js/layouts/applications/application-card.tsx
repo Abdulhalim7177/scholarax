@@ -1,21 +1,25 @@
 import { Link } from '@inertiajs/react';
 import { ArrowRight, CalendarDays, MapPin } from 'lucide-react';
 
-import type { Application } from './data';
+import { relativeTime } from '@/lib/format';
+import type {
+    ApplicationStatusValue,
+    ApplicationSummary,
+} from '@/types/domain';
 
-type ApplicationCardProps = {
-    application: Application;
+type Props = {
+    application: ApplicationSummary;
 };
 
-const flagFor = (code: string) => {
-    const flags: Record<string, string> = {
-        GB: '🇬🇧',
-        DE: '🇩🇪',
-        US: '🇺🇸',
-        EU: '🇪🇺',
+const toneByStatus: Record<ApplicationStatusValue, keyof typeof colorClasses> =
+    {
+        draft: 'blue',
+        in_review: 'teal',
+        submitted: 'gold',
+        offer_received: 'coral',
+        rejected: 'coral',
+        withdrawn: 'blue',
     };
-    return flags[code] ?? '🌍';
-};
 
 const colorClasses = {
     blue: {
@@ -40,8 +44,27 @@ const colorClasses = {
     },
 };
 
-export default function ApplicationCard({ application }: ApplicationCardProps) {
-    const colors = colorClasses[application.color];
+const flagFor = (code: string) => {
+    if (code === 'EU') {
+        return '🇪🇺';
+    }
+
+    if (code.length !== 2) {
+        return '🌍';
+    }
+
+    return String.fromCodePoint(
+        ...code
+            .toUpperCase()
+            .split('')
+            .map((character) => 0x1f1e6 + character.charCodeAt(0) - 65),
+    );
+};
+
+export default function ApplicationCard({ application }: Props) {
+    const colors = colorClasses[toneByStatus[application.status]];
+    const scholarship = application.scholarship;
+    const urgent = application.daysLeft !== null && application.daysLeft <= 14;
 
     return (
         <article className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_14px_35px_rgba(16,42,67,0.08)] sm:p-6">
@@ -50,32 +73,32 @@ export default function ApplicationCard({ application }: ApplicationCardProps) {
                     className={`flex size-14 shrink-0 items-center justify-center rounded-2xl text-2xl ${colors.icon}`}
                     aria-hidden="true"
                 >
-                    {flagFor(application.countryCode)}
+                    {flagFor(scholarship?.countryCode ?? '')}
                 </div>
                 <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                             <p className="text-xs font-semibold text-scholarly-blue">
-                                {application.provider}
+                                {scholarship?.provider ?? 'Scholarship'}
                             </p>
                             <h2 className="mt-1 text-lg leading-7 font-bold tracking-[-0.02em] text-scholarly-navy">
-                                {application.title}
+                                {scholarship?.title ?? 'Untitled application'}
                             </h2>
                         </div>
                         <span
                             className={`rounded-full px-3 py-1.5 text-xs font-bold ${colors.badge}`}
                         >
-                            {application.status}
+                            {application.statusLabel}
                         </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-scholarly-slate">
                         <span className="inline-flex items-center gap-1.5">
                             <MapPin className="size-3.5" />
-                            {application.country}
+                            {scholarship?.country ?? 'Multiple countries'}
                         </span>
                         <span className="inline-flex items-center gap-1.5">
                             <CalendarDays className="size-3.5" />
-                            Deadline {application.deadline}
+                            Deadline {application.deadline ?? 'rolling'}
                         </span>
                     </div>
                 </div>
@@ -103,7 +126,7 @@ export default function ApplicationCard({ application }: ApplicationCardProps) {
                         </strong>
                     </span>
                     <span
-                        className={`font-bold ${application.deadlineLabel === '14 days left' ? 'text-scholarly-coral-dark' : 'text-scholarly-slate'}`}
+                        className={`font-bold ${urgent ? 'text-scholarly-coral-dark' : 'text-scholarly-slate'}`}
                     >
                         {application.deadlineLabel}
                     </span>
@@ -111,15 +134,15 @@ export default function ApplicationCard({ application }: ApplicationCardProps) {
             </div>
             <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs text-scholarly-slate">
-                    {application.updated}
+                    Updated {relativeTime(application.updatedAt)}
                 </span>
                 <Link
-                    href={`/coming-soon?feature=${encodeURIComponent(`Continue ${application.title}`)}`}
+                    href={`/applications/${application.id}`}
                     className="inline-flex items-center gap-2 rounded-lg bg-scholarly-blue px-4 py-2.5 text-xs font-bold text-white transition hover:bg-scholarly-blue-dark"
                 >
-                    {application.status === 'Offer received'
+                    {application.status === 'offer_received'
                         ? 'View offer'
-                        : application.status === 'Submitted'
+                        : application.status === 'submitted'
                           ? 'Track application'
                           : 'Continue application'}
                     <ArrowRight className="size-3.5" />

@@ -113,8 +113,19 @@ class ScholarshipController extends Controller
             ->whereKey($scholarship->id)
             ->exists();
 
+        $application = $request->user()->applications()
+            ->where('scholarship_id', $scholarship->id)
+            ->first();
+
         return Inertia::render('scholarship-detail', [
             'scholarship' => ScholarshipData::detail($scholarship, $saved),
+            'application' => $application === null
+                ? null
+                : [
+                    'id' => $application->id,
+                    'status' => $application->status->value,
+                    'statusLabel' => $application->status->label(),
+                ],
         ]);
     }
 

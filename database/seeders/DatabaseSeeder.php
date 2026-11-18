@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ReferenceDataSeeder::class,
             ScholarshipSeeder::class,
+            StudentDataSeeder::class,
         ]);
     }
 }

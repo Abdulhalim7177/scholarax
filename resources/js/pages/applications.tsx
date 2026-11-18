@@ -1,28 +1,75 @@
-import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, FileText, Plus, Sparkles } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
+import { ArrowRight, FileText, Plus, Search, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import ApplicationCard from '@/layouts/applications/application-card';
 import ApplicationSummary from '@/layouts/applications/application-summary';
-import {
-    applications,
-    statusFilters,
-    type ApplicationStatus,
-} from '@/layouts/applications/data';
+import Pagination from '@/layouts/scholarships/pagination';
+import type { ApplicationIndexProps } from '@/types/domain';
 
-export default function Applications() {
-    const [activeFilter, setActiveFilter] = useState<'All' | ApplicationStatus>(
-        'All',
-    );
-    const filteredApplications = useMemo(
-        () =>
-            activeFilter === 'All'
-                ? applications
-                : applications.filter(
-                      (application) => application.status === activeFilter,
-                  ),
-        [activeFilter],
-    );
+export default function Applications({
+    applications,
+    filters,
+    statuses,
+    stats,
+    summary,
+}: ApplicationIndexProps) {
+    const [query, setQuery] = useState(filters.q);
+
+    useEffect(() => {
+        setQuery(filters.q);
+    }, [filters.q]);
+
+    const applyFilters = (next: { q?: string; status?: string }) => {
+        router.get(
+            '/applications',
+            {
+                q: next.q || undefined,
+                status: next.status || undefined,
+            },
+            { preserveState: true, preserveScroll: true, replace: true },
+        );
+    };
+
+    useEffect(() => {
+        if (query === filters.q) {
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            applyFilters({ q: query, status: filters.status });
+        }, 350);
+
+        return () => window.clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [query, filters.q, filters.status]);
+
+    const statCards = [
+        {
+            value: stats.total,
+            label: 'Total applications',
+            note: 'Every opportunity you are tracking',
+            tone: 'bg-scholarly-blue-soft text-scholarly-blue',
+        },
+        {
+            value: stats.draft,
+            label: 'Draft in progress',
+            note: 'Ready for your next step',
+            tone: 'bg-scholarly-blue-soft text-scholarly-blue',
+        },
+        {
+            value: stats.in_review,
+            label: 'Being reviewed',
+            note: 'Your work is moving',
+            tone: 'bg-scholarly-teal-soft text-scholarly-teal-dark',
+        },
+        {
+            value: stats.offer_received,
+            label: 'Offer received',
+            note: 'A moment worth celebrating',
+            tone: 'bg-scholarly-gold-soft text-scholarly-gold-dark',
+        },
+    ];
 
     return (
         <>
@@ -43,46 +90,42 @@ export default function Applications() {
                                 first draft to the final decision.
                             </p>
                         </div>
-                        <Link
-                            href="/scholarships"
-                            className="inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark lg:self-auto"
-                        >
-                            Find a scholarship <ArrowRight className="size-4" />
-                        </Link>
+                        <div className="flex flex-wrap gap-3">
+                            <Link
+                                href="/scholarships"
+                                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-scholarly-border bg-white px-4 text-sm font-bold text-scholarly-slate transition hover:border-scholarly-blue hover:text-scholarly-blue"
+                            >
+                                Find a scholarship{' '}
+                                <ArrowRight className="size-4" />
+                            </Link>
+                            <Link
+                                href="/applications/create"
+                                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
+                            >
+                                <Plus className="size-4" /> Add application
+                            </Link>
+                        </div>
                     </header>
 
                     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                        {[
-                            ['4', 'Total applications', 'Keep showing up'],
-                            [
-                                '1',
-                                'Draft in progress',
-                                'Ready for your next step',
-                            ],
-                            ['2', 'Being reviewed', 'Your work is moving'],
-                            [
-                                '1',
-                                'Offer received',
-                                'A moment worth celebrating',
-                            ],
-                        ].map(([value, label, note], index) => (
+                        {statCards.map((card) => (
                             <div
-                                key={label}
+                                key={card.label}
                                 className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm"
                             >
                                 <div
-                                    className={`mb-5 flex size-10 items-center justify-center rounded-xl ${index === 3 ? 'bg-scholarly-gold-soft text-scholarly-gold-dark' : index === 2 ? 'bg-scholarly-teal-soft text-scholarly-teal-dark' : 'bg-scholarly-blue-soft text-scholarly-blue'}`}
+                                    className={`mb-5 flex size-10 items-center justify-center rounded-xl ${card.tone}`}
                                 >
                                     <FileText className="size-5" />
                                 </div>
                                 <p className="text-3xl font-bold tracking-[-0.04em] text-scholarly-navy">
-                                    {value}
+                                    {card.value}
                                 </p>
                                 <p className="mt-1 text-sm font-semibold text-scholarly-navy">
-                                    {label}
+                                    {card.label}
                                 </p>
                                 <p className="mt-1 text-xs text-scholarly-slate">
-                                    {note}
+                                    {card.note}
                                 </p>
                             </div>
                         ))}
@@ -99,36 +142,69 @@ export default function Applications() {
                                         Pick up where you left off.
                                     </p>
                                 </div>
-                                <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 self-start rounded-lg border border-scholarly-border bg-white px-3 py-2 text-xs font-bold text-scholarly-slate transition hover:border-scholarly-blue hover:text-scholarly-blue"
-                                >
-                                    <Plus className="size-3.5" /> Add
-                                    application
-                                </button>
+                                <label className="relative self-start sm:self-auto">
+                                    <Search className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-scholarly-slate-light" />
+                                    <input
+                                        value={query}
+                                        onChange={(event) =>
+                                            setQuery(event.target.value)
+                                        }
+                                        placeholder="Search applications"
+                                        className="h-10 w-full rounded-lg border border-scholarly-border bg-white pr-3 pl-9 text-xs font-semibold text-scholarly-navy outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft sm:w-64"
+                                    />
+                                </label>
                             </div>
+
                             <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-scholarly-border bg-white p-1">
-                                {statusFilters.map((filter) => (
+                                {statuses.map((filter) => (
                                     <button
-                                        key={filter}
+                                        key={filter.value || 'all'}
                                         type="button"
-                                        onClick={() => setActiveFilter(filter)}
-                                        className={`rounded-lg px-3 py-2 text-xs font-bold whitespace-nowrap transition sm:px-4 ${activeFilter === filter ? 'bg-scholarly-blue text-white' : 'text-scholarly-slate hover:bg-scholarly-blue-soft hover:text-scholarly-blue'}`}
+                                        onClick={() =>
+                                            applyFilters({
+                                                q: filters.q,
+                                                status: filter.value,
+                                            })
+                                        }
+                                        className={`rounded-lg px-3 py-2 text-xs font-bold whitespace-nowrap transition sm:px-4 ${filters.status === filter.value ? 'bg-scholarly-blue text-white' : 'text-scholarly-slate hover:bg-scholarly-blue-soft hover:text-scholarly-blue'}`}
                                     >
-                                        {filter}
+                                        {filter.label}
                                     </button>
                                 ))}
                             </div>
+
                             <div className="space-y-5">
-                                {filteredApplications.map((application) => (
+                                {applications.data.map((application) => (
                                     <ApplicationCard
                                         key={application.id}
                                         application={application}
                                     />
                                 ))}
                             </div>
+
+                            {applications.data.length === 0 && (
+                                <div className="rounded-2xl border border-dashed border-scholarly-border-strong bg-white p-10 text-center">
+                                    <p className="text-lg font-bold text-scholarly-navy">
+                                        No applications found
+                                    </p>
+                                    <p className="mx-auto mt-2 max-w-md text-sm text-scholarly-slate">
+                                        {filters.q || filters.status
+                                            ? 'Try adjusting your search or status filter.'
+                                            : 'Start your first application to track documents, tasks, and deadlines in one place.'}
+                                    </p>
+                                    <Link
+                                        href="/applications/create"
+                                        className="mt-5 inline-flex items-center gap-2 rounded-xl bg-scholarly-blue px-4 py-2.5 text-sm font-bold text-white"
+                                    >
+                                        <Plus className="size-4" /> Start an
+                                        application
+                                    </Link>
+                                </div>
+                            )}
+
+                            <Pagination paginator={applications} />
                         </main>
-                        <ApplicationSummary />
+                        <ApplicationSummary summary={summary} />
                     </div>
                 </div>
             </div>

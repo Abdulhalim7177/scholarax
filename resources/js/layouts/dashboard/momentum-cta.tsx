@@ -1,8 +1,13 @@
+import { Link } from '@inertiajs/react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
-import { ActionLink, comingSoon } from './action-link';
+import type { DashboardFocus } from '@/types/domain';
 
-export default function MomentumCta() {
+type Props = {
+    focus: DashboardFocus;
+};
+
+export default function MomentumCta({ focus }: Props) {
     return (
         <section className="flex flex-col items-start justify-between gap-5 overflow-hidden rounded-2xl bg-scholarly-navy p-7 text-white sm:flex-row sm:items-center sm:p-10">
             <div>
@@ -15,16 +20,15 @@ export default function MomentumCta() {
                     </h2>
                 </div>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-scholarly-navy-muted">
-                    Discover more scholarships, update your applications, and
-                    get closer to your goals.
+                    {focus.title} — {focus.body}
                 </p>
             </div>
-            <ActionLink
-                href={comingSoon('Explore more scholarships')}
+            <Link
+                href={focus.href}
                 className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-scholarly-blue px-5 py-3 text-sm font-bold text-white transition hover:bg-scholarly-blue-hover"
             >
-                Explore more scholarships <ArrowRight className="size-4" />
-            </ActionLink>
+                {focus.action} <ArrowRight className="size-4" />
+            </Link>
         </section>
     );
 }

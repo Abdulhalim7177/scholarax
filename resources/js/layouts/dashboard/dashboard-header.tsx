@@ -1,6 +1,5 @@
+import { Link } from '@inertiajs/react';
 import { ArrowRight, Bell } from 'lucide-react';
-
-import { ActionLink, comingSoon } from './action-link';
 
 export default function DashboardHeader({ firstName }: { firstName: string }) {
     return (
@@ -17,19 +16,19 @@ export default function DashboardHeader({ firstName }: { firstName: string }) {
                 </p>
             </div>
             <div className="flex items-center gap-3">
-                <ActionLink
-                    href={comingSoon('Notifications')}
+                <Link
+                    href="/coming-soon?feature=Notifications"
                     className="flex size-11 items-center justify-center rounded-xl border border-scholarly-border bg-white text-scholarly-navy shadow-sm transition hover:border-scholarly-blue hover:text-scholarly-blue"
                     aria-label="Open notifications"
                 >
                     <Bell className="size-5" />
-                </ActionLink>
-                <ActionLink
-                    href={comingSoon('Explore scholarships')}
+                </Link>
+                <Link
+                    href="/scholarships"
                     className="inline-flex items-center gap-2 rounded-xl bg-scholarly-blue px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-scholarly-blue-dark"
                 >
                     Explore scholarships <ArrowRight className="size-4" />
-                </ActionLink>
+                </Link>
             </div>
         </header>
     );

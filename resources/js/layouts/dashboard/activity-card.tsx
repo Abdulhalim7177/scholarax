@@ -1,34 +1,31 @@
-import { Bookmark, CheckCircle2, MessageCircle, UserRound } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import {
+    Bookmark,
+    CheckCircle2,
+    FileCheck2,
+    FileText,
+    Sparkles,
+    UserRound,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-import { ActionLink, comingSoon } from './action-link';
+import { relativeTime } from '@/lib/format';
+import type { ActivityEntry } from '@/types/domain';
 
-export default function ActivityCard() {
-    const activity = [
-        [
-            'Saved DAAD Scholarships',
-            'Added to your saved list',
-            Bookmark,
-            '2 hours ago',
-        ],
-        [
-            'Completed education history',
-            'Your profile is 82% complete',
-            CheckCircle2,
-            '1 day ago',
-        ],
-        [
-            'Mentor reviewed your SOP',
-            'Dr. Maya Chen left feedback',
-            MessageCircle,
-            '2 days ago',
-        ],
-        [
-            'Updated profile information',
-            'Added work experience',
-            UserRound,
-            '3 days ago',
-        ],
-    ] as const;
+type Props = {
+    activity: ActivityEntry[];
+};
+
+const icons: Record<string, LucideIcon> = {
+    saved_scholarship: Bookmark,
+    profile_updated: UserRound,
+    task_completed: CheckCircle2,
+    application_created: FileText,
+    document_added: FileCheck2,
+    status_changed: Sparkles,
+};
+
+export default function ActivityCard({ activity }: Props) {
     return (
         <div className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
@@ -38,30 +35,43 @@ export default function ActivityCard() {
                         Here’s what’s happened recently.
                     </p>
                 </div>
-                <ActionLink
-                    href={comingSoon('All activity')}
+                <Link
+                    href="/profile"
                     className="text-sm font-bold text-scholarly-blue"
                 >
-                    View all activity
-                </ActionLink>
+                    Update profile
+                </Link>
             </div>
             <div className="mt-5 space-y-4">
-                {activity.map(([title, body, Icon, time]) => (
-                    <div key={title} className="flex items-center gap-3">
-                        <div className="flex size-9 items-center justify-center rounded-xl bg-scholarly-blue-soft text-scholarly-blue">
-                            <Icon className="size-4" />
+                {activity.map((entry) => {
+                    const Icon = icons[entry.type] ?? CheckCircle2;
+
+                    return (
+                        <div key={entry.id} className="flex items-center gap-3">
+                            <div className="flex size-9 items-center justify-center rounded-xl bg-scholarly-blue-soft text-scholarly-blue">
+                                <Icon className="size-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <p className="text-sm font-bold">
+                                    {entry.title}
+                                </p>
+                                {entry.body && (
+                                    <p className="truncate text-xs text-scholarly-slate">
+                                        {entry.body}
+                                    </p>
+                                )}
+                            </div>
+                            <span className="shrink-0 text-xs text-scholarly-slate-light">
+                                {relativeTime(entry.createdAt)}
+                            </span>
                         </div>
-                        <div className="min-w-0 flex-1">
-                            <p className="text-sm font-bold">{title}</p>
-                            <p className="text-xs text-scholarly-slate">
-                                {body}
-                            </p>
-                        </div>
-                        <span className="shrink-0 text-xs text-scholarly-slate-light">
-                            {time}
-                        </span>
-                    </div>
-                ))}
+                    );
+                })}
+                {activity.length === 0 && (
+                    <p className="py-6 text-center text-sm text-scholarly-slate">
+                        Your recent activity will appear here.
+                    </p>
+                )}
             </div>
         </div>
     );
