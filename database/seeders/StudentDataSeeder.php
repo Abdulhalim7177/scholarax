@@ -5,8 +5,11 @@ namespace Database\Seeders;
 use App\Enums\ApplicationDocumentStatus;
 use App\Enums\ApplicationDocumentType;
 use App\Enums\ApplicationStatus;
+use App\Enums\BuilderTemplateType;
 use App\Models\Application;
+use App\Models\BuilderTemplate;
 use App\Models\Country;
+use App\Models\CvSopDocument;
 use App\Models\FieldOfStudy;
 use App\Models\Scholarship;
 use App\Models\StudentProfile;
@@ -79,6 +82,7 @@ class StudentDataSeeder extends Seeder
         );
 
         $this->seedApplications($student);
+        $this->seedBuilderDocuments($student);
         $this->seedSavedScholarships($student);
         $this->seedActivity($student);
     }
@@ -224,6 +228,56 @@ class StudentDataSeeder extends Seeder
             'changed_by' => $student->id,
             'note' => null,
         ]);
+    }
+
+    /**
+     * Seed the demo student's CV and statement drafts.
+     */
+    private function seedBuilderDocuments(User $student): void
+    {
+        if (! BuilderTemplate::query()->exists()) {
+            return;
+        }
+
+        $cv = CvSopDocument::ensureFor($student, BuilderTemplateType::Cv);
+        $cv->headline = 'Public policy graduate and future change-maker';
+        $cv->summary = 'I combine rigorous policy research with community-led programme delivery. My work focuses on widening access to education across West Africa.';
+        $cv->save();
+        $this->seedSectionContent($cv, [
+            'profile' => 'Public policy graduate with four years of experience designing and delivering education programmes in underserved communities.',
+            'education' => 'BSc Political Science, University of Lagos — First class honours. Coursework in public policy analysis, research methods, and development economics.',
+            'experience' => 'Programme Associate, Teach for Nigeria. Coordinate literacy programmes across 12 partner schools, reaching more than 3,000 learners and training 40 teachers each term.',
+            'skills' => 'Policy analysis · Programme design · Monitoring and evaluation · Community facilitation · Data storytelling',
+        ]);
+
+        $sop = CvSopDocument::ensureFor($student, BuilderTemplateType::Sop);
+        $sop->headline = 'Why education access is my life’s work';
+        $sop->summary = 'A statement about the teachers, communities, and questions that shaped my ambition to study public policy.';
+        $sop->save();
+        $this->seedSectionContent($sop, [
+            'opening-story' => 'The first time I taught a reading class, I met a girl who had memorised every page of a textbook she could not read. That moment reframed what I thought education policy was for.',
+            'academic-journey' => 'At the University of Lagos I studied political science and wrote my thesis on out-of-school children in Lagos State, combining survey data with interviews across six communities.',
+            'why-this-program' => 'I want to pair that community-level evidence with rigorous comparative policy training, especially in financing and accountability for public education.',
+        ]);
+    }
+
+    /**
+     * Persist content for the given document sections.
+     *
+     * @param  array<string, string>  $contents
+     */
+    private function seedSectionContent(CvSopDocument $document, array $contents): void
+    {
+        foreach ($contents as $key => $content) {
+            $document->sections()->where('key', $key)->update([
+                'content' => $content,
+                'completed_at' => now()->subDays(2),
+            ]);
+        }
+
+        $document->last_saved_at = now()->subHours(5);
+        $document->status = $document->deriveStatus();
+        $document->save();
     }
 
     /**

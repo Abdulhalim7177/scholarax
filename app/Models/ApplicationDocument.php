@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $application_id
+ * @property int|null $builder_document_id
  * @property ApplicationDocumentType $type
  * @property string $title
  * @property int $version
@@ -24,9 +25,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read Application $application
+ * @property-read CvSopDocument|null $builderDocument
  */
 #[Fillable([
     'application_id',
+    'builder_document_id',
     'type',
     'title',
     'version',
@@ -63,6 +66,16 @@ class ApplicationDocument extends Model
     public function application(): BelongsTo
     {
         return $this->belongsTo(Application::class);
+    }
+
+    /**
+     * Get the builder document this application document was created from.
+     *
+     * @return BelongsTo<CvSopDocument, $this>
+     */
+    public function builderDocument(): BelongsTo
+    {
+        return $this->belongsTo(CvSopDocument::class, 'builder_document_id');
     }
 
     /**

@@ -147,6 +147,7 @@ final class ApplicationData
             'status' => $document->status->value,
             'statusLabel' => $document->status->label(),
             'hasFile' => $document->hasFile(),
+            'builderDocumentId' => $document->builder_document_id,
             'fileName' => $document->original_name,
             'downloadUrl' => $document->hasFile()
                 ? route('application-documents.download', [

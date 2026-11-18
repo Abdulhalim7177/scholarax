@@ -1,34 +1,58 @@
 import { Link } from '@inertiajs/react';
-import { ArrowUpRight, Eye, Lightbulb, Save } from 'lucide-react';
+import {
+    ArrowUpRight,
+    Check,
+    Eye,
+    Lightbulb,
+    Loader2,
+    Save,
+} from 'lucide-react';
 
-import type { BuilderMode } from './data';
+import type {
+    BuilderDocument,
+    BuilderDraft,
+    BuilderMode,
+} from '@/types/domain';
 
 type DocumentWorkspaceProps = {
     mode: BuilderMode;
-    activeSection: string;
-    onSectionChange: (section: string) => void;
-    sections: string[];
-    profileName: string;
-    headline: string;
-    statement: string;
-    onProfileNameChange: (value: string) => void;
+    document: BuilderDocument;
+    draft: BuilderDraft;
+    userName: string;
+    activeSectionId: number | null;
+    saveLabel: string;
+    saving: boolean;
+    onSectionChange: (sectionId: number) => void;
     onHeadlineChange: (value: string) => void;
-    onStatementChange: (value: string) => void;
+    onSummaryChange: (value: string) => void;
+    onSectionContentChange: (sectionId: number, value: string) => void;
+    onSave: () => void;
 };
 
 export default function DocumentWorkspace({
     mode,
-    activeSection,
+    document,
+    draft,
+    userName,
+    activeSectionId,
+    saveLabel,
+    saving,
     onSectionChange,
-    sections,
-    profileName,
-    headline,
-    statement,
-    onProfileNameChange,
     onHeadlineChange,
-    onStatementChange,
+    onSummaryChange,
+    onSectionContentChange,
+    onSave,
 }: DocumentWorkspaceProps) {
-    const isCv = mode === 'CV';
+    const isCv = mode === 'cv';
+    const activeSection =
+        document.sections.find((section) => section.id === activeSectionId) ??
+        document.sections[0] ??
+        null;
+    const content = activeSection
+        ? (draft.sections[activeSection.id] ?? '')
+        : '';
+    const words = content.trim().split(/\s+/).filter(Boolean).length;
+    const modeLabel = isCv ? 'CV' : 'SOP';
 
     return (
         <section className="rounded-2xl border border-scholarly-border bg-white shadow-sm">
@@ -38,24 +62,32 @@ export default function DocumentWorkspace({
                         {isCv ? 'CV draft' : 'Statement draft'}
                     </p>
                     <h2 className="mt-1 text-xl font-bold text-scholarly-navy">
-                        {isCv
-                            ? 'Shape your academic story'
-                            : 'Write a statement that sounds like you'}
+                        {document.title}
                     </h2>
+                    <p className="mt-1 text-xs text-scholarly-slate">
+                        {saveLabel}
+                    </p>
                 </div>
                 <div className="flex gap-2">
                     <Link
-                        href={`/coming-soon?feature=Preview ${mode}`}
+                        href={`/coming-soon?feature=Preview ${modeLabel}`}
                         className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-scholarly-border px-3 text-xs font-bold text-scholarly-navy hover:border-scholarly-blue hover:text-scholarly-blue"
                     >
                         <Eye className="size-3.5" /> Preview
                     </Link>
-                    <Link
-                        href={`/coming-soon?feature=Save ${mode}`}
-                        className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-scholarly-blue px-3 text-xs font-bold text-white hover:bg-scholarly-blue-dark"
+                    <button
+                        type="button"
+                        onClick={onSave}
+                        disabled={saving}
+                        className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-scholarly-blue px-3 text-xs font-bold text-white transition hover:bg-scholarly-blue-dark disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        <Save className="size-3.5" /> Save draft
-                    </Link>
+                        {saving ? (
+                            <Loader2 className="size-3.5 animate-spin" />
+                        ) : (
+                            <Save className="size-3.5" />
+                        )}
+                        Save draft
+                    </button>
                 </div>
             </div>
             <div className="grid lg:grid-cols-[180px_minmax(0,1fr)]">
@@ -64,108 +96,117 @@ export default function DocumentWorkspace({
                         Sections
                     </p>
                     <div className="flex gap-1 overflow-x-auto lg:block lg:space-y-1">
-                        {sections.map((section, index) => (
-                            <button
-                                key={section}
-                                type="button"
-                                onClick={() => onSectionChange(section)}
-                                className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2.5 text-left text-xs font-semibold transition lg:w-full ${activeSection === section ? 'bg-scholarly-blue-soft text-scholarly-blue' : 'text-scholarly-slate hover:bg-scholarly-blue-white hover:text-scholarly-navy'}`}
-                            >
-                                <span
-                                    className={`flex size-5 items-center justify-center rounded-full text-[10px] ${activeSection === section ? 'bg-scholarly-blue text-white' : 'bg-scholarly-blue-white'}`}
+                        {document.sections.map((section, index) => {
+                            const filled = (
+                                draft.sections[section.id] ?? ''
+                            ).trim();
+
+                            return (
+                                <button
+                                    key={section.id}
+                                    type="button"
+                                    onClick={() => onSectionChange(section.id)}
+                                    className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2.5 text-left text-xs font-semibold transition lg:w-full ${activeSection?.id === section.id ? 'bg-scholarly-blue-soft text-scholarly-blue' : 'text-scholarly-slate hover:bg-scholarly-blue-white hover:text-scholarly-navy'}`}
                                 >
-                                    {index + 1}
-                                </span>
-                                {section}
-                            </button>
-                        ))}
+                                    <span
+                                        className={`flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] ${activeSection?.id === section.id ? 'bg-scholarly-blue text-white' : 'bg-scholarly-blue-white'}`}
+                                    >
+                                        {filled ? (
+                                            <Check className="size-3" />
+                                        ) : (
+                                            index + 1
+                                        )}
+                                    </span>
+                                    {section.title}
+                                </button>
+                            );
+                        })}
+                        {document.sections.length === 0 && (
+                            <p className="px-2 py-3 text-xs text-scholarly-slate">
+                                Choose a template to add sections.
+                            </p>
+                        )}
                     </div>
                 </nav>
                 <div className="grid xl:grid-cols-[minmax(0,1fr)_240px]">
-                    <div className="p-5 sm:p-6">
-                        {isCv ? (
-                            <div className="space-y-5">
-                                <label className="block">
-                                    <span className="mb-2 block text-xs font-bold text-scholarly-navy">
-                                        Full name
+                    <div className="space-y-5 p-5 sm:p-6">
+                        {isCv && (
+                            <label className="block">
+                                <span className="mb-2 block text-xs font-bold text-scholarly-navy">
+                                    Full name
+                                </span>
+                                <input
+                                    value={userName}
+                                    readOnly
+                                    className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white/60 px-3 text-sm text-scholarly-slate outline-none"
+                                />
+                                <span className="mt-1.5 block text-[11px] text-scholarly-slate">
+                                    Taken from your profile settings.
+                                </span>
+                            </label>
+                        )}
+                        <label className="block">
+                            <span className="mb-2 block text-xs font-bold text-scholarly-navy">
+                                {isCv
+                                    ? 'Professional headline'
+                                    : 'Statement headline'}
+                            </span>
+                            <input
+                                value={draft.headline}
+                                onChange={(event) =>
+                                    onHeadlineChange(event.target.value)
+                                }
+                                className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                            />
+                        </label>
+                        <label className="block">
+                            <span className="mb-2 block text-xs font-bold text-scholarly-navy">
+                                {isCv
+                                    ? 'Profile summary'
+                                    : 'Statement overview'}
+                            </span>
+                            <textarea
+                                value={draft.summary}
+                                onChange={(event) =>
+                                    onSummaryChange(event.target.value)
+                                }
+                                rows={isCv ? 5 : 4}
+                                className="w-full resize-none rounded-lg border border-scholarly-border bg-scholarly-blue-white p-3 text-sm leading-6 outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                            />
+                        </label>
+                        {activeSection ? (
+                            <label className="block">
+                                <span className="mb-2 flex items-center justify-between gap-3 text-xs font-bold text-scholarly-navy">
+                                    {activeSection.title}
+                                    <span className="text-[11px] font-semibold text-scholarly-slate">
+                                        {content.trim()
+                                            ? 'Section complete'
+                                            : 'In progress'}
                                     </span>
-                                    <input
-                                        value={profileName}
-                                        onChange={(event) =>
-                                            onProfileNameChange(
-                                                event.target.value,
-                                            )
-                                        }
-                                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
-                                    />
-                                </label>
-                                <label className="block">
-                                    <span className="mb-2 block text-xs font-bold text-scholarly-navy">
-                                        Professional headline
-                                    </span>
-                                    <input
-                                        value={headline}
-                                        onChange={(event) =>
-                                            onHeadlineChange(event.target.value)
-                                        }
-                                        className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
-                                    />
-                                </label>
-                                <label className="block">
-                                    <span className="mb-2 block text-xs font-bold text-scholarly-navy">
-                                        Profile summary
-                                    </span>
-                                    <textarea
-                                        value={statement}
-                                        onChange={(event) =>
-                                            onStatementChange(
-                                                event.target.value,
-                                            )
-                                        }
-                                        rows={7}
-                                        className="w-full resize-none rounded-lg border border-scholarly-border bg-scholarly-blue-white p-3 text-sm leading-6 outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
-                                    />
-                                </label>
-                            </div>
-                        ) : (
-                            <div className="space-y-5">
-                                <div className="rounded-xl bg-scholarly-blue-white p-4">
-                                    <p className="text-xs font-bold text-scholarly-blue">
-                                        Writing prompt
-                                    </p>
-                                    <p className="mt-2 text-sm leading-6 text-scholarly-navy">
-                                        Tell us about a moment that shaped your
-                                        academic direction and the change you
-                                        hope to create.
-                                    </p>
-                                </div>
-                                <label className="block">
-                                    <span className="mb-2 block text-xs font-bold text-scholarly-navy">
-                                        Your response
-                                    </span>
-                                    <textarea
-                                        value={statement}
-                                        onChange={(event) =>
-                                            onStatementChange(
-                                                event.target.value,
-                                            )
-                                        }
-                                        rows={13}
-                                        className="w-full resize-none rounded-lg border border-scholarly-border bg-scholarly-blue-white p-3 text-sm leading-6 outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
-                                    />
-                                </label>
-                                <div className="flex items-center justify-between text-xs text-scholarly-slate">
+                                </span>
+                                <textarea
+                                    value={content}
+                                    onChange={(event) =>
+                                        onSectionContentChange(
+                                            activeSection.id,
+                                            event.target.value,
+                                        )
+                                    }
+                                    rows={isCv ? 10 : 13}
+                                    className="w-full resize-none rounded-lg border border-scholarly-border bg-scholarly-blue-white p-3 text-sm leading-6 outline-none focus:border-scholarly-blue focus:ring-4 focus:ring-scholarly-blue-soft"
+                                />
+                                <span className="mt-2 flex items-center justify-between text-xs text-scholarly-slate">
+                                    <span>{words} words</span>
                                     <span>
-                                        {
-                                            statement
-                                                .trim()
-                                                .split(/\s+/)
-                                                .filter(Boolean).length
-                                        }{' '}
-                                        words
+                                        {isCv
+                                            ? 'Keep it specific and results-focused.'
+                                            : 'Recommended: 650–900 words in total.'}
                                     </span>
-                                    <span>Recommended: 650–900 words</span>
-                                </div>
+                                </span>
+                            </label>
+                        ) : (
+                            <div className="rounded-xl border border-dashed border-scholarly-border p-6 text-center text-sm text-scholarly-slate">
+                                Pick a template above to create your sections.
                             </div>
                         )}
                     </div>
@@ -182,7 +223,7 @@ export default function DocumentWorkspace({
                                 : 'Keep the focus on your journey. The best statement connects one clear story to your future goals.'}
                         </p>
                         <Link
-                            href={`/coming-soon?feature=Improve my ${mode}`}
+                            href={`/coming-soon?feature=Improve my ${modeLabel}`}
                             className="mt-5 inline-flex items-center gap-1 text-xs font-bold text-scholarly-blue"
                         >
                             Get guided feedback{' '}

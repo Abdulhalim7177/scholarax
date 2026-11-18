@@ -230,6 +230,7 @@ export type ApplicationDocumentItem = {
     status: ApplicationDocumentStatusValue;
     statusLabel: string;
     hasFile: boolean;
+    builderDocumentId: number | null;
     fileName: string | null;
     downloadUrl: string | null;
     submittedAt: string | null;
@@ -447,4 +448,78 @@ export type StudentDashboardProps = {
     tasks: DashboardTask[];
     activity: ActivityEntry[];
     focus: DashboardFocus;
+};
+
+export type BuilderMode = 'cv' | 'sop';
+
+export type BuilderAccent = 'blue' | 'teal' | 'gold';
+
+export type BuilderTemplatePayload = {
+    id: number;
+    type: BuilderMode;
+    name: string;
+    slug: string;
+    description: string;
+    accent: BuilderAccent;
+    recommended: boolean;
+};
+
+export type BuilderSectionPayload = {
+    id: number;
+    key: string;
+    title: string;
+    content: string | null;
+    sortOrder: number;
+    completed: boolean;
+    completedAt: string | null;
+};
+
+export type BuilderAttachment = {
+    applicationDocumentId: number;
+    applicationId: number;
+    applicationTitle: string;
+    status: ApplicationDocumentStatusValue;
+    statusLabel: string;
+    hasFile: boolean;
+};
+
+export type BuilderDocument = {
+    id: number;
+    type: BuilderMode;
+    typeLabel: string;
+    title: string;
+    headline: string | null;
+    summary: string | null;
+    status: 'draft' | 'in_progress' | 'complete';
+    statusLabel: string;
+    templateId: number | null;
+    lastSavedAt: string | null;
+    lastSavedLabel: string | null;
+    updatedAt: string | null;
+    strength: number;
+    completedSections: number;
+    totalSections: number;
+    nextAction: string;
+    sections: BuilderSectionPayload[];
+    attachments: BuilderAttachment[];
+};
+
+export type BuilderApplicationOption = {
+    id: number;
+    title: string;
+    deadline: string | null;
+};
+
+export type BuilderDraft = {
+    title: string;
+    headline: string;
+    summary: string;
+    templateId: number | null;
+    sections: Record<number, string>;
+};
+
+export type CvSopBuilderProps = {
+    documents: Record<BuilderMode, BuilderDocument>;
+    templates: BuilderTemplatePayload[];
+    applications: BuilderApplicationOption[];
 };

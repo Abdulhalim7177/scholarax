@@ -138,6 +138,16 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     }
 
     /**
+     * Get the CV and statement documents owned by the user.
+     *
+     * @return HasMany<CvSopDocument, $this>
+     */
+    public function cvSopDocuments(): HasMany
+    {
+        return $this->hasMany(CvSopDocument::class);
+    }
+
+    /**
      * Get the user's activity feed.
      *
      * @return HasMany<ActivityEvent, $this>

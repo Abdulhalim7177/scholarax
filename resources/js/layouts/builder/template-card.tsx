@@ -1,14 +1,14 @@
 import { Check, FileText } from 'lucide-react';
 
-import type { BuilderTemplate } from './data';
+import type { BuilderAccent, BuilderTemplatePayload } from '@/types/domain';
 
 type TemplateCardProps = {
-    template: BuilderTemplate;
+    template: BuilderTemplatePayload;
     selected: boolean;
     onSelect: () => void;
 };
 
-const accentClasses = {
+const accentClasses: Record<BuilderAccent, string> = {
     blue: 'bg-scholarly-blue-soft text-scholarly-blue',
     teal: 'bg-scholarly-teal-soft text-scholarly-teal-dark',
     gold: 'bg-scholarly-gold-soft text-scholarly-gold-dark',

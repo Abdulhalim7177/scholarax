@@ -4,6 +4,8 @@ use App\Http\Controllers\AdminScholarshipController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationDocumentController;
 use App\Http\Controllers\ApplicationTaskController;
+use App\Http\Controllers\BuilderController;
+use App\Http\Controllers\CvSopDocumentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SavedScholarshipController;
@@ -53,7 +55,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('applications/{application}/documents/{document}/download', [ApplicationDocumentController::class, 'download'])->name('application-documents.download');
 
     Route::inertia('mentors', 'mentors')->name('mentors');
-    Route::inertia('cv-sop-builder', 'cv-sop-builder')->name('cv-sop-builder');
+    Route::get('cv-sop-builder', [BuilderController::class, 'index'])->name('cv-sop-builder');
+    Route::patch('cv-sop-builder/documents/{document}', [CvSopDocumentController::class, 'update'])->name('builder-documents.update');
+    Route::post('cv-sop-builder/documents/{document}/applications', [CvSopDocumentController::class, 'attach'])->name('builder-documents.attach');
+    Route::delete('cv-sop-builder/documents/{document}/applications/{application}', [CvSopDocumentController::class, 'detach'])->name('builder-documents.detach');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

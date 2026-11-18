@@ -120,6 +120,9 @@ export default function ApplicationDocuments({
                                     <p className="mt-0.5 text-xs text-scholarly-slate">
                                         {document.typeLabel} · v
                                         {document.version}
+                                        {document.builderDocumentId
+                                            ? ' · From builder'
+                                            : ''}
                                         {document.fileName
                                             ? ` · ${document.fileName}`
                                             : ' · No file attached'}
