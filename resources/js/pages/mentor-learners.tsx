@@ -6,72 +6,39 @@ import {
     TrendingUp,
     UsersRound,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-const learners = [
-    {
-        name: 'Amina Yusuf',
-        initials: 'AY',
-        goal: 'Chevening Scholarship',
-        progress: 68,
-        next: 'Review personal statement',
-        status: 'Active',
-        tone: 'coral',
-    },
-    {
-        name: 'David Mensah',
-        initials: 'DM',
-        goal: 'DAAD Development Scholarship',
-        progress: 84,
-        next: 'Review academic CV',
-        status: 'Active',
-        tone: 'blue',
-    },
-    {
-        name: 'Lucia Rossi',
-        initials: 'LR',
-        goal: 'Erasmus Mundus Joint Masters',
-        progress: 52,
-        next: 'Discuss programme shortlist',
-        status: 'Active',
-        tone: 'teal',
-    },
-    {
-        name: 'Sam Okoro',
-        initials: 'SO',
-        goal: 'Commonwealth Scholarship',
-        progress: 35,
-        next: 'Set application goals',
-        status: 'Needs a check-in',
-        tone: 'gold',
-    },
-    {
-        name: 'Nadia Rahman',
-        initials: 'NR',
-        goal: 'Fulbright Foreign Student Program',
-        progress: 91,
-        next: 'Practice interview answers',
-        status: 'Active',
-        tone: 'blue',
-    },
-    {
-        name: 'Jon Bell',
-        initials: 'JB',
-        goal: 'Rhodes Scholarship',
-        progress: 24,
-        next: 'Complete profile',
-        status: 'New learner',
-        tone: 'teal',
-    },
-];
+import type { MentorLearnersProps } from '@/types/domain';
 
-export default function MentorLearners() {
+const toneClasses = {
+    blue: 'bg-scholarly-blue-soft text-scholarly-blue',
+    coral: 'bg-scholarly-coral-soft text-scholarly-coral-dark',
+    gold: 'bg-scholarly-gold-soft text-scholarly-gold-dark',
+    teal: 'bg-scholarly-teal-soft text-scholarly-teal-dark',
+};
+
+const statusClasses = {
+    active: 'text-scholarly-slate',
+    new: 'text-scholarly-teal-dark',
+    warn: 'text-scholarly-coral-dark',
+    muted: 'text-scholarly-slate-light',
+};
+
+export default function MentorLearners({
+    stats,
+    learners,
+}: MentorLearnersProps) {
     const [query, setQuery] = useState('');
-    const filtered = learners.filter((learner) =>
-        `${learner.name} ${learner.goal}`
-            .toLowerCase()
-            .includes(query.toLowerCase()),
+    const filtered = useMemo(
+        () =>
+            learners.filter((learner) =>
+                `${learner.name} ${learner.goal}`
+                    .toLowerCase()
+                    .includes(query.toLowerCase()),
+            ),
+        [learners, query],
     );
+
     return (
         <>
             <Head title="My learners" />
@@ -105,21 +72,27 @@ export default function MentorLearners() {
                     <section className="grid gap-4 sm:grid-cols-3">
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <UsersRound className="size-5 text-scholarly-blue" />
-                            <p className="mt-5 text-3xl font-bold">12</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.activeLearners}
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Active learners
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <TrendingUp className="size-5 text-scholarly-teal" />
-                            <p className="mt-5 text-3xl font-bold">76%</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.averageProgress}%
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Average progress
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <MessageCircle className="size-5 text-scholarly-coral" />
-                            <p className="mt-5 text-3xl font-bold">3</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.unreadMessages}
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Unread messages
                             </p>
@@ -128,13 +101,13 @@ export default function MentorLearners() {
                     <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {filtered.map((learner) => (
                             <article
-                                key={learner.name}
+                                key={learner.id}
                                 className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm"
                             >
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="flex items-center gap-3">
                                         <div
-                                            className={`flex size-11 items-center justify-center rounded-xl text-xs font-bold ${learner.tone === 'coral' ? 'bg-scholarly-coral-soft text-scholarly-coral-dark' : learner.tone === 'gold' ? 'bg-scholarly-gold-soft text-scholarly-gold-dark' : learner.tone === 'teal' ? 'bg-scholarly-teal-soft text-scholarly-teal-dark' : 'bg-scholarly-blue-soft text-scholarly-blue'}`}
+                                            className={`flex size-11 items-center justify-center rounded-xl text-xs font-bold ${toneClasses[learner.tone]}`}
                                         >
                                             {learner.initials}
                                         </div>
@@ -142,13 +115,15 @@ export default function MentorLearners() {
                                             <h2 className="font-bold">
                                                 {learner.name}
                                             </h2>
-                                            <p className="mt-1 text-xs text-scholarly-slate">
+                                            <p
+                                                className={`mt-1 text-xs ${statusClasses[learner.statusTone]}`}
+                                            >
                                                 {learner.status}
                                             </p>
                                         </div>
                                     </div>
                                     <Link
-                                        href={`/mentor-coming-soon?feature=${encodeURIComponent(`Message ${learner.name}`)}`}
+                                        href={learner.messageUrl}
                                         aria-label={`Message ${learner.name}`}
                                         className="rounded-lg p-2 text-scholarly-slate hover:bg-scholarly-blue-soft hover:text-scholarly-blue"
                                     >
@@ -188,6 +163,11 @@ export default function MentorLearners() {
                             </article>
                         ))}
                     </section>
+                    {filtered.length === 0 && (
+                        <p className="rounded-2xl border border-scholarly-border bg-white p-10 text-center text-sm text-scholarly-slate">
+                            No learners match “{query}”.
+                        </p>
+                    )}
                 </div>
             </div>
         </>

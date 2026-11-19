@@ -6,6 +6,7 @@ import {
     CheckSquare,
     ChevronRight,
     LayoutDashboard,
+    MessageCircle,
     Settings,
     UserRound,
     UsersRound,
@@ -39,6 +40,11 @@ const mentorNavItems: NavItem[] = [
         icon: CheckSquare,
     },
     { title: 'My learners', href: '/mentor-learners', icon: UsersRound },
+    {
+        title: 'Messages',
+        href: '/mentor-messages',
+        icon: MessageCircle,
+    },
     {
         title: 'Sessions',
         href: '/mentor-sessions',

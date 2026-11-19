@@ -43,6 +43,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Country|null $country
  * @property-read Collection<int, ExpertiseTag> $expertiseTags
  * @property-read Collection<int, MentorAvailabilitySlot> $availabilitySlots
+ * @property-read Collection<int, Mentorship> $mentorships
+ * @property-read Collection<int, MentorReview> $reviews
  */
 #[Fillable([
     'user_id',
@@ -134,6 +136,26 @@ class MentorProfile extends Model
         return $this->hasMany(MentorAvailabilitySlot::class)
             ->orderBy('weekday')
             ->orderBy('start_time');
+    }
+
+    /**
+     * Get the mentorships assigned to the mentor.
+     *
+     * @return HasMany<Mentorship, $this>
+     */
+    public function mentorships(): HasMany
+    {
+        return $this->hasMany(Mentorship::class);
+    }
+
+    /**
+     * Get the reviews left for the mentor.
+     *
+     * @return HasMany<MentorReview, $this>
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(MentorReview::class)->where('is_published', true);
     }
 
     /**

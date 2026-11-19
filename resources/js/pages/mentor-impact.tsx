@@ -8,7 +8,14 @@ import {
     UsersRound,
 } from 'lucide-react';
 
-export default function MentorImpact() {
+import type { MentorImpactProps } from '@/types/domain';
+
+export default function MentorImpact({
+    stats,
+    series,
+    helpfulness,
+    voices,
+}: MentorImpactProps) {
     return (
         <>
             <Head title="Impact and insights" />
@@ -37,25 +44,25 @@ export default function MentorImpact() {
                     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                         {[
                             [
-                                '28',
+                                String(stats.learners),
                                 'Learners supported',
                                 UsersRound,
                                 'This year',
                             ],
                             [
-                                '84%',
+                                `${stats.progress}%`,
                                 'Application progress',
                                 TrendingUp,
-                                '+12% from last month',
+                                'Across active applications',
                             ],
                             [
-                                '4.9',
+                                stats.rating,
                                 'Average rating',
                                 Star,
-                                '48 learner reviews',
+                                `${stats.reviews} learner reviews`,
                             ],
                             [
-                                '76%',
+                                `${stats.offerRate}%`,
                                 'Offer success rate',
                                 Award,
                                 'For completed journeys',
@@ -92,41 +99,29 @@ export default function MentorImpact() {
                                         Learner outcomes
                                     </h2>
                                     <p className="mt-1 text-sm text-scholarly-slate">
-                                        Progress across the last six months.
+                                        Completed sessions across the last six
+                                        months.
                                     </p>
                                 </div>
                                 <TrendingUp className="size-5 text-scholarly-teal" />
                             </div>
                             <div className="mt-8 flex h-56 items-end gap-3 border-b border-l border-scholarly-border p-4">
-                                {[
-                                    34, 48, 43, 61, 68, 84, 76, 92, 88, 96, 84,
-                                    100,
-                                ].map((height, index) => (
+                                {series.map((point) => (
                                     <div
-                                        key={index}
+                                        key={point.label}
                                         className="group flex flex-1 flex-col items-center gap-2"
                                     >
+                                        <span className="text-[10px] font-bold text-scholarly-slate">
+                                            {point.value}
+                                        </span>
                                         <div
                                             className="w-full rounded-t-md bg-scholarly-blue transition group-hover:bg-scholarly-teal"
-                                            style={{ height: `${height}%` }}
+                                            style={{
+                                                height: `${Math.max(point.height, 4)}%`,
+                                            }}
                                         />
                                         <span className="text-[10px] text-scholarly-slate-light">
-                                            {
-                                                [
-                                                    'Jun',
-                                                    '',
-                                                    'Jul',
-                                                    '',
-                                                    'Aug',
-                                                    '',
-                                                    'Sep',
-                                                    '',
-                                                    'Oct',
-                                                    '',
-                                                    'Nov',
-                                                    '',
-                                                ][index]
-                                            }
+                                            {point.label}
                                         </span>
                                     </div>
                                 ))}
@@ -145,7 +140,9 @@ export default function MentorImpact() {
                                 next step.
                             </p>
                             <div className="mt-6 border-t border-white/10 pt-5">
-                                <p className="text-3xl font-bold">92%</p>
+                                <p className="text-3xl font-bold">
+                                    {helpfulness}%
+                                </p>
                                 <p className="mt-1 text-xs text-white/60">
                                     of learners rated your feedback helpful
                                 </p>
@@ -155,21 +152,23 @@ export default function MentorImpact() {
                     <section className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm">
                         <h2 className="text-xl font-bold">Learner voices</h2>
                         <div className="mt-5 grid gap-4 md:grid-cols-3">
-                            {[
-                                '“Maya helped me find the story inside my experience.”',
-                                '“The feedback was honest, kind, and easy to act on.”',
-                                '“I submitted with confidence because of our sessions.”',
-                            ].map((quote) => (
+                            {voices.map((voice) => (
                                 <blockquote
-                                    key={quote}
+                                    key={`${voice.learner}-${voice.quote}`}
                                     className="rounded-xl bg-scholarly-blue-white p-4 text-sm leading-6 text-scholarly-slate"
                                 >
-                                    {quote}
+                                    “{voice.quote}”
                                     <footer className="mt-3 text-xs font-bold text-scholarly-navy">
-                                        Anonymous learner
+                                        {voice.learner}
                                     </footer>
                                 </blockquote>
                             ))}
+                            {voices.length === 0 && (
+                                <p className="rounded-xl bg-scholarly-blue-white p-4 text-sm text-scholarly-slate">
+                                    Learner reviews will appear here once they
+                                    share feedback.
+                                </p>
+                            )}
                         </div>
                     </section>
                 </div>

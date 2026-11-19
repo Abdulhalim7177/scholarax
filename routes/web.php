@@ -9,14 +9,22 @@ use App\Http\Controllers\BuilderController;
 use App\Http\Controllers\CvSopDocumentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MentorDashboardController;
 use App\Http\Controllers\MentorDirectoryController;
+use App\Http\Controllers\MentorImpactController;
+use App\Http\Controllers\MentorLearnerController;
+use App\Http\Controllers\MentorMessageController;
 use App\Http\Controllers\MentorProfileController;
+use App\Http\Controllers\MentorReviewQueueController;
+use App\Http\Controllers\MentorSessionController;
+use App\Http\Controllers\MentorshipController;
 use App\Http\Controllers\SavedScholarshipController;
 use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\Student\EducationController;
 use App\Http\Controllers\Student\StudentProfileController;
 use App\Http\Controllers\Student\TestScoreController;
 use App\Http\Controllers\Student\WorkExperienceController;
+use App\Http\Controllers\StudentSessionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -59,6 +67,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('mentors', [MentorDirectoryController::class, 'index'])->name('mentors.index');
     Route::get('mentors/{mentorProfile}', [MentorDirectoryController::class, 'show'])->name('mentors.show');
+    Route::post('mentorships', [MentorshipController::class, 'store'])->name('mentorships.store');
+    Route::post('mentorships/{mentorship}/sessions', [StudentSessionController::class, 'store'])->name('student-sessions.store');
     Route::get('cv-sop-builder', [BuilderController::class, 'index'])->name('cv-sop-builder');
     Route::patch('cv-sop-builder/documents/{document}', [CvSopDocumentController::class, 'update'])->name('builder-documents.update');
     Route::post('cv-sop-builder/documents/{document}/applications', [CvSopDocumentController::class, 'attach'])->name('builder-documents.attach');
@@ -86,11 +96,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:mentor,admin'])->group(function () {
     Route::inertia('mentor-coming-soon', 'mentor-coming-soon')->name('mentor-coming-soon');
-    Route::inertia('mentor-dashboard', 'mentor-dashboard')->name('mentor-dashboard');
-    Route::inertia('mentor-review-queue', 'mentor-review-queue')->name('mentor-review-queue');
-    Route::inertia('mentor-learners', 'mentor-learners')->name('mentor-learners');
-    Route::inertia('mentor-sessions', 'mentor-sessions')->name('mentor-sessions');
-    Route::inertia('mentor-impact', 'mentor-impact')->name('mentor-impact');
+    Route::get('mentor-dashboard', MentorDashboardController::class)->name('mentor-dashboard');
+    Route::get('mentor-review-queue', [MentorReviewQueueController::class, 'index'])->name('mentor-review-queue');
+    Route::patch('mentor-review-queue/{documentReview}', [MentorReviewQueueController::class, 'update'])->name('mentor-review-queue.update');
+    Route::get('mentor-learners', [MentorLearnerController::class, 'index'])->name('mentor-learners');
+    Route::get('mentor-sessions', [MentorSessionController::class, 'index'])->name('mentor-sessions');
+    Route::post('mentor-sessions', [MentorSessionController::class, 'store'])->name('mentor-sessions.store');
+    Route::patch('mentor-sessions/{session}', [MentorSessionController::class, 'update'])->name('mentor-sessions.update');
+    Route::get('mentor-impact', MentorImpactController::class)->name('mentor-impact');
+    Route::get('mentor-messages', [MentorMessageController::class, 'index'])->name('mentor-messages');
+    Route::post('mentor-messages', [MentorMessageController::class, 'store'])->name('mentor-messages.store');
     Route::get('mentor-profile', [MentorProfileController::class, 'edit'])->name('mentor-profile.edit');
     Route::patch('mentor-profile', [MentorProfileController::class, 'update'])->name('mentor-profile.update');
     Route::post('mentor-profile/expertise', [MentorProfileController::class, 'storeExpertise'])->name('mentor-profile.expertise.store');

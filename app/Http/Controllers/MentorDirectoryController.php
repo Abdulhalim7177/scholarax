@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MentorProfile;
 use App\Support\MentorData;
+use App\Support\MentorWorkspaceData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -92,12 +93,17 @@ class MentorDirectoryController extends Controller
     /**
      * Display a mentor's public profile.
      */
-    public function show(MentorProfile $mentorProfile): Response
+    public function show(Request $request, MentorProfile $mentorProfile): Response
     {
         Gate::authorize('view', $mentorProfile);
 
+        $viewer = $request->user();
+
         return Inertia::render('mentor-show', [
             'mentor' => MentorData::detail($mentorProfile),
+            'mentorship' => $viewer === null
+                ? null
+                : MentorWorkspaceData::studentMentorship($mentorProfile, $viewer),
         ]);
     }
 }

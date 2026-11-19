@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             BuilderTemplateSeeder::class,
             MentorSeeder::class,
             StudentDataSeeder::class,
+            MentorshipSeeder::class,
         ]);
     }
 }

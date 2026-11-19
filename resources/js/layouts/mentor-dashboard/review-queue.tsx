@@ -1,9 +1,9 @@
 import { Link } from '@inertiajs/react';
 import { ArrowRight, Clock3, FileText } from 'lucide-react';
 
-import type { ReviewItem } from './data';
+import type { MentorReviewItem } from '@/types/domain';
 
-type ReviewQueueProps = { items: ReviewItem[] };
+type ReviewQueueProps = { items: MentorReviewItem[] };
 
 const toneClasses = {
     blue: 'bg-scholarly-blue-soft text-scholarly-blue',
@@ -69,7 +69,7 @@ export default function ReviewQueue({ items }: ReviewQueueProps) {
                             </p>
                         </div>
                         <Link
-                            href={`/mentor-coming-soon?feature=Review ${encodeURIComponent(item.learner)}`}
+                            href="/mentor-review-queue"
                             className="inline-flex items-center justify-center gap-1.5 self-start rounded-lg border border-scholarly-blue px-3 py-2 text-xs font-bold text-scholarly-blue transition hover:bg-scholarly-blue hover:text-white sm:self-auto"
                         >
                             Review <ArrowRight className="size-3.5" />
@@ -78,7 +78,7 @@ export default function ReviewQueue({ items }: ReviewQueueProps) {
                 ))}
             </div>
             <Link
-                href="/mentor-coming-soon?feature=Full%20review%20queue"
+                href="/mentor-review-queue"
                 className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-scholarly-blue"
             >
                 View all reviews <ArrowRight className="size-4" />

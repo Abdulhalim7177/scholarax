@@ -48,6 +48,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property-read Collection<int, TestScore> $testScores
  * @property-read Collection<int, Application> $applications
  * @property-read Collection<int, ActivityEvent> $activityEvents
+ * @property-read Collection<int, Mentorship> $mentorships
+ * @property-read Collection<int, DocumentReview> $documentReviews
  */
 #[Fillable(['name', 'email', 'password', 'role', 'avatar', 'current_team_id'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
@@ -106,6 +108,26 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function mentorProfile(): HasOne
     {
         return $this->hasOne(MentorProfile::class);
+    }
+
+    /**
+     * Get the mentorships where this user is the student.
+     *
+     * @return HasMany<Mentorship, $this>
+     */
+    public function mentorships(): HasMany
+    {
+        return $this->hasMany(Mentorship::class, 'student_id')->orderByDesc('started_at');
+    }
+
+    /**
+     * Get the document reviews this user has been assigned.
+     *
+     * @return HasMany<DocumentReview, $this>
+     */
+    public function documentReviews(): HasMany
+    {
+        return $this->hasMany(DocumentReview::class, 'mentor_id');
     }
 
     /**

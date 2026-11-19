@@ -638,6 +638,218 @@ export type MentorOwnProfileProps = {
     publicUrl: string;
 };
 
+export type StudentMentorship = {
+    id: number;
+    status: 'active' | 'paused' | 'completed' | 'cancelled';
+    statusLabel: string;
+    goals: string | null;
+    startedAt: string | null;
+    canRequestSession: boolean;
+    hasPendingSession: boolean;
+    nextSession: {
+        topic: string;
+        date: string;
+        time: string;
+        statusLabel: string;
+    } | null;
+};
+
 export type MentorShowProps = {
     mentor: MentorDetail;
+    mentorship: StudentMentorship | null;
+};
+
+export type MentorReviewItem = {
+    id: number;
+    learner: string;
+    initials: string;
+    document: string;
+    documentType: string;
+    scholarship: string;
+    submitted: string;
+    due: string;
+    dueAt: string | null;
+    priority: 'Needs attention' | 'On track';
+    priorityValue: 'high' | 'normal';
+    status: 'pending' | 'in_review' | 'completed' | 'overdue';
+    statusLabel: string;
+    feedback: string | null;
+    tone: MentorAccent;
+};
+
+export type MentorSessionSummary = {
+    id: number;
+    learner: string;
+    initials: string;
+    topic: string;
+    time: string;
+    date: string;
+    status: 'requested' | 'confirmed' | 'completed' | 'cancelled' | 'no_show';
+    statusLabel: string;
+    tone: MentorAccent;
+};
+
+export type MentorSessionDetail = MentorSessionSummary & {
+    mentorshipId: number;
+    scheduledAt: string;
+    dateLabel: string;
+    duration: string;
+    meetingUrl: string | null;
+    notes: string | null;
+    attendance: 'pending' | 'attended' | 'missed' | null;
+    attendanceLabel: string | null;
+    requestedByStudent: boolean;
+};
+
+export type MentorMessageSummary = {
+    mentorshipId: number;
+    learner: string;
+    initials: string;
+    message: string;
+    time: string | null;
+    tone: MentorAccent;
+    unread: boolean;
+};
+
+export type MentorDashboardProps = {
+    mentor: {
+        name: string;
+        firstName: string;
+        avatarUrl: string | null;
+    };
+    stats: {
+        activeLearners: number;
+        newLearners: number;
+        reviewsCompleted: number;
+        rating: string;
+        reviews: number;
+        responseTime: string;
+    };
+    reviews: MentorReviewItem[];
+    sessions: MentorSessionSummary[];
+    messages: MentorMessageSummary[];
+    impact: {
+        learnersSupported: number;
+        year: number;
+    };
+};
+
+export type MentorLearner = {
+    id: number;
+    studentId: number;
+    name: string;
+    initials: string;
+    email: string;
+    avatarUrl: string | null;
+    goal: string;
+    progress: number;
+    next: string;
+    status: string;
+    statusTone: 'active' | 'new' | 'warn' | 'muted';
+    tone: MentorAccent;
+    started: string | null;
+    applicationCount: number;
+    nextSession: {
+        topic: string;
+        date: string;
+        time: string;
+    } | null;
+    messageUrl: string;
+};
+
+export type MentorLearnersProps = {
+    stats: {
+        activeLearners: number;
+        averageProgress: number;
+        unreadMessages: number;
+    };
+    learners: MentorLearner[];
+    filters: { q: string };
+};
+
+export type MentorSessionsProps = {
+    stats: {
+        upcoming: number;
+        availableHours: string;
+        attendanceRate: number;
+        attendanceSample: number;
+    };
+    weekLabel: string;
+    upcoming: MentorSessionDetail[];
+    recent: MentorSessionDetail[];
+    availability: Array<{
+        id: number;
+        label: string;
+        isActive: boolean;
+    }>;
+    learners: Array<{
+        value: string;
+        label: string;
+    }>;
+};
+
+export type MentorImpactProps = {
+    stats: {
+        learners: number;
+        progress: number;
+        rating: string;
+        reviews: number;
+        offerRate: number;
+    };
+    series: Array<{
+        label: string;
+        value: number;
+        height: number;
+    }>;
+    helpfulness: number;
+    voices: Array<{
+        quote: string;
+        learner: string;
+    }>;
+};
+
+export type MentorReviewQueueProps = {
+    stats: {
+        waiting: number;
+        dueToday: number;
+        helpfulness: number;
+    };
+    items: MentorReviewItem[];
+};
+
+export type MentorMessageThreadItem = {
+    id: number;
+    body: string;
+    fromMentor: boolean;
+    senderName: string;
+    time: string | null;
+    date: string | null;
+    read: boolean;
+};
+
+export type MentorMessagesProps = {
+    stats: {
+        conversations: number;
+        unread: number;
+    };
+    conversations: Array<{
+        mentorshipId: number;
+        learner: string;
+        initials: string;
+        avatarUrl: string | null;
+        goal: string | null;
+        lastMessage: string | null;
+        lastMessageAt: string | null;
+        unread: number;
+        tone: MentorAccent;
+        active: boolean;
+    }>;
+    active: {
+        mentorshipId: number;
+        learner: string;
+        initials: string;
+        avatarUrl: string | null;
+        goal: string | null;
+    } | null;
+    thread: MentorMessageThreadItem[];
 };

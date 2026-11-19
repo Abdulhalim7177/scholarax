@@ -11,44 +11,47 @@ import {
 import MentorActivity from '@/layouts/mentor-dashboard/mentor-activity';
 import MentorHeader from '@/layouts/mentor-dashboard/mentor-header';
 import ReviewQueue from '@/layouts/mentor-dashboard/review-queue';
-import {
-    recentMessages,
-    reviewQueue,
-    sessions,
-} from '@/layouts/mentor-dashboard/data';
+import type { MentorDashboardProps } from '@/types/domain';
 
-export default function MentorDashboard() {
+export default function MentorDashboard({
+    mentor,
+    stats,
+    reviews,
+    sessions,
+    messages,
+    impact,
+}: MentorDashboardProps) {
     return (
         <>
             <Head title="Mentor dashboard" />
             <div className="min-h-screen bg-scholarly-blue-white p-4 text-scholarly-navy sm:p-6 lg:p-8">
                 <div className="mx-auto max-w-7xl space-y-6">
-                    <MentorHeader />
+                    <MentorHeader name={mentor.firstName} />
                     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                         {[
                             [
-                                '12',
+                                String(stats.activeLearners),
                                 'Active learners',
-                                '3 new this month',
+                                `${stats.newLearners} new this month`,
                                 UsersRound,
                                 'blue',
                             ],
                             [
-                                '8',
+                                String(stats.reviewsCompleted),
                                 'Reviews completed',
                                 'This month',
                                 CheckCircle2,
                                 'teal',
                             ],
                             [
-                                '4.9',
+                                stats.rating,
                                 'Mentor rating',
-                                'From 48 reviews',
+                                `From ${stats.reviews} reviews`,
                                 Award,
                                 'gold',
                             ],
                             [
-                                '6 hrs',
+                                stats.responseTime,
                                 'Response time',
                                 'Your average',
                                 Clock3,
@@ -77,10 +80,10 @@ export default function MentorDashboard() {
                         ))}
                     </section>
                     <div className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(300px,0.8fr)]">
-                        <ReviewQueue items={reviewQueue} />
+                        <ReviewQueue items={reviews} />
                         <MentorActivity
                             sessions={sessions}
-                            messages={recentMessages}
+                            messages={messages}
                         />
                     </div>
                     <section className="flex flex-col gap-5 rounded-2xl border border-scholarly-border bg-scholarly-sky p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
@@ -97,14 +100,14 @@ export default function MentorDashboard() {
                                     direction.
                                 </h2>
                                 <p className="mt-2 max-w-xl text-sm leading-6 text-scholarly-slate">
-                                    You have helped 28 learners strengthen their
-                                    applications this year. Keep the momentum
-                                    going.
+                                    You have helped {impact.learnersSupported}{' '}
+                                    learners strengthen their applications in{' '}
+                                    {impact.year}. Keep the momentum going.
                                 </p>
                             </div>
                         </div>
                         <Link
-                            href="/mentor-coming-soon?feature=Mentor%20impact%20report"
+                            href="/mentor-impact"
                             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-scholarly-blue px-4 py-3 text-sm font-bold text-white hover:bg-scholarly-blue-dark"
                         >
                             View impact report <ArrowRight className="size-4" />

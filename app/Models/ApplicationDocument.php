@@ -7,9 +7,11 @@ use App\Enums\ApplicationDocumentType;
 use Carbon\CarbonImmutable;
 use Database\Factories\ApplicationDocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -26,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $updated_at
  * @property-read Application $application
  * @property-read CvSopDocument|null $builderDocument
+ * @property-read Collection<int, DocumentReview> $reviews
  */
 #[Fillable([
     'application_id',
@@ -76,6 +79,16 @@ class ApplicationDocument extends Model
     public function builderDocument(): BelongsTo
     {
         return $this->belongsTo(CvSopDocument::class, 'builder_document_id');
+    }
+
+    /**
+     * Get the mentor reviews for this document.
+     *
+     * @return HasMany<DocumentReview, $this>
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(DocumentReview::class);
     }
 
     /**

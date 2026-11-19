@@ -1,8 +1,9 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import {
     ArrowLeft,
     BadgeCheck,
     CalendarClock,
+    CheckCircle2,
     Globe2,
     GraduationCap,
     Languages,
@@ -12,10 +13,50 @@ import {
     UsersRound,
     Video,
 } from 'lucide-react';
+import type { FormEvent } from 'react';
 
+import InputError from '@/components/input-error';
+import type { User } from '@/types';
 import type { MentorShowProps } from '@/types/domain';
 
-export default function MentorShow({ mentor }: MentorShowProps) {
+export default function MentorShow({ mentor, mentorship }: MentorShowProps) {
+    const { auth } = usePage().props as { auth?: { user?: User } };
+    const isStudent = auth?.user?.role === 'student';
+
+    const mentorshipForm = useForm({
+        mentor_profile_id: mentor.id,
+        goals: '',
+    });
+
+    const sessionForm = useForm({
+        topic: '',
+        scheduled_at: '',
+        duration_minutes: '45',
+        notes: '',
+    });
+
+    const requestMentorship = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        mentorshipForm.post('/mentorships', {
+            preserveScroll: true,
+            onSuccess: () => mentorshipForm.reset('goals'),
+        });
+    };
+
+    const requestSession = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (!mentorship) {
+            return;
+        }
+
+        sessionForm.post(`/mentorships/${mentorship.id}/sessions`, {
+            preserveScroll: true,
+            onSuccess: () =>
+                sessionForm.reset('topic', 'scheduled_at', 'notes'),
+        });
+    };
+
     const initials = mentor.name
         .split(' ')
         .map((part) => part[0])
@@ -69,13 +110,17 @@ export default function MentorShow({ mentor }: MentorShowProps) {
                                     </div>
                                 </div>
                                 <div className="flex flex-wrap gap-2 pb-1">
-                                    <Link
-                                        href={`/coming-soon?feature=${encodeURIComponent(`Message ${mentor.name}`)}`}
-                                        className="inline-flex h-11 items-center gap-2 rounded-xl bg-scholarly-blue px-5 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
-                                    >
-                                        <MessageCircle className="size-4" />{' '}
-                                        Message mentor
-                                    </Link>
+                                    {isStudent && (
+                                        <a
+                                            href="#mentorship"
+                                            className="inline-flex h-11 items-center gap-2 rounded-xl bg-scholarly-blue px-5 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
+                                        >
+                                            <MessageCircle className="size-4" />{' '}
+                                            {mentorship
+                                                ? 'Request a session'
+                                                : 'Request mentorship'}
+                                        </a>
+                                    )}
                                     <a
                                         href="#availability"
                                         className="inline-flex h-11 items-center gap-2 rounded-xl border border-scholarly-border px-5 text-sm font-bold text-scholarly-navy transition hover:border-scholarly-blue hover:text-scholarly-blue"
@@ -246,13 +291,215 @@ export default function MentorShow({ mentor }: MentorShowProps) {
                                         </p>
                                     )}
                                 </div>
-                                <Link
-                                    href={`/coming-soon?feature=${encodeURIComponent(`Book a session with ${mentor.name}`)}`}
-                                    className="mt-4 inline-flex h-10 w-full items-center justify-center rounded-lg bg-scholarly-navy text-xs font-bold text-white transition hover:bg-scholarly-navy/90"
-                                >
-                                    Request a session
-                                </Link>
                             </section>
+
+                            {isStudent && (
+                                <section
+                                    id="mentorship"
+                                    className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm"
+                                >
+                                    {mentorship ? (
+                                        <>
+                                            <h2 className="flex items-center gap-2 text-lg font-bold">
+                                                <CheckCircle2 className="size-4 text-scholarly-teal" />{' '}
+                                                Your mentorship
+                                            </h2>
+                                            <div className="mt-3 rounded-xl bg-scholarly-teal-soft px-3 py-2 text-xs font-bold text-scholarly-teal-dark">
+                                                {mentorship.statusLabel}
+                                                {mentorship.startedAt
+                                                    ? ` · since ${mentorship.startedAt}`
+                                                    : ''}
+                                            </div>
+                                            {mentorship.goals && (
+                                                <p className="mt-3 text-xs leading-5 text-scholarly-slate">
+                                                    {mentorship.goals}
+                                                </p>
+                                            )}
+                                            {mentorship.nextSession && (
+                                                <div className="mt-4 rounded-xl bg-scholarly-blue-white p-3">
+                                                    <p className="text-[11px] font-bold tracking-[0.1em] text-scholarly-slate uppercase">
+                                                        Next session
+                                                    </p>
+                                                    <p className="mt-1 text-sm font-bold">
+                                                        {
+                                                            mentorship
+                                                                .nextSession
+                                                                .topic
+                                                        }
+                                                    </p>
+                                                    <p className="mt-1 text-xs text-scholarly-slate">
+                                                        {
+                                                            mentorship
+                                                                .nextSession
+                                                                .date
+                                                        }{' '}
+                                                        ·{' '}
+                                                        {
+                                                            mentorship
+                                                                .nextSession
+                                                                .time
+                                                        }{' '}
+                                                        ·{' '}
+                                                        {
+                                                            mentorship
+                                                                .nextSession
+                                                                .statusLabel
+                                                        }
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {mentorship.canRequestSession &&
+                                                !mentorship.hasPendingSession && (
+                                                    <form
+                                                        onSubmit={
+                                                            requestSession
+                                                        }
+                                                        className="mt-4 space-y-3 border-t border-scholarly-border pt-4"
+                                                    >
+                                                        <p className="text-xs font-bold">
+                                                            Request a session
+                                                        </p>
+                                                        <div>
+                                                            <input
+                                                                value={
+                                                                    sessionForm
+                                                                        .data
+                                                                        .topic
+                                                                }
+                                                                onChange={(
+                                                                    event,
+                                                                ) =>
+                                                                    sessionForm.setData(
+                                                                        'topic',
+                                                                        event
+                                                                            .target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                                placeholder="What would you like help with?"
+                                                                className="h-10 w-full rounded-lg border border-scholarly-border px-3 text-xs outline-none focus:border-scholarly-blue"
+                                                            />
+                                                            <InputError
+                                                                message={
+                                                                    sessionForm
+                                                                        .errors
+                                                                        .topic
+                                                                }
+                                                                className="mt-1"
+                                                            />
+                                                        </div>
+                                                        <input
+                                                            type="datetime-local"
+                                                            value={
+                                                                sessionForm.data
+                                                                    .scheduled_at
+                                                            }
+                                                            onChange={(event) =>
+                                                                sessionForm.setData(
+                                                                    'scheduled_at',
+                                                                    event.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            className="h-10 w-full rounded-lg border border-scholarly-border px-3 text-xs outline-none focus:border-scholarly-blue"
+                                                        />
+                                                        <InputError
+                                                            message={
+                                                                sessionForm
+                                                                    .errors
+                                                                    .scheduled_at
+                                                            }
+                                                        />
+                                                        <select
+                                                            value={
+                                                                sessionForm.data
+                                                                    .duration_minutes
+                                                            }
+                                                            onChange={(event) =>
+                                                                sessionForm.setData(
+                                                                    'duration_minutes',
+                                                                    event.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                            className="h-10 w-full rounded-lg border border-scholarly-border px-3 text-xs outline-none focus:border-scholarly-blue"
+                                                        >
+                                                            <option value="30">
+                                                                30 minutes
+                                                            </option>
+                                                            <option value="45">
+                                                                45 minutes
+                                                            </option>
+                                                            <option value="60">
+                                                                60 minutes
+                                                            </option>
+                                                        </select>
+                                                        <button
+                                                            type="submit"
+                                                            disabled={
+                                                                sessionForm.processing
+                                                            }
+                                                            className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-scholarly-navy text-xs font-bold text-white transition hover:bg-scholarly-navy/90 disabled:opacity-60"
+                                                        >
+                                                            Request session
+                                                        </button>
+                                                    </form>
+                                                )}
+
+                                            {mentorship.hasPendingSession && (
+                                                <p className="mt-4 rounded-lg bg-scholarly-gold-soft px-3 py-2 text-xs text-scholarly-gold-dark">
+                                                    Your session request is
+                                                    waiting for your mentor to
+                                                    confirm.
+                                                </p>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <form onSubmit={requestMentorship}>
+                                            <h2 className="flex items-center gap-2 text-lg font-bold">
+                                                <MessageCircle className="size-4 text-scholarly-blue" />{' '}
+                                                Request mentorship
+                                            </h2>
+                                            <p className="mt-2 text-xs leading-5 text-scholarly-slate">
+                                                Tell {mentor.name} what you are
+                                                working towards. They will be
+                                                able to see your request and
+                                                respond.
+                                            </p>
+                                            <textarea
+                                                value={
+                                                    mentorshipForm.data.goals
+                                                }
+                                                onChange={(event) =>
+                                                    mentorshipForm.setData(
+                                                        'goals',
+                                                        event.target.value,
+                                                    )
+                                                }
+                                                rows={4}
+                                                placeholder="I am applying for… and would love help with…"
+                                                className="mt-3 w-full rounded-lg border border-scholarly-border p-3 text-xs outline-none focus:border-scholarly-blue"
+                                            />
+                                            <InputError
+                                                message={
+                                                    mentorshipForm.errors.goals
+                                                }
+                                                className="mt-1"
+                                            />
+                                            <button
+                                                type="submit"
+                                                disabled={
+                                                    mentorshipForm.processing
+                                                }
+                                                className="mt-3 inline-flex h-10 w-full items-center justify-center rounded-lg bg-scholarly-blue text-xs font-bold text-white transition hover:bg-scholarly-blue-dark disabled:opacity-60"
+                                            >
+                                                Send mentorship request
+                                            </button>
+                                        </form>
+                                    )}
+                                </section>
+                            )}
 
                             <section className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm">
                                 <h2 className="text-sm font-bold">

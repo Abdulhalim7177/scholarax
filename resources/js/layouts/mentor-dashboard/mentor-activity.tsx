@@ -1,17 +1,14 @@
 import { Link } from '@inertiajs/react';
 import { ArrowRight, CalendarDays, MessageCircle } from 'lucide-react';
 
-import type { MentorSession } from './data';
+import type {
+    MentorMessageSummary,
+    MentorSessionSummary,
+} from '@/types/domain';
 
 type Props = {
-    sessions: MentorSession[];
-    messages: Array<{
-        learner: string;
-        initials: string;
-        message: string;
-        time: string;
-        tone: string;
-    }>;
+    sessions: MentorSessionSummary[];
+    messages: MentorMessageSummary[];
 };
 
 export default function MentorActivity({ sessions, messages }: Props) {
@@ -33,7 +30,7 @@ export default function MentorActivity({ sessions, messages }: Props) {
                     {sessions.map((session) => (
                         <Link
                             key={session.id}
-                            href={`/mentor-coming-soon?feature=Session with ${encodeURIComponent(session.learner)}`}
+                            href="/mentor-sessions"
                             className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
                         >
                             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-scholarly-blue-soft text-xs font-bold text-scholarly-blue">
@@ -59,7 +56,7 @@ export default function MentorActivity({ sessions, messages }: Props) {
                     ))}
                 </div>
                 <Link
-                    href="/mentor-coming-soon?feature=Mentor%20calendar"
+                    href="/mentor-sessions"
                     className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-scholarly-blue"
                 >
                     Open calendar <ArrowRight className="size-4" />
@@ -81,7 +78,7 @@ export default function MentorActivity({ sessions, messages }: Props) {
                     {messages.map((message) => (
                         <Link
                             key={message.learner}
-                            href={`/mentor-coming-soon?feature=Message ${encodeURIComponent(message.learner)}`}
+                            href={`/mentor-messages?mentorship=${message.mentorshipId}`}
                             className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
                         >
                             <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-scholarly-coral-soft text-[11px] font-bold text-scholarly-coral-dark">
@@ -102,7 +99,7 @@ export default function MentorActivity({ sessions, messages }: Props) {
                     ))}
                 </div>
                 <Link
-                    href="/mentor-coming-soon?feature=Mentor%20inbox"
+                    href="/mentor-messages"
                     className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-scholarly-blue"
                 >
                     Open inbox <ArrowRight className="size-4" />

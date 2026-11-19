@@ -20,16 +20,16 @@ export default function MentorHeader({ name = 'Maya' }: MentorHeaderProps) {
             </div>
             <div className="flex flex-wrap gap-2">
                 <Link
-                    href="/mentor-coming-soon?feature=Mentor%20messages"
+                    href="/mentor-messages"
                     className="inline-flex h-11 items-center gap-2 rounded-xl border border-scholarly-border bg-white px-4 text-sm font-bold text-scholarly-navy transition hover:border-scholarly-blue hover:text-scholarly-blue"
                 >
                     <MessageCircle className="size-4" /> Messages
                 </Link>
                 <Link
-                    href="/mentor-coming-soon?feature=Create%20mentor%20session"
+                    href="/mentor-sessions"
                     className="inline-flex h-11 items-center gap-2 rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white transition hover:bg-scholarly-blue-dark"
                 >
-                    <CalendarPlus className="size-4" /> Add availability
+                    <CalendarPlus className="size-4" /> Schedule session
                 </Link>
                 <button
                     type="button"

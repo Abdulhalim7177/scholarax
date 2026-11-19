@@ -1,23 +1,154 @@
-import { Head, Link } from '@inertiajs/react';
-import {
-    ArrowRight,
-    CheckCircle2,
-    Clock3,
-    FileText,
-    Search,
-} from 'lucide-react';
+import { Head, router, useForm } from '@inertiajs/react';
+import { CheckCircle2, Clock3, FileText, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
-
-import { reviewQueue } from '@/layouts/mentor-dashboard/data';
+import InputError from '@/components/input-error';
+import type { MentorReviewItem, MentorReviewQueueProps } from '@/types/domain';
 
 const filters = ['All reviews', 'Needs attention', 'On track'];
 
-export default function MentorReviewQueue() {
+function ReviewRow({ item }: { item: MentorReviewItem }) {
+    const [open, setOpen] = useState(false);
+    const form = useForm({
+        action: 'complete',
+        feedback: item.feedback ?? '',
+        decision: 'approve',
+    });
+
+    const startReview = () => {
+        router.patch(
+            `/mentor-review-queue/${item.id}`,
+            { action: 'start', feedback: null, decision: null },
+            { preserveScroll: true },
+        );
+    };
+
+    const submit = (decision: 'approve' | 'request_changes') => {
+        form.transform((data) => ({ ...data, decision }));
+        form.patch(`/mentor-review-queue/${item.id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setOpen(false);
+                form.reset();
+            },
+        });
+    };
+
+    return (
+        <div className="py-5">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-scholarly-blue-soft text-xs font-bold text-scholarly-blue">
+                    {item.initials}
+                </div>
+                <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="font-bold">{item.learner}</h2>
+                        <span
+                            className={`rounded-full px-2 py-1 text-[10px] font-bold ${item.priority === 'Needs attention' ? 'bg-scholarly-coral-soft text-scholarly-coral-dark' : 'bg-scholarly-teal-soft text-scholarly-teal-dark'}`}
+                        >
+                            {item.priority}
+                        </span>
+                        <span className="rounded-full bg-scholarly-blue-white px-2 py-1 text-[10px] font-bold text-scholarly-slate">
+                            {item.statusLabel}
+                        </span>
+                    </div>
+                    <p className="mt-1 flex items-center gap-1.5 text-sm text-scholarly-slate">
+                        <FileText className="size-3.5" />
+                        {item.document} · {item.scholarship}
+                    </p>
+                    <p className="mt-1 flex items-center gap-1.5 text-xs text-scholarly-slate-light">
+                        <Clock3 className="size-3.5" />
+                        {item.submitted} ·{' '}
+                        <strong
+                            className={
+                                item.priority === 'Needs attention'
+                                    ? 'text-scholarly-coral-dark'
+                                    : 'text-scholarly-slate'
+                            }
+                        >
+                            {item.due}
+                        </strong>
+                    </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    {item.status !== 'in_review' && (
+                        <button
+                            type="button"
+                            onClick={startReview}
+                            className="inline-flex items-center justify-center rounded-lg border border-scholarly-border px-4 py-2.5 text-xs font-bold text-scholarly-navy hover:border-scholarly-blue hover:text-scholarly-blue"
+                        >
+                            Start review
+                        </button>
+                    )}
+                    <button
+                        type="button"
+                        onClick={() => setOpen((value) => !value)}
+                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-scholarly-blue px-4 py-2.5 text-xs font-bold text-white hover:bg-scholarly-blue-dark"
+                    >
+                        {open ? 'Close review' : 'Open review'}
+                    </button>
+                </div>
+            </div>
+
+            {open && (
+                <form
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        submit('approve');
+                    }}
+                    className="mt-4 rounded-xl border border-scholarly-border bg-scholarly-blue-white p-4"
+                >
+                    <label
+                        htmlFor={`feedback-${item.id}`}
+                        className="text-xs font-bold text-scholarly-navy"
+                    >
+                        Feedback for {item.learner}
+                    </label>
+                    <textarea
+                        id={`feedback-${item.id}`}
+                        value={form.data.feedback}
+                        onChange={(event) =>
+                            form.setData('feedback', event.target.value)
+                        }
+                        rows={4}
+                        placeholder="Share one honest observation and one practical next step."
+                        className="mt-2 w-full rounded-lg border border-scholarly-border bg-white p-3 text-sm outline-none focus:border-scholarly-blue"
+                    />
+                    <InputError
+                        message={form.errors.feedback}
+                        className="mt-1"
+                    />
+                    <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                            type="submit"
+                            disabled={form.processing}
+                            className="inline-flex items-center justify-center rounded-lg bg-scholarly-teal px-4 py-2.5 text-xs font-bold text-white hover:bg-scholarly-teal-dark disabled:opacity-60"
+                        >
+                            Approve document
+                        </button>
+                        <button
+                            type="button"
+                            disabled={form.processing}
+                            onClick={() => submit('request_changes')}
+                            className="inline-flex items-center justify-center rounded-lg border border-scholarly-coral px-4 py-2.5 text-xs font-bold text-scholarly-coral-dark hover:bg-scholarly-coral-soft disabled:opacity-60"
+                        >
+                            Request changes
+                        </button>
+                    </div>
+                </form>
+            )}
+        </div>
+    );
+}
+
+export default function MentorReviewQueue({
+    stats,
+    items,
+}: MentorReviewQueueProps) {
     const [filter, setFilter] = useState(filters[0]);
     const [query, setQuery] = useState('');
     const visibleItems = useMemo(
         () =>
-            reviewQueue.filter((item) => {
+            items.filter((item) => {
                 const matchesFilter =
                     filter === 'All reviews' || item.priority === filter;
                 const matchesQuery =
@@ -27,7 +158,7 @@ export default function MentorReviewQueue() {
                         .includes(query.toLowerCase());
                 return matchesFilter && matchesQuery;
             }),
-        [filter, query],
+        [filter, items, query],
     );
 
     return (
@@ -50,7 +181,7 @@ export default function MentorReviewQueue() {
                     <section className="grid gap-4 sm:grid-cols-3">
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <p className="text-3xl font-bold">
-                                {reviewQueue.length}
+                                {stats.waiting}
                             </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Waiting for review
@@ -61,17 +192,19 @@ export default function MentorReviewQueue() {
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <p className="text-3xl font-bold text-scholarly-coral-dark">
-                                1
+                                {stats.dueToday}
                             </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Due today
                             </p>
                             <p className="mt-1 text-xs text-scholarly-slate">
-                                Amina’s SOP needs attention
+                                Documents that need a look today
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-scholarly-navy p-5 text-white shadow-sm">
-                            <p className="text-3xl font-bold">92%</p>
+                            <p className="text-3xl font-bold">
+                                {stats.helpfulness}%
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Feedback helpfulness
                             </p>
@@ -108,41 +241,7 @@ export default function MentorReviewQueue() {
                         </div>
                         <div className="divide-y divide-scholarly-border-soft">
                             {visibleItems.map((item) => (
-                                <div
-                                    key={item.id}
-                                    className="flex flex-col gap-4 py-5 first:pb-5 sm:flex-row sm:items-center"
-                                >
-                                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-scholarly-blue-soft text-xs font-bold text-scholarly-blue">
-                                        {item.initials}
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <h2 className="font-bold">
-                                                {item.learner}
-                                            </h2>
-                                            <span
-                                                className={`rounded-full px-2 py-1 text-[10px] font-bold ${item.priority === 'Needs attention' ? 'bg-scholarly-coral-soft text-scholarly-coral-dark' : 'bg-scholarly-teal-soft text-scholarly-teal-dark'}`}
-                                            >
-                                                {item.priority}
-                                            </span>
-                                        </div>
-                                        <p className="mt-1 flex items-center gap-1.5 text-sm text-scholarly-slate">
-                                            <FileText className="size-3.5" />
-                                            {item.document} · {item.scholarship}
-                                        </p>
-                                        <p className="mt-1 flex items-center gap-1.5 text-xs text-scholarly-slate-light">
-                                            <Clock3 className="size-3.5" />
-                                            {item.submitted} · {item.due}
-                                        </p>
-                                    </div>
-                                    <Link
-                                        href={`/mentor-coming-soon?feature=Review ${encodeURIComponent(item.learner)}`}
-                                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-scholarly-blue px-4 py-2.5 text-xs font-bold text-white hover:bg-scholarly-blue-dark"
-                                    >
-                                        Open review{' '}
-                                        <ArrowRight className="size-3.5" />
-                                    </Link>
-                                </div>
+                                <ReviewRow key={item.id} item={item} />
                             ))}
                             {visibleItems.length === 0 && (
                                 <div className="py-14 text-center">
