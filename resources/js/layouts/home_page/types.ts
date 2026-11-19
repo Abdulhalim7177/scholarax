@@ -1,6 +1,14 @@
-import { dashboard } from '@/routes';
-import type { MentorSummary, ScholarshipSummary } from '@/types/domain';
-import type { LucideIcon } from 'lucide-react';
+import type { dashboard } from '@/routes';
+import type {
+    HomeApplicationPreview,
+    HomeContent,
+    HomeDeadline,
+    HomeImpactStat,
+    HomeTestimonial,
+    MentorSummary,
+    ScholarshipSummary,
+} from '@/types/domain';
+
 export type HomePageProps = {
     auth?: {
         user?: { name?: string } | null;
@@ -12,11 +20,9 @@ export type HomePageProps = {
     countryCount?: number;
     studentCount?: number;
     featuredMentor?: MentorSummary | null;
-};
-
-export type Feature = {
-    icon: LucideIcon;
-    title: string;
-    body: string;
-    tone: 'blue' | 'gold' | 'coral';
+    impactStats?: HomeImpactStat[];
+    testimonials?: HomeTestimonial[];
+    content?: HomeContent;
+    applicationPreview?: HomeApplicationPreview;
+    nextDeadline?: HomeDeadline | null;
 };

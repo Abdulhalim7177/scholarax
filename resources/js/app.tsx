@@ -33,7 +33,6 @@ void createInertiaApp({
             case name.startsWith('admin-'):
                 return AdminLayout;
             case name === 'mentor-dashboard':
-            case name === 'mentor-coming-soon':
             case name.startsWith('mentor-'):
                 return MentorLayout;
             case name.startsWith('settings/'):

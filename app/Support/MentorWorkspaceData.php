@@ -136,6 +136,61 @@ final class MentorWorkspaceData
     }
 
     /**
+     * Build the mentor's view of a single learner.
+     *
+     * @return array<string, mixed>
+     */
+    public static function learner(MentorProfile $profile, Mentorship $mentorship): array
+    {
+        abort_unless($mentorship->mentor_profile_id === $profile->id, 404);
+
+        $mentorship->load([
+            'student.applications.scholarship',
+            'student.applications.tasks',
+            'sessions',
+            'latestMessage',
+        ]);
+
+        $summary = self::learnerSummary($mentorship);
+
+        $applications = $mentorship->student->applications
+            ->sortByDesc('updated_at')
+            ->map(fn (Application $application) => [
+                'id' => $application->id,
+                'scholarship' => $application->scholarship->title,
+                'status' => $application->status->value,
+                'statusLabel' => $application->status->label(),
+                'progress' => $application->progress,
+                'nextStep' => $application->next_step,
+                'deadlineAt' => $application->deadline_at?->toIso8601String(),
+                'openTasks' => $application->tasks
+                    ->filter(fn ($task) => $task->completed_at === null)
+                    ->count(),
+            ])
+            ->values()
+            ->all();
+
+        $sessions = $mentorship->sessions
+            ->map(fn (MentorSession $session) => [
+                'id' => $session->id,
+                'topic' => $session->topic,
+                'date' => self::dateLabel($session->scheduled_at),
+                'time' => $session->scheduled_at->format('g:i A'),
+                'status' => $session->status->value,
+                'statusLabel' => $session->status->label(),
+            ])
+            ->values()
+            ->all();
+
+        return [
+            'learner' => $summary,
+            'applications' => $applications,
+            'sessions' => $sessions,
+            'messageUrl' => '/mentor-messages?mentorship='.$mentorship->id,
+        ];
+    }
+
+    /**
      * Build the mentor sessions payload.
      *
      * @return array<string, mixed>

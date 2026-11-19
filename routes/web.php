@@ -25,6 +25,7 @@ use App\Http\Controllers\MentorProfileController;
 use App\Http\Controllers\MentorReviewQueueController;
 use App\Http\Controllers\MentorSessionController;
 use App\Http\Controllers\MentorshipController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SavedScholarshipController;
 use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\Student\EducationController;
@@ -39,7 +40,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
-    Route::inertia('coming-soon', 'coming-soon')->name('coming-soon');
+    Route::get('notifications', NotificationController::class)->name('notifications');
     Route::get('scholarships', [ScholarshipController::class, 'index'])->name('scholarships.index');
     Route::get('scholarships/{scholarship}', [ScholarshipController::class, 'show'])->name('scholarships.show');
     Route::post('saved-scholarships/{scholarship}', [SavedScholarshipController::class, 'store'])->name('saved-scholarships.store');
@@ -77,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('mentorships', [MentorshipController::class, 'store'])->name('mentorships.store');
     Route::post('mentorships/{mentorship}/sessions', [StudentSessionController::class, 'store'])->name('student-sessions.store');
     Route::get('cv-sop-builder', [BuilderController::class, 'index'])->name('cv-sop-builder');
+    Route::get('cv-sop-builder/documents/{document}/preview', [BuilderController::class, 'preview'])->name('builder-documents.preview');
     Route::patch('cv-sop-builder/documents/{document}', [CvSopDocumentController::class, 'update'])->name('builder-documents.update');
     Route::post('cv-sop-builder/documents/{document}/applications', [CvSopDocumentController::class, 'attach'])->name('builder-documents.attach');
     Route::delete('cv-sop-builder/documents/{document}/applications/{application}', [CvSopDocumentController::class, 'detach'])->name('builder-documents.detach');
@@ -107,15 +109,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:mentor,admin'])->group(function () {
-    Route::inertia('mentor-coming-soon', 'mentor-coming-soon')->name('mentor-coming-soon');
     Route::get('mentor-dashboard', MentorDashboardController::class)->name('mentor-dashboard');
     Route::get('mentor-review-queue', [MentorReviewQueueController::class, 'index'])->name('mentor-review-queue');
     Route::patch('mentor-review-queue/{documentReview}', [MentorReviewQueueController::class, 'update'])->name('mentor-review-queue.update');
     Route::get('mentor-learners', [MentorLearnerController::class, 'index'])->name('mentor-learners');
+    Route::get('mentor-learners/{mentorship}', [MentorLearnerController::class, 'show'])->name('mentor-learners.show');
     Route::get('mentor-sessions', [MentorSessionController::class, 'index'])->name('mentor-sessions');
     Route::post('mentor-sessions', [MentorSessionController::class, 'store'])->name('mentor-sessions.store');
     Route::patch('mentor-sessions/{session}', [MentorSessionController::class, 'update'])->name('mentor-sessions.update');
     Route::get('mentor-impact', MentorImpactController::class)->name('mentor-impact');
+    Route::get('mentor-impact/export', [MentorImpactController::class, 'download'])->name('mentor-impact.download');
     Route::get('mentor-messages', [MentorMessageController::class, 'index'])->name('mentor-messages');
     Route::post('mentor-messages', [MentorMessageController::class, 'store'])->name('mentor-messages.store');
     Route::get('mentor-profile', [MentorProfileController::class, 'edit'])->name('mentor-profile.edit');

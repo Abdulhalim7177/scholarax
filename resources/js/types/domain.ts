@@ -1073,3 +1073,96 @@ export type AdminSettingsProps = {
     };
     updatedAt: string | null;
 };
+
+export type HomeTone = 'blue' | 'teal' | 'coral' | 'gold';
+
+export type HomeContentBlock = {
+    id: number;
+    eyebrow: string | null;
+    title: string;
+    body: string | null;
+    badge: string | null;
+    icon: string | null;
+    tone: HomeTone;
+};
+
+export type HomeImpactStat = {
+    key: string;
+    label: string;
+    icon: string;
+    value: number;
+};
+
+export type HomeTestimonial = {
+    id: number;
+    quote: string;
+    authorName: string;
+    authorDetail: string | null;
+    initials: string;
+    tone: HomeTone;
+};
+
+export type HomeContent = {
+    features: HomeContentBlock[];
+    processSteps: HomeContentBlock[];
+    applicationSteps: HomeContentBlock[];
+};
+
+export type HomeApplicationPreview = {
+    progress: number;
+    completedSteps: number;
+    totalSteps: number;
+};
+
+export type HomeDeadline = {
+    id: number;
+    title: string;
+    url: string;
+    date: string;
+    monthLabel: string;
+    day: number;
+    daysLeft: number;
+};
+
+export type NotificationEntry = {
+    id: number;
+    type: string;
+    title: string;
+    body: string | null;
+    createdAt: string | null;
+};
+
+export type NotificationsProps = {
+    notifications: Paginated<NotificationEntry>;
+};
+
+export type BuilderPreviewProps = {
+    document: BuilderDocument;
+};
+
+export type MentorLearnerApplication = {
+    id: number;
+    scholarship: string;
+    status: string;
+    statusLabel: string;
+    progress: number;
+    nextStep: string | null;
+    deadlineAt: string | null;
+    openTasks: number;
+};
+
+export type MentorLearnerSession = {
+    id: number;
+    topic: string;
+    date: string;
+    time: string;
+    status: string;
+    statusLabel: string;
+};
+
+export type MentorLearnerDetailProps = {
+    learner: MentorLearner;
+    applications: MentorLearnerApplication[];
+    sessions: MentorLearnerSession[];
+    messageUrl: string;
+};

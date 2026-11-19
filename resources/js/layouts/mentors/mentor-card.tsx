@@ -103,7 +103,7 @@ export default function MentorCard({ mentor }: MentorCardProps) {
                     View profile <ArrowUpRight className="size-3.5" />
                 </Link>
                 <Link
-                    href={`/coming-soon?feature=${encodeURIComponent(`Chat with ${mentor.name}`)}`}
+                    href={`/mentors/${mentor.id}#mentorship`}
                     className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-scholarly-blue px-3 text-xs font-bold text-white transition hover:bg-scholarly-blue-dark"
                 >
                     Message <MessageCircle className="size-3.5" />

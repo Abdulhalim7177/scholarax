@@ -1,8 +1,17 @@
 import { Check, Sparkles } from 'lucide-react';
 
+import type { HomeApplicationPreview, HomeContentBlock } from '@/types/domain';
 import SectionIntro from './section-intro';
 
-export default function ApplicationSection() {
+type ApplicationSectionProps = {
+    steps: HomeContentBlock[];
+    preview: HomeApplicationPreview;
+};
+
+export default function ApplicationSection({
+    steps,
+    preview,
+}: ApplicationSectionProps) {
     return (
         <section
             id="application"
@@ -37,7 +46,7 @@ export default function ApplicationSection() {
                             </div>
                             <div className="text-right">
                                 <p className="text-2xl font-bold text-scholarly-blue">
-                                    72%
+                                    {preview.progress}%
                                 </p>
                                 <p className="text-[11px] font-semibold text-scholarly-slate-light">
                                     complete
@@ -45,39 +54,42 @@ export default function ApplicationSection() {
                             </div>
                         </div>
                         <div className="mt-6 h-2 rounded-full bg-scholarly-blue-soft">
-                            <div className="h-2 w-[72%] rounded-full bg-scholarly-blue" />
+                            <div
+                                className="h-2 rounded-full bg-scholarly-blue"
+                                style={{ width: `${preview.progress}%` }}
+                            />
                         </div>
                         <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                            {[
-                                'Personal details',
-                                'Education',
-                                'Experience',
-                                'Statement of purpose',
-                            ].map((step, index) => (
-                                <div
-                                    key={step}
-                                    className={`flex items-center gap-3 rounded-xl border p-3 ${index < 2 ? 'border-scholarly-teal-border bg-scholarly-teal-white' : 'border-scholarly-border'}`}
-                                >
-                                    <span
-                                        className={`flex size-7 items-center justify-center rounded-full text-xs font-bold ${index < 2 ? 'bg-scholarly-teal text-white' : 'bg-scholarly-blue-soft text-scholarly-blue'}`}
+                            {steps.map((step, index) => {
+                                const complete = index < preview.completedSteps;
+
+                                return (
+                                    <div
+                                        key={step.id}
+                                        className={`flex items-center gap-3 rounded-xl border p-3 ${complete ? 'border-scholarly-teal-border bg-scholarly-teal-white' : 'border-scholarly-border'}`}
                                     >
-                                        {index < 2 ? (
-                                            <Check className="size-4" />
-                                        ) : (
-                                            index + 1
-                                        )}
-                                    </span>
-                                    <span className="text-xs font-bold text-scholarly-navy">
-                                        {step}
-                                    </span>
-                                </div>
-                            ))}
+                                        <span
+                                            className={`flex size-7 items-center justify-center rounded-full text-xs font-bold ${complete ? 'bg-scholarly-teal text-white' : 'bg-scholarly-blue-soft text-scholarly-blue'}`}
+                                        >
+                                            {complete ? (
+                                                <Check className="size-4" />
+                                            ) : (
+                                                index + 1
+                                            )}
+                                        </span>
+                                        <span className="text-xs font-bold text-scholarly-navy">
+                                            {step.title}
+                                        </span>
+                                    </div>
+                                );
+                            })}
                         </div>
                         <div className="mt-7 flex items-center gap-3 rounded-xl bg-scholarly-blue-white p-4">
                             <Sparkles className="size-5 text-scholarly-gold" />
                             <p className="text-xs leading-5 font-semibold text-scholarly-slate">
-                                You’re making progress. Add your experience to
-                                unlock your next step.
+                                {preview.completedSteps >= preview.totalSteps
+                                    ? 'Your application is complete. Review it once more before you submit.'
+                                    : 'You’re making progress. Keep going to unlock your next step.'}
                             </p>
                         </div>
                     </div>

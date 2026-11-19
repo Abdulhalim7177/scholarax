@@ -17,7 +17,7 @@ export default function DashboardHeader({ firstName }: { firstName: string }) {
             </div>
             <div className="flex items-center gap-3">
                 <Link
-                    href="/coming-soon?feature=Notifications"
+                    href="/notifications"
                     className="flex size-11 items-center justify-center rounded-xl border border-scholarly-border bg-white text-scholarly-navy shadow-sm transition hover:border-scholarly-blue hover:text-scholarly-blue"
                     aria-label="Open notifications"
                 >

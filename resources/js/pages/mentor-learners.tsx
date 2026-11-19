@@ -154,7 +154,7 @@ export default function MentorLearners({
                                     </strong>
                                 </p>
                                 <Link
-                                    href={`/mentor-coming-soon?feature=${encodeURIComponent(`${learner.name} profile`)}`}
+                                    href={`/mentor-learners/${learner.id}`}
                                     className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-scholarly-blue"
                                 >
                                     View learner profile{' '}

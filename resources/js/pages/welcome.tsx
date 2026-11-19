@@ -21,9 +21,16 @@ export default function Welcome() {
         currentTeam,
         featuredScholarships = [],
         scholarshipCount = 0,
-        countryCount = 0,
-        studentCount = 0,
         featuredMentor = null,
+        impactStats = [],
+        testimonials = [],
+        content = { features: [], processSteps: [], applicationSteps: [] },
+        applicationPreview = {
+            progress: 0,
+            completedSteps: 0,
+            totalSteps: 0,
+        },
+        nextDeadline = null,
     } = usePage<HomePageProps>().props;
     const dashboardUrl = dashboard.url();
     const pageProps = { auth, currentTeam, dashboardUrl };
@@ -35,21 +42,20 @@ export default function Welcome() {
                 <HomeHeader {...pageProps} />
                 <main>
                     <HeroSection {...pageProps} />
-                    <ImpactStrip
-                        scholarshipCount={scholarshipCount}
-                        countryCount={countryCount}
-                        studentCount={studentCount}
-                    />
-                    <FeaturesSection />
+                    <ImpactStrip stats={impactStats} />
+                    <FeaturesSection features={content.features} />
                     <ScholarshipSearchSection
                         scholarships={featuredScholarships}
                         total={scholarshipCount}
                     />
-                    <ApplicationSection />
+                    <ApplicationSection
+                        steps={content.applicationSteps}
+                        preview={applicationPreview}
+                    />
                     <MentorsSection mentor={featuredMentor} />
-                    <ProcessSection />
-                    <DeadlineSection />
-                    <TestimonialSection />
+                    <ProcessSection steps={content.processSteps} />
+                    <DeadlineSection deadline={nextDeadline} />
+                    <TestimonialSection testimonials={testimonials} />
                     <CtaSection {...pageProps} />
                 </main>
                 <SiteFooter />

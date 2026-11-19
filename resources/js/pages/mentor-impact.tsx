@@ -35,7 +35,7 @@ export default function MentorImpact({
                             </p>
                         </div>
                         <Link
-                            href="/mentor-coming-soon?feature=Download%20impact%20report"
+                            href="/mentor-impact/export"
                             className="inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl border border-scholarly-border bg-white px-4 text-sm font-bold hover:border-scholarly-blue hover:text-scholarly-blue sm:self-auto"
                         >
                             Download report <ArrowUpRight className="size-4" />

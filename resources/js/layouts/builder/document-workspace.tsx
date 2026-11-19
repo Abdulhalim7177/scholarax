@@ -52,7 +52,6 @@ export default function DocumentWorkspace({
         ? (draft.sections[activeSection.id] ?? '')
         : '';
     const words = content.trim().split(/\s+/).filter(Boolean).length;
-    const modeLabel = isCv ? 'CV' : 'SOP';
 
     return (
         <section className="rounded-2xl border border-scholarly-border bg-white shadow-sm">
@@ -70,7 +69,7 @@ export default function DocumentWorkspace({
                 </div>
                 <div className="flex gap-2">
                     <Link
-                        href={`/coming-soon?feature=Preview ${modeLabel}`}
+                        href={`/cv-sop-builder/documents/${document.id}/preview`}
                         className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-scholarly-border px-3 text-xs font-bold text-scholarly-navy hover:border-scholarly-blue hover:text-scholarly-blue"
                     >
                         <Eye className="size-3.5" /> Preview
@@ -223,7 +222,11 @@ export default function DocumentWorkspace({
                                 : 'Keep the focus on your journey. The best statement connects one clear story to your future goals.'}
                         </p>
                         <Link
-                            href={`/coming-soon?feature=Improve my ${modeLabel}`}
+                            href={
+                                isCv
+                                    ? '/mentors?expertise=cv-review'
+                                    : '/mentors?expertise=sop-review'
+                            }
                             className="mt-5 inline-flex items-center gap-1 text-xs font-bold text-scholarly-blue"
                         >
                             Get guided feedback{' '}

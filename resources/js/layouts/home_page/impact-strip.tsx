@@ -1,9 +1,8 @@
-import { BookOpen, Globe2, UsersRound } from 'lucide-react';
+import { homeIcon } from '@/lib/home-icons';
+import type { HomeImpactStat } from '@/types/domain';
 
 type ImpactStripProps = {
-    scholarshipCount: number;
-    countryCount: number;
-    studentCount: number;
+    stats: HomeImpactStat[];
 };
 
 const compactNumber = new Intl.NumberFormat('en', {
@@ -11,51 +10,37 @@ const compactNumber = new Intl.NumberFormat('en', {
     maximumFractionDigits: 1,
 });
 
-export default function ImpactStrip({
-    scholarshipCount,
-    countryCount,
-    studentCount,
-}: ImpactStripProps) {
-    const metrics = [
-        {
-            value: compactNumber.format(studentCount),
-            label: 'students supported',
-            icon: UsersRound,
-        },
-        {
-            value: compactNumber.format(countryCount),
-            label: 'countries',
-            icon: Globe2,
-        },
-        {
-            value: compactNumber.format(scholarshipCount),
-            label: 'scholarship programs',
-            icon: BookOpen,
-        },
-    ];
+export default function ImpactStrip({ stats }: ImpactStripProps) {
+    if (stats.length === 0) {
+        return null;
+    }
 
     return (
         <section className="mt-15 bg-white">
             <div className="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-scholarly-border-soft px-5 py-7 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-8 lg:px-10">
-                {metrics.map(({ value, label, icon: MetricIcon }) => (
-                    <div
-                        key={label}
-                        className="flex items-center justify-center gap-4 py-4 sm:py-1"
-                    >
-                        <MetricIcon
-                            className="size-7 text-scholarly-blue"
-                            strokeWidth={1.8}
-                        />
-                        <div>
-                            <p className="text-xl font-bold tracking-tight text-scholarly-navy">
-                                {value}
-                            </p>
-                            <p className="text-xs font-semibold text-scholarly-slate">
-                                {label}
-                            </p>
+                {stats.map((stat) => {
+                    const MetricIcon = homeIcon(stat.icon);
+
+                    return (
+                        <div
+                            key={stat.key}
+                            className="flex items-center justify-center gap-4 py-4 sm:py-1"
+                        >
+                            <MetricIcon
+                                className="size-7 text-scholarly-blue"
+                                strokeWidth={1.8}
+                            />
+                            <div>
+                                <p className="text-xl font-bold tracking-tight text-scholarly-navy">
+                                    {compactNumber.format(stat.value)}
+                                </p>
+                                <p className="text-xs font-semibold text-scholarly-slate">
+                                    {stat.label}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </section>
     );
