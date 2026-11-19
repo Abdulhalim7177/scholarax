@@ -853,3 +853,223 @@ export type MentorMessagesProps = {
     } | null;
     thread: MentorMessageThreadItem[];
 };
+
+export type AdminTone = 'blue' | 'teal' | 'coral' | 'gold';
+
+export type AdminDashboardProps = {
+    stats: {
+        totalUsers: number;
+        usersThisMonth: number;
+        usersGrowth: number;
+        liveScholarships: number;
+        scholarshipsThisMonth: number;
+        applicationsTracked: number;
+        submittedThisWeek: number;
+        activeMentorships: number;
+        verifiedMentors: number;
+    };
+    moderation: {
+        openTasks: number;
+        items: Array<{
+            key: string;
+            label: string;
+            count: number;
+            note: string;
+            href: string;
+            tone: AdminTone;
+        }>;
+    };
+    recentUsers: Array<{
+        id: number;
+        name: string;
+        email: string;
+        role: string;
+        roleLabel: string;
+        initials: string;
+        tone: AdminTone;
+        joinedAt: string | null;
+    }>;
+    checks: Array<{
+        label: string;
+        ok: boolean;
+        note: string;
+    }>;
+    checkedAt: string;
+};
+
+export type AdminUserRow = {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    roleLabel: string;
+    status: 'active' | 'pending';
+    initials: string;
+    tone: AdminTone;
+    mentorProfileId: number | null;
+    joinedAt: string | null;
+};
+
+export type AdminUsersProps = {
+    users: Paginated<AdminUserRow>;
+    filters: {
+        q: string;
+        role: string;
+    };
+    roles: ScholarshipOption[];
+    stats: {
+        total: number;
+        verifiedMentors: number;
+        newThisWeek: number;
+    };
+};
+
+export type AdminMentorRow = {
+    id: number;
+    name: string;
+    headline: string | null;
+    specialty: string | null;
+    organization: string | null;
+    country: string | null;
+    status: string;
+    statusLabel: string;
+    rating: string | null;
+    reviews: number;
+    learners: number;
+    initials: string;
+    tone: AdminTone;
+};
+
+export type AdminMentorsProps = {
+    mentors: Paginated<AdminMentorRow>;
+    filters: {
+        q: string;
+        status: string;
+    };
+    statuses: ScholarshipOption[];
+    stats: {
+        verified: number;
+        pending: number;
+        averageRating: string;
+    };
+};
+
+export type AdminApplicationRow = {
+    id: number;
+    learner: string;
+    learnerEmail: string;
+    scholarship: string;
+    stage: string;
+    stageLabel: string;
+    progress: number;
+    risk: 'normal' | 'needs_check';
+    submittedAt: string | null;
+    deadlineAt: string | null;
+    initials: string;
+    tone: AdminTone;
+};
+
+export type AdminApplicationsProps = {
+    applications: Paginated<AdminApplicationRow>;
+    filters: {
+        q: string;
+        stage: string;
+    };
+    stages: ScholarshipOption[];
+    stats: {
+        tracked: number;
+        submittedThisWeek: number;
+        needsAttention: number;
+    };
+};
+
+export type AdminModerationRow = {
+    id: number;
+    targetType: string;
+    targetLabel: string;
+    targetUrl: string | null;
+    reason: string;
+    reasonLabel: string;
+    details: string | null;
+    reporter: string;
+    status: string;
+    statusLabel: string;
+    resolutionNote: string | null;
+    resolvedAt: string | null;
+    createdAt: string | null;
+};
+
+export type AdminModerationProps = {
+    reports: Paginated<AdminModerationRow>;
+    filters: {
+        q: string;
+        status: string;
+    };
+    statuses: ScholarshipOption[];
+    stats: {
+        open: number;
+        resolvedThisWeek: number;
+        dismissed: number;
+    };
+};
+
+export type AdminReportProps = {
+    stats: {
+        activeUsers: {
+            value: number;
+            change: number;
+        };
+        completion: {
+            value: number;
+            change: number;
+        };
+        matchRate: {
+            value: number;
+            change: number;
+        };
+        satisfaction: {
+            value: number;
+            responses: number;
+        };
+    };
+    series: Array<{
+        label: string;
+        users: number;
+        applications: number;
+        usersHeight: number;
+        applicationsHeight: number;
+    }>;
+    destinations: Array<{
+        country: string;
+        count: number;
+        percent: number;
+    }>;
+    exports: Array<{
+        id: number;
+        status: string;
+        statusLabel: string;
+        rows: number;
+        requestedAt: string | null;
+        completedAt: string | null;
+        downloadUrl: string | null;
+    }>;
+    generatedAt: string;
+};
+
+export type PlatformSettingValues = {
+    require_mentor_verification: boolean;
+    review_new_scholarships: boolean;
+    report_notifications: boolean;
+    weekly_platform_digest: boolean;
+    default_timezone: string;
+    application_data_retention_months: number;
+};
+
+export type AdminSettingsProps = {
+    settings: PlatformSettingValues;
+    options: {
+        timezones: ScholarshipOption[];
+        retention: ScholarshipOption[];
+    };
+    updatedAt: string | null;
+};

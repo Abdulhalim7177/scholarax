@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import {
     ArrowDownRight,
     ArrowUpRight,
@@ -7,10 +7,64 @@ import {
     Globe2,
     GraduationCap,
     HeartHandshake,
+    Loader2,
     UsersRound,
 } from 'lucide-react';
 
-export default function AdminReports() {
+import { relativeTime } from '@/lib/format';
+import type { AdminReportProps } from '@/types/domain';
+
+const destinationColours = [
+    'bg-scholarly-blue',
+    'bg-scholarly-teal',
+    'bg-scholarly-gold',
+    'bg-scholarly-coral',
+];
+
+function ChangeBadge({
+    change,
+    suffix = '%',
+}: {
+    change: number;
+    suffix?: string;
+}) {
+    if (change === 0) {
+        return (
+            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-scholarly-slate">
+                No change
+            </span>
+        );
+    }
+
+    const positive = change > 0;
+
+    return (
+        <span
+            className={`mt-2 inline-flex items-center gap-1 text-xs font-bold ${positive ? 'text-scholarly-teal-dark' : 'text-scholarly-coral-dark'}`}
+        >
+            {positive ? (
+                <ArrowUpRight className="size-3.5" />
+            ) : (
+                <ArrowDownRight className="size-3.5" />
+            )}
+            {positive ? '+' : ''}
+            {Math.abs(change).toFixed(1)}
+            {suffix}
+        </span>
+    );
+}
+
+export default function AdminReports({
+    stats,
+    series,
+    destinations,
+    exports,
+    generatedAt,
+}: AdminReportProps) {
+    const requestExport = () => {
+        router.post('/admin-reports/export', {}, { preserveScroll: true });
+    };
+
     return (
         <>
             <Head title="Reports and insights" />
@@ -29,52 +83,61 @@ export default function AdminReports() {
                                 outcomes Scholarly is creating.
                             </p>
                         </div>
-                        <Link
-                            href="/admin-coming-soon?feature=Download%20admin%20report"
+                        <button
+                            type="button"
+                            onClick={requestExport}
                             className="inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl border border-scholarly-border bg-white px-4 text-sm font-bold hover:border-scholarly-blue hover:text-scholarly-blue sm:self-auto"
                         >
                             <Download className="size-4" /> Export report
-                        </Link>
+                        </button>
                     </header>
                     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <UsersRound className="size-5 text-scholarly-blue" />
-                            <p className="mt-5 text-3xl font-bold">2,481</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.activeUsers.value.toLocaleString()}
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Monthly active users
                             </p>
-                            <p className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-scholarly-teal-dark">
-                                <ArrowUpRight className="size-3.5" /> 14.8%
-                            </p>
+                            <ChangeBadge change={stats.activeUsers.change} />
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <GraduationCap className="size-5 text-scholarly-teal" />
-                            <p className="mt-5 text-3xl font-bold">68%</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.completion.value}%
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Application completion
                             </p>
-                            <p className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-scholarly-teal-dark">
-                                <ArrowUpRight className="size-3.5" /> 8.2%
-                            </p>
+                            <ChangeBadge
+                                change={stats.completion.change}
+                                suffix=" pts"
+                            />
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <HeartHandshake className="size-5 text-scholarly-coral" />
-                            <p className="mt-5 text-3xl font-bold">76%</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.matchRate.value}%
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Mentor match success
                             </p>
-                            <p className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-scholarly-coral-dark">
-                                <ArrowDownRight className="size-3.5" /> 2.1%
-                            </p>
+                            <ChangeBadge
+                                change={stats.matchRate.change}
+                                suffix=" pts"
+                            />
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-scholarly-navy p-5 text-white shadow-sm">
                             <BarChart3 className="size-5 text-scholarly-gold" />
-                            <p className="mt-5 text-3xl font-bold">91%</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.satisfaction.value}%
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Platform satisfaction
                             </p>
                             <p className="mt-2 text-xs text-white/60">
-                                From 420 responses
+                                From {stats.satisfaction.responses} reviews
                             </p>
                         </div>
                     </section>
@@ -86,33 +149,39 @@ export default function AdminReports() {
                                         Platform growth
                                     </h2>
                                     <p className="mt-1 text-sm text-scholarly-slate">
-                                        New users and active applications.
+                                        New users and applications, last six
+                                        months.
                                     </p>
                                 </div>
                                 <span className="rounded-lg bg-scholarly-blue-white px-3 py-2 text-xs font-bold text-scholarly-slate">
-                                    Last 6 months
+                                    Generated {relativeTime(generatedAt)}
                                 </span>
                             </div>
                             <div className="mt-8 flex h-60 items-end gap-3 border-b border-l border-scholarly-border p-4">
-                                {[
-                                    30, 42, 37, 54, 60, 66, 64, 72, 79, 85, 89,
-                                    96,
-                                ].map((height, index) => (
+                                {series.map((point) => (
                                     <div
-                                        key={index}
+                                        key={point.label}
                                         className="group flex flex-1 items-end gap-1"
+                                        title={`${point.label}: ${point.users} new users, ${point.applications} applications`}
                                     >
                                         <div
                                             className="w-1/2 rounded-t bg-scholarly-blue transition group-hover:bg-scholarly-teal"
-                                            style={{ height: `${height}%` }}
+                                            style={{
+                                                height: `${point.usersHeight}%`,
+                                            }}
                                         />
                                         <div
                                             className="w-1/2 rounded-t bg-scholarly-gold"
                                             style={{
-                                                height: `${Math.max(18, height - 20)}%`,
+                                                height: `${point.applicationsHeight}%`,
                                             }}
                                         />
                                     </div>
+                                ))}
+                            </div>
+                            <div className="mt-3 grid grid-cols-6 text-center text-[11px] font-semibold text-scholarly-slate">
+                                {series.map((point) => (
+                                    <span key={point.label}>{point.label}</span>
                                 ))}
                             </div>
                             <div className="mt-4 flex gap-5 text-xs text-scholarly-slate">
@@ -139,36 +208,99 @@ export default function AdminReports() {
                                 <Globe2 className="size-5 text-scholarly-blue" />
                             </div>
                             <div className="mt-6 space-y-5">
-                                {[
-                                    [
-                                        'United Kingdom',
-                                        '38%',
-                                        'bg-scholarly-blue',
-                                    ],
-                                    ['Germany', '24%', 'bg-scholarly-teal'],
-                                    [
-                                        'United States',
-                                        '18%',
-                                        'bg-scholarly-gold',
-                                    ],
-                                    ['France', '12%', 'bg-scholarly-coral'],
-                                ].map(([country, percent, color]) => (
-                                    <div key={country}>
+                                {destinations.map((destination, index) => (
+                                    <div key={destination.country}>
                                         <div className="flex justify-between text-xs font-semibold">
-                                            <span>{country}</span>
-                                            <span>{percent}</span>
+                                            <span>{destination.country}</span>
+                                            <span>{destination.percent}%</span>
                                         </div>
                                         <div className="mt-2 h-2 rounded-full bg-scholarly-blue-white">
                                             <div
-                                                className={`h-full rounded-full ${color}`}
-                                                style={{ width: percent }}
+                                                className={`h-full rounded-full ${destinationColours[index % destinationColours.length]}`}
+                                                style={{
+                                                    width: `${destination.percent}%`,
+                                                }}
                                             />
                                         </div>
+                                        <p className="mt-1 text-[11px] text-scholarly-slate">
+                                            {destination.count} applications
+                                        </p>
                                     </div>
                                 ))}
+                                {destinations.length === 0 && (
+                                    <p className="text-sm text-scholarly-slate">
+                                        Destinations appear once learners start
+                                        applications.
+                                    </p>
+                                )}
                             </div>
                         </section>
                     </div>
+                    <section className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h2 className="text-xl font-bold">
+                                    Recent exports
+                                </h2>
+                                <p className="mt-1 text-sm text-scholarly-slate">
+                                    Download a snapshot of the platform
+                                    aggregates.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="mt-5 divide-y divide-scholarly-border-soft">
+                            {exports.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <span className="flex size-10 items-center justify-center rounded-xl bg-scholarly-blue-soft text-scholarly-blue">
+                                            {item.status === 'completed' ? (
+                                                <Download className="size-4" />
+                                            ) : item.status === 'failed' ? (
+                                                <ArrowDownRight className="size-4" />
+                                            ) : (
+                                                <Loader2 className="size-4 animate-spin" />
+                                            )}
+                                        </span>
+                                        <div>
+                                            <p className="text-sm font-bold">
+                                                Platform report #{item.id}
+                                            </p>
+                                            <p className="mt-1 text-xs text-scholarly-slate">
+                                                Requested{' '}
+                                                {relativeTime(item.requestedAt)}
+                                                {item.rows > 0
+                                                    ? ` · ${item.rows} rows`
+                                                    : ''}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-xs font-bold text-scholarly-slate">
+                                            {item.statusLabel}
+                                        </span>
+                                        {item.downloadUrl !== null ? (
+                                            <a
+                                                href={item.downloadUrl}
+                                                className="inline-flex h-9 items-center gap-2 rounded-lg bg-scholarly-blue px-3 text-xs font-bold text-white hover:bg-scholarly-blue-dark"
+                                            >
+                                                <Download className="size-3.5" />
+                                                Download
+                                            </a>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            ))}
+                            {exports.length === 0 && (
+                                <p className="py-8 text-center text-sm text-scholarly-slate">
+                                    No exports yet. Generate one with the export
+                                    button above.
+                                </p>
+                            )}
+                        </div>
+                    </section>
                 </div>
             </div>
         </>

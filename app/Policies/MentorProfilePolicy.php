@@ -3,8 +3,10 @@
 namespace App\Policies;
 
 use App\Enums\UserRole;
+use App\Enums\VerificationStatus;
 use App\Models\MentorProfile;
 use App\Models\User;
+use App\Support\PlatformSettings;
 
 class MentorProfilePolicy
 {
@@ -21,9 +23,15 @@ class MentorProfilePolicy
      */
     public function view(User $user, MentorProfile $profile): bool
     {
-        return $profile->verification_status->isVerified()
-            || $profile->isOwnedBy($user)
-            || $user->role === UserRole::Admin;
+        if ($profile->isOwnedBy($user) || $user->role === UserRole::Admin) {
+            return true;
+        }
+
+        if (PlatformSettings::enabled('require_mentor_verification')) {
+            return $profile->verification_status->isVerified();
+        }
+
+        return $profile->verification_status !== VerificationStatus::Rejected;
     }
 
     /**

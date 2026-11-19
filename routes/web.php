@@ -1,7 +1,14 @@
 <?php
 
+use App\Http\Controllers\AdminApplicationController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminMentorController;
 use App\Http\Controllers\AdminMentorVerificationController;
+use App\Http\Controllers\AdminModerationController;
+use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminScholarshipController;
+use App\Http\Controllers\AdminSettingController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationDocumentController;
 use App\Http\Controllers\ApplicationTaskController;
@@ -76,9 +83,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::inertia('admin-coming-soon', 'admin-coming-soon')->name('admin-coming-soon');
-    Route::inertia('admin-dashboard', 'admin-dashboard')->name('admin-dashboard');
-    Route::inertia('admin-users', 'admin-users')->name('admin-users');
+    Route::get('admin-dashboard', AdminDashboardController::class)->name('admin-dashboard');
+    Route::get('admin-users', [AdminUserController::class, 'index'])->name('admin-users.index');
     Route::get('admin-scholarships', [AdminScholarshipController::class, 'index'])->name('admin-scholarships.index');
     Route::get('admin-scholarships/create', [AdminScholarshipController::class, 'create'])->name('admin-scholarships.create');
     Route::post('admin-scholarships', [AdminScholarshipController::class, 'store'])->name('admin-scholarships.store');
@@ -86,12 +92,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::patch('admin-scholarships/{scholarship}', [AdminScholarshipController::class, 'update'])->name('admin-scholarships.update');
     Route::delete('admin-scholarships/{scholarship}', [AdminScholarshipController::class, 'destroy'])->name('admin-scholarships.destroy');
     Route::post('admin-scholarships/{scholarship}/approve', [AdminScholarshipController::class, 'approve'])->name('admin-scholarships.approve');
-    Route::inertia('admin-mentors', 'admin-mentors')->name('admin-mentors');
+    Route::get('admin-mentors', [AdminMentorController::class, 'index'])->name('admin-mentors.index');
     Route::post('admin-mentors/{mentorProfile}/verify', [AdminMentorVerificationController::class, 'verify'])->name('admin-mentors.verify');
     Route::post('admin-mentors/{mentorProfile}/reject', [AdminMentorVerificationController::class, 'reject'])->name('admin-mentors.reject');
-    Route::inertia('admin-applications', 'admin-applications')->name('admin-applications');
-    Route::inertia('admin-reports', 'admin-reports')->name('admin-reports');
-    Route::inertia('admin-settings', 'admin-settings')->name('admin-settings');
+    Route::get('admin-applications', [AdminApplicationController::class, 'index'])->name('admin-applications.index');
+    Route::get('admin-moderation', [AdminModerationController::class, 'index'])->name('admin-moderation.index');
+    Route::post('admin-moderation/{contentReport}/resolve', [AdminModerationController::class, 'resolve'])->name('admin-moderation.resolve');
+    Route::post('admin-moderation/{contentReport}/dismiss', [AdminModerationController::class, 'dismiss'])->name('admin-moderation.dismiss');
+    Route::get('admin-reports', [AdminReportController::class, 'index'])->name('admin-reports.index');
+    Route::post('admin-reports/export', [AdminReportController::class, 'export'])->name('admin-reports.export');
+    Route::get('admin-reports/exports/{reportExport}/download', [AdminReportController::class, 'download'])->name('admin-reports.exports.download');
+    Route::get('admin-settings', [AdminSettingController::class, 'edit'])->name('admin-settings.edit');
+    Route::patch('admin-settings', [AdminSettingController::class, 'update'])->name('admin-settings.update');
 });
 
 Route::middleware(['auth', 'role:mentor,admin'])->group(function () {

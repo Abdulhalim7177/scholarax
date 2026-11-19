@@ -30,7 +30,6 @@ void createInertiaApp({
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name === 'admin-dashboard':
-            case name === 'admin-coming-soon':
             case name.startsWith('admin-'):
                 return AdminLayout;
             case name === 'mentor-dashboard':

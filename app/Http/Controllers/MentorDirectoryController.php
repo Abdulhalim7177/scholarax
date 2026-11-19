@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\VerificationStatus;
 use App\Models\MentorProfile;
 use App\Support\MentorData;
 use App\Support\MentorWorkspaceData;
+use App\Support\PlatformSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -28,8 +30,13 @@ class MentorDirectoryController extends Controller
         ];
 
         $query = MentorProfile::query()
-            ->verified()
             ->with(['user', 'country', 'expertiseTags']);
+
+        if (PlatformSettings::enabled('require_mentor_verification')) {
+            $query->verified();
+        } else {
+            $query->where('verification_status', '!=', VerificationStatus::Rejected);
+        }
 
         if ($filters['q'] !== '') {
             $like = '%'.$filters['q'].'%';
@@ -71,9 +78,16 @@ class MentorDirectoryController extends Controller
             ->withQueryString()
             ->through(fn (MentorProfile $profile) => MentorData::summary($profile));
 
-        $recommended = MentorProfile::query()
-            ->verified()
-            ->with(['user', 'country', 'expertiseTags'])
+        $recommendedQuery = MentorProfile::query()
+            ->with(['user', 'country', 'expertiseTags']);
+
+        if (PlatformSettings::enabled('require_mentor_verification')) {
+            $recommendedQuery->verified();
+        } else {
+            $recommendedQuery->where('verification_status', '!=', VerificationStatus::Rejected);
+        }
+
+        $recommended = $recommendedQuery
             ->orderByDesc('is_featured')
             ->orderByDesc('rating_avg')
             ->orderByDesc('reviews_count')

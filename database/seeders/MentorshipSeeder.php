@@ -11,6 +11,7 @@ use App\Enums\MentorSessionStatus;
 use App\Enums\MentorshipStatus;
 use App\Enums\SessionAttendance;
 use App\Enums\UserRole;
+use App\Models\ActivityEvent;
 use App\Models\Application;
 use App\Models\ApplicationDocument;
 use App\Models\Country;
@@ -288,7 +289,31 @@ class MentorshipSeeder extends Seeder
                     'is_published' => true,
                 ]);
             }
+
+            ActivityEvent::query()->firstOrCreate(
+                [
+                    'user_id' => $student->id,
+                    'type' => 'session_completed',
+                    'title' => 'Mentorship session completed',
+                ],
+                [
+                    'body' => $learner['goal'],
+                    'subject_type' => Mentorship::class,
+                    'subject_id' => $mentorship->id,
+                ],
+            );
         }
+
+        ActivityEvent::query()->firstOrCreate(
+            [
+                'user_id' => $mentor->id,
+                'type' => 'mentorship_active',
+                'title' => 'Mentorship workspace active',
+            ],
+            [
+                'body' => 'Supporting learners across active mentorships.',
+            ],
+        );
 
         $this->seedDocumentReviews($mentor);
     }

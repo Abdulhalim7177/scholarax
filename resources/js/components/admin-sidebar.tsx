@@ -4,6 +4,7 @@ import {
     BookOpen,
     ChevronRight,
     FileCheck2,
+    Flag,
     LayoutDashboard,
     Settings,
     ShieldCheck,
@@ -47,6 +48,11 @@ const adminNavItems: NavItem[] = [
         title: 'Applications',
         href: '/admin-applications',
         icon: FileCheck2,
+    },
+    {
+        title: 'Moderation',
+        href: '/admin-moderation',
+        icon: Flag,
     },
     {
         title: 'Reports & insights',

@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import {
     AlertTriangle,
     ArrowRight,
@@ -7,54 +7,53 @@ import {
     FileCheck2,
     Search,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-const applications = [
-    {
-        learner: 'Amina Yusuf',
-        scholarship: 'Chevening Scholarships',
-        stage: 'Draft',
-        submitted: '2 hours ago',
-        risk: 'Normal',
-        initials: 'AY',
-    },
-    {
-        learner: 'David Mensah',
-        scholarship: 'DAAD Development Courses',
-        stage: 'Submitted',
-        submitted: 'Yesterday',
-        risk: 'Normal',
-        initials: 'DM',
-    },
-    {
-        learner: 'Lucia Rossi',
-        scholarship: 'Erasmus Mundus Joint Masters',
-        stage: 'Under review',
-        submitted: '2 days ago',
-        risk: 'Needs check',
-        initials: 'LR',
-    },
-    {
-        learner: 'Sam Okoro',
-        scholarship: 'Commonwealth Scholarship',
-        stage: 'Submitted',
-        submitted: '3 days ago',
-        risk: 'Normal',
-        initials: 'SO',
-    },
-];
+import Pagination from '@/layouts/scholarships/pagination';
+import { adminToneClasses } from '@/lib/admin-tones';
+import { relativeTime } from '@/lib/format';
+import type { AdminApplicationsProps } from '@/types/domain';
 
-export default function AdminApplications() {
-    const [stage, setStage] = useState('All applications');
-    const [query, setQuery] = useState('');
-    const filtered = applications.filter(
-        (application) =>
-            (!query ||
-                `${application.learner} ${application.scholarship}`
-                    .toLowerCase()
-                    .includes(query.toLowerCase())) &&
-            (stage === 'All applications' || application.stage === stage),
+export default function AdminApplications({
+    applications,
+    filters,
+    stages,
+    stats,
+}: AdminApplicationsProps) {
+    const [query, setQuery] = useState(filters.q);
+
+    useEffect(() => {
+        setQuery(filters.q);
+    }, [filters.q]);
+
+    const applyFilters = useCallback(
+        (next: Partial<typeof filters>) => {
+            const merged = { ...filters, ...next };
+
+            router.get(
+                '/admin-applications',
+                {
+                    q: merged.q || undefined,
+                    stage: merged.stage || undefined,
+                },
+                { preserveState: true, preserveScroll: true, replace: true },
+            );
+        },
+        [filters],
     );
+
+    useEffect(() => {
+        if (query === filters.q) {
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            applyFilters({ q: query });
+        }, 350);
+
+        return () => window.clearTimeout(timer);
+    }, [applyFilters, filters.q, query]);
+
     return (
         <>
             <Head title="Applications" />
@@ -75,21 +74,27 @@ export default function AdminApplications() {
                     <section className="grid gap-4 sm:grid-cols-3">
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <FileCheck2 className="size-5 text-scholarly-blue" />
-                            <p className="mt-5 text-3xl font-bold">1,204</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.tracked.toLocaleString()}
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Tracked applications
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <Clock3 className="size-5 text-scholarly-gold-dark" />
-                            <p className="mt-5 text-3xl font-bold">46</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.submittedThisWeek.toLocaleString()}
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Submitted this week
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
                             <AlertTriangle className="size-5 text-scholarly-coral-dark" />
-                            <p className="mt-5 text-3xl font-bold">2</p>
+                            <p className="mt-5 text-3xl font-bold">
+                                {stats.needsAttention.toLocaleString()}
+                            </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Need a closer look
                             </p>
@@ -98,23 +103,25 @@ export default function AdminApplications() {
                     <section className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm sm:p-6">
                         <div className="flex flex-col gap-3 border-b border-scholarly-border pb-5 md:flex-row md:items-center md:justify-between">
                             <div className="flex gap-1 overflow-x-auto rounded-xl bg-scholarly-blue-white p-1">
-                                {[
-                                    'All applications',
-                                    'Draft',
-                                    'Submitted',
-                                    'Under review',
-                                ].map((item) => (
+                                {stages.map((option) => (
                                     <button
-                                        key={item}
+                                        key={option.value || 'all'}
                                         type="button"
-                                        onClick={() => setStage(item)}
-                                        className={`rounded-lg px-3 py-2 text-xs font-bold whitespace-nowrap ${stage === item ? 'bg-scholarly-blue text-white' : 'text-scholarly-slate'}`}
+                                        onClick={() =>
+                                            applyFilters({
+                                                stage: option.value,
+                                            })
+                                        }
+                                        className={`rounded-lg px-3 py-2 text-xs font-bold whitespace-nowrap ${filters.stage === option.value ? 'bg-scholarly-blue text-white' : 'text-scholarly-slate'}`}
                                     >
-                                        {item}
+                                        {option.label}
                                     </button>
                                 ))}
                             </div>
                             <label className="relative block md:w-72">
+                                <span className="sr-only">
+                                    Search applications
+                                </span>
                                 <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-scholarly-slate-light" />
                                 <input
                                     value={query}
@@ -133,53 +140,62 @@ export default function AdminApplications() {
                                         <th className="py-4">Learner</th>
                                         <th>Scholarship</th>
                                         <th>Stage</th>
-                                        <th>Submitted</th>
+                                        <th>Updated</th>
                                         <th>Signal</th>
                                         <th />
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-scholarly-border-soft">
-                                    {filtered.map((item) => (
-                                        <tr
-                                            key={`${item.learner}-${item.scholarship}`}
-                                            className="text-sm"
-                                        >
+                                    {applications.data.map((item) => (
+                                        <tr key={item.id} className="text-sm">
                                             <td className="py-4">
                                                 <div className="flex items-center gap-3">
-                                                    <span className="flex size-9 items-center justify-center rounded-full bg-scholarly-blue-soft text-xs font-bold text-scholarly-blue">
+                                                    <span
+                                                        className={`flex size-9 items-center justify-center rounded-full text-xs font-bold ${adminToneClasses[item.tone]}`}
+                                                    >
                                                         {item.initials}
                                                     </span>
-                                                    <span className="font-bold">
-                                                        {item.learner}
+                                                    <span>
+                                                        <span className="block font-bold">
+                                                            {item.learner}
+                                                        </span>
+                                                        <span className="mt-1 block text-xs text-scholarly-slate">
+                                                            {item.learnerEmail}
+                                                        </span>
                                                     </span>
                                                 </div>
                                             </td>
                                             <td className="text-xs text-scholarly-slate">
                                                 {item.scholarship}
+                                                <span className="mt-1 block text-[11px] text-scholarly-slate-light">
+                                                    {item.progress}% complete
+                                                </span>
                                             </td>
                                             <td>
                                                 <span className="rounded-full bg-scholarly-blue-soft px-2.5 py-1 text-xs font-bold text-scholarly-blue">
-                                                    {item.stage}
+                                                    {item.stageLabel}
                                                 </span>
                                             </td>
                                             <td className="text-xs text-scholarly-slate">
-                                                {item.submitted}
+                                                {relativeTime(item.submittedAt)}
                                             </td>
                                             <td>
                                                 <span
-                                                    className={`inline-flex items-center gap-1.5 text-xs font-bold ${item.risk === 'Normal' ? 'text-scholarly-teal-dark' : 'text-scholarly-coral-dark'}`}
+                                                    className={`inline-flex items-center gap-1.5 text-xs font-bold ${item.risk === 'normal' ? 'text-scholarly-teal-dark' : 'text-scholarly-coral-dark'}`}
                                                 >
-                                                    {item.risk === 'Normal' ? (
+                                                    {item.risk === 'normal' ? (
                                                         <CheckCircle2 className="size-3.5" />
                                                     ) : (
                                                         <AlertTriangle className="size-3.5" />
                                                     )}
-                                                    {item.risk}
+                                                    {item.risk === 'normal'
+                                                        ? 'Normal'
+                                                        : 'Needs check'}
                                                 </span>
                                             </td>
                                             <td className="text-right">
                                                 <Link
-                                                    href={`/admin-coming-soon?feature=${encodeURIComponent(`${item.learner} application`)}`}
+                                                    href={`/applications/${item.id}`}
                                                     className="inline-flex items-center gap-1 text-xs font-bold text-scholarly-blue"
                                                 >
                                                     Inspect{' '}
@@ -188,9 +204,21 @@ export default function AdminApplications() {
                                             </td>
                                         </tr>
                                     ))}
+                                    {applications.data.length === 0 && (
+                                        <tr>
+                                            <td
+                                                colSpan={6}
+                                                className="py-14 text-center text-sm text-scholarly-slate"
+                                            >
+                                                No applications match these
+                                                filters yet.
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
+                        <Pagination paginator={applications} />
                     </section>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import {
     Bell,
     Check,
@@ -8,42 +8,59 @@ import {
     ShieldCheck,
     SlidersHorizontal,
 } from 'lucide-react';
-import { useState } from 'react';
 
-const toggles = [
+import type { FormEvent } from 'react';
+
+import { relativeTime } from '@/lib/format';
+import type { AdminSettingsProps, PlatformSettingValues } from '@/types/domain';
+import type { User } from '@/types';
+
+const toggles: Array<{
+    key: keyof Pick<
+        PlatformSettingValues,
+        | 'require_mentor_verification'
+        | 'review_new_scholarships'
+        | 'report_notifications'
+        | 'weekly_platform_digest'
+    >;
+    label: string;
+    note: string;
+}> = [
     {
+        key: 'require_mentor_verification',
         label: 'Require mentor verification',
         note: 'Mentors must be approved before appearing in search.',
-        defaultValue: true,
     },
     {
+        key: 'review_new_scholarships',
         label: 'Review new scholarships',
         note: 'Hold new scholarship listings for admin review.',
-        defaultValue: true,
     },
     {
+        key: 'report_notifications',
         label: 'Report notifications',
         note: 'Notify admins when content is reported by a user.',
-        defaultValue: true,
     },
     {
+        key: 'weekly_platform_digest',
         label: 'Weekly platform digest',
         note: 'Send a summary of growth and moderation activity.',
-        defaultValue: false,
     },
 ];
 
-export default function AdminSettings() {
-    const [values, setValues] = useState(
-        toggles.map((item) => item.defaultValue),
-    );
-    const [saved, setSaved] = useState(false);
-    const toggle = (index: number) =>
-        setValues((current) =>
-            current.map((value, itemIndex) =>
-                itemIndex === index ? !value : value,
-            ),
-        );
+export default function AdminSettings({
+    settings,
+    options,
+    updatedAt,
+}: AdminSettingsProps) {
+    const { auth } = usePage().props as { auth?: { user?: User } };
+    const form = useForm<PlatformSettingValues>(settings);
+
+    const submit = (event?: FormEvent<HTMLFormElement>) => {
+        event?.preventDefault();
+        form.patch('/admin-settings', { preserveScroll: true });
+    };
+
     return (
         <>
             <Head title="Admin settings" />
@@ -64,14 +81,22 @@ export default function AdminSettings() {
                         </div>
                         <button
                             type="button"
-                            onClick={() => setSaved(true)}
-                            className="inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white hover:bg-scholarly-blue-dark sm:self-auto"
+                            onClick={() => submit()}
+                            disabled={form.processing}
+                            className="inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl bg-scholarly-blue px-4 text-sm font-bold text-white hover:bg-scholarly-blue-dark disabled:opacity-60 sm:self-auto"
                         >
                             <Save className="size-4" />{' '}
-                            {saved ? 'Saved' : 'Save changes'}
+                            {form.recentlySuccessful
+                                ? 'Saved'
+                                : form.processing
+                                  ? 'Saving…'
+                                  : 'Save changes'}
                         </button>
                     </header>
-                    <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+                    <form
+                        onSubmit={submit}
+                        className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]"
+                    >
                         <div className="space-y-6">
                             <section className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm">
                                 <div className="flex items-start gap-3 border-b border-scholarly-border pb-5">
@@ -89,31 +114,51 @@ export default function AdminSettings() {
                                     </div>
                                 </div>
                                 <div className="divide-y divide-scholarly-border-soft">
-                                    {toggles.map((item, index) => (
-                                        <div
-                                            key={item.label}
-                                            className="flex items-center justify-between gap-5 py-4 first:pt-5 last:pb-0"
-                                        >
-                                            <div>
-                                                <p className="text-sm font-semibold">
-                                                    {item.label}
-                                                </p>
-                                                <p className="mt-1 text-xs leading-5 text-scholarly-slate">
-                                                    {item.note}
-                                                </p>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                aria-pressed={values[index]}
-                                                onClick={() => toggle(index)}
-                                                className={`relative h-6 w-11 shrink-0 rounded-full transition ${values[index] ? 'bg-scholarly-blue' : 'bg-scholarly-border-strong'}`}
+                                    {toggles.map((item) => {
+                                        const enabled = form.data[item.key];
+
+                                        return (
+                                            <div
+                                                key={item.key}
+                                                className="flex items-center justify-between gap-5 py-4 first:pt-5 last:pb-0"
                                             >
-                                                <span
-                                                    className={`absolute top-1 size-4 rounded-full bg-white shadow-sm transition ${values[index] ? 'left-6' : 'left-1'}`}
-                                                />
-                                            </button>
-                                        </div>
-                                    ))}
+                                                <div>
+                                                    <p className="text-sm font-semibold">
+                                                        {item.label}
+                                                    </p>
+                                                    <p className="mt-1 text-xs leading-5 text-scholarly-slate">
+                                                        {item.note}
+                                                    </p>
+                                                    {form.errors[item.key] && (
+                                                        <p className="mt-1 text-xs font-semibold text-scholarly-coral-dark">
+                                                            {
+                                                                form.errors[
+                                                                    item.key
+                                                                ]
+                                                            }
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    role="switch"
+                                                    aria-checked={enabled}
+                                                    aria-label={item.label}
+                                                    onClick={() =>
+                                                        form.setData(
+                                                            item.key,
+                                                            !enabled,
+                                                        )
+                                                    }
+                                                    className={`relative h-6 w-11 shrink-0 rounded-full transition ${enabled ? 'bg-scholarly-blue' : 'bg-scholarly-border-strong'}`}
+                                                >
+                                                    <span
+                                                        className={`absolute top-1 size-4 rounded-full bg-white shadow-sm transition ${enabled ? 'left-6' : 'left-1'}`}
+                                                    />
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </section>
                             <section className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm">
@@ -136,24 +181,73 @@ export default function AdminSettings() {
                                         <span className="mb-2 block text-xs font-bold">
                                             Default timezone
                                         </span>
-                                        <select className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm">
-                                            <option>UTC +01:00 · London</option>
-                                            <option>
-                                                UTC · Coordinated Universal Time
-                                            </option>
+                                        <select
+                                            value={form.data.default_timezone}
+                                            onChange={(event) =>
+                                                form.setData(
+                                                    'default_timezone',
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm"
+                                        >
+                                            {options.timezones.map((option) => (
+                                                <option
+                                                    key={option.value}
+                                                    value={option.value}
+                                                >
+                                                    {option.label}
+                                                </option>
+                                            ))}
                                         </select>
+                                        {form.errors.default_timezone && (
+                                            <p className="mt-1 text-xs font-semibold text-scholarly-coral-dark">
+                                                {form.errors.default_timezone}
+                                            </p>
+                                        )}
                                     </label>
                                     <label className="block">
                                         <span className="mb-2 block text-xs font-bold">
                                             Application data retention
                                         </span>
-                                        <select className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm">
-                                            <option>24 months</option>
-                                            <option>12 months</option>
-                                            <option>36 months</option>
+                                        <select
+                                            value={String(
+                                                form.data
+                                                    .application_data_retention_months,
+                                            )}
+                                            onChange={(event) =>
+                                                form.setData(
+                                                    'application_data_retention_months',
+                                                    Number(event.target.value),
+                                                )
+                                            }
+                                            className="h-11 w-full rounded-lg border border-scholarly-border bg-scholarly-blue-white px-3 text-sm"
+                                        >
+                                            {options.retention.map((option) => (
+                                                <option
+                                                    key={option.value}
+                                                    value={option.value}
+                                                >
+                                                    {option.label}
+                                                </option>
+                                            ))}
                                         </select>
+                                        {form.errors
+                                            .application_data_retention_months && (
+                                            <p className="mt-1 text-xs font-semibold text-scholarly-coral-dark">
+                                                {
+                                                    form.errors
+                                                        .application_data_retention_months
+                                                }
+                                            </p>
+                                        )}
                                     </label>
                                 </div>
+                                {updatedAt !== null && (
+                                    <p className="mt-4 text-xs text-scholarly-slate">
+                                        Last updated {relativeTime(updatedAt)}
+                                    </p>
+                                )}
                             </section>
                         </div>
                         <aside className="space-y-6">
@@ -171,7 +265,7 @@ export default function AdminSettings() {
                                         Signed in as
                                     </p>
                                     <p className="mt-1 text-sm font-bold">
-                                        Sarah Admin
+                                        {auth?.user?.name ?? 'Administrator'}
                                     </p>
                                 </div>
                             </section>
@@ -181,12 +275,14 @@ export default function AdminSettings() {
                                     Notification health
                                 </h2>
                                 <p className="mt-2 text-xs leading-5 text-scholarly-slate">
-                                    All admin notification channels are
-                                    operating normally.
+                                    Admin notification preferences are applied
+                                    to platform events.
                                 </p>
                                 <div className="mt-4 flex items-center gap-2 text-xs font-bold text-scholarly-teal-dark">
-                                    <Check className="size-4" /> Email
-                                    notifications active
+                                    <Check className="size-4" />{' '}
+                                    {form.data.report_notifications
+                                        ? 'Report alerts active'
+                                        : 'Report alerts paused'}
                                 </div>
                             </section>
                             <section className="rounded-2xl border border-scholarly-border bg-white p-6 shadow-sm">
@@ -204,7 +300,7 @@ export default function AdminSettings() {
                                 </Link>
                             </section>
                         </aside>
-                    </section>
+                    </form>
                 </div>
             </div>
         </>

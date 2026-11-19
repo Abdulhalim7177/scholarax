@@ -10,64 +10,30 @@ import {
     ShieldCheck,
     UserPlus,
     UsersRound,
+    XCircle,
 } from 'lucide-react';
+import type { ComponentType } from 'react';
 
-const recentUsers = [
-    {
-        name: 'Amina Yusuf',
-        type: 'Student',
-        joined: '8 min ago',
-        initials: 'AY',
-        tone: 'coral',
-    },
-    {
-        name: 'Dr. Maya Chen',
-        type: 'Mentor',
-        joined: '32 min ago',
-        initials: 'MC',
-        tone: 'blue',
-    },
-    {
-        name: 'David Mensah',
-        type: 'Student',
-        joined: '1 hour ago',
-        initials: 'DM',
-        tone: 'teal',
-    },
-    {
-        name: 'James Okafor',
-        type: 'Mentor',
-        joined: '3 hours ago',
-        initials: 'JO',
-        tone: 'gold',
-    },
-];
+import { adminToneClasses } from '@/lib/admin-tones';
+import { relativeTime } from '@/lib/format';
+import type { AdminDashboardProps } from '@/types/domain';
 
-const moderationItems = [
-    {
-        label: 'Scholarship submissions',
-        count: '8 pending',
-        note: 'New opportunities waiting for review',
-        icon: BookOpen,
-        tone: 'blue',
-    },
-    {
-        label: 'Mentor applications',
-        count: '3 pending',
-        note: 'Profiles awaiting verification',
-        icon: UsersRound,
-        tone: 'teal',
-    },
-    {
-        label: 'Reported content',
-        count: '2 open',
-        note: 'Reports need an admin decision',
-        icon: Flag,
-        tone: 'coral',
-    },
-];
+const moderationIcons: Record<string, ComponentType<{ className?: string }>> = {
+    scholarships: BookOpen,
+    mentors: UsersRound,
+    reports: Flag,
+};
 
-export default function AdminDashboard() {
+export default function AdminDashboard({
+    stats,
+    moderation,
+    recentUsers,
+    checks,
+    checkedAt,
+}: AdminDashboardProps) {
+    const growthLabel = (value: number) =>
+        `${value > 0 ? '+' : ''}${value.toFixed(1)}% this month`;
+
     return (
         <>
             <Head title="Admin dashboard" />
@@ -88,7 +54,7 @@ export default function AdminDashboard() {
                             </p>
                         </div>
                         <Link
-                            href="/admin-coming-soon?feature=Platform%20reports"
+                            href="/admin-reports"
                             className="inline-flex h-11 items-center justify-center gap-2 self-start rounded-xl border border-scholarly-border bg-white px-4 text-sm font-bold text-scholarly-navy hover:border-scholarly-blue hover:text-scholarly-blue lg:self-auto"
                         >
                             View platform report{' '}
@@ -101,13 +67,13 @@ export default function AdminDashboard() {
                                 <UsersRound className="size-5" />
                             </div>
                             <p className="text-3xl font-bold tracking-[-0.04em]">
-                                2,481
+                                {stats.totalUsers.toLocaleString()}
                             </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Total users
                             </p>
                             <p className="mt-1 text-xs text-scholarly-teal-dark">
-                                +14.8% this month
+                                {growthLabel(stats.usersGrowth)}
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
@@ -115,13 +81,13 @@ export default function AdminDashboard() {
                                 <BookOpen className="size-5" />
                             </div>
                             <p className="text-3xl font-bold tracking-[-0.04em]">
-                                386
+                                {stats.liveScholarships.toLocaleString()}
                             </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Live scholarships
                             </p>
                             <p className="mt-1 text-xs text-scholarly-slate">
-                                24 added this month
+                                {stats.scholarshipsThisMonth} added this month
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-white p-5 shadow-sm">
@@ -129,13 +95,13 @@ export default function AdminDashboard() {
                                 <FileCheck2 className="size-5" />
                             </div>
                             <p className="text-3xl font-bold tracking-[-0.04em]">
-                                1,204
+                                {stats.applicationsTracked.toLocaleString()}
                             </p>
                             <p className="mt-1 text-sm font-semibold">
                                 Applications tracked
                             </p>
                             <p className="mt-1 text-xs text-scholarly-slate">
-                                Across all learners
+                                {stats.submittedThisWeek} submitted this week
                             </p>
                         </div>
                         <div className="rounded-2xl border border-scholarly-border bg-scholarly-navy p-5 text-white shadow-sm">
@@ -143,13 +109,13 @@ export default function AdminDashboard() {
                                 <Activity className="size-5" />
                             </div>
                             <p className="text-3xl font-bold tracking-[-0.04em]">
-                                99.8%
+                                {stats.activeMentorships.toLocaleString()}
                             </p>
                             <p className="mt-1 text-sm font-semibold">
-                                Platform health
+                                Active mentorships
                             </p>
                             <p className="mt-1 text-xs text-white/60">
-                                All systems operational
+                                {stats.verifiedMentors} verified mentors
                             </p>
                         </div>
                     </section>
@@ -166,40 +132,45 @@ export default function AdminDashboard() {
                                     </p>
                                 </div>
                                 <span className="rounded-full bg-scholarly-coral-soft px-3 py-1.5 text-xs font-bold text-scholarly-coral-dark">
-                                    13 open tasks
+                                    {moderation.openTasks} open tasks
                                 </span>
                             </div>
                             <div className="mt-5 divide-y divide-scholarly-border-soft">
-                                {moderationItems.map((item) => (
-                                    <Link
-                                        key={item.label}
-                                        href={`/admin-coming-soon?feature=${encodeURIComponent(item.label)}`}
-                                        className="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
-                                    >
-                                        <span
-                                            className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${item.tone === 'coral' ? 'bg-scholarly-coral-soft text-scholarly-coral-dark' : item.tone === 'teal' ? 'bg-scholarly-teal-soft text-scholarly-teal-dark' : 'bg-scholarly-blue-soft text-scholarly-blue'}`}
+                                {moderation.items.map((item) => {
+                                    const Icon =
+                                        moderationIcons[item.key] ?? Flag;
+
+                                    return (
+                                        <Link
+                                            key={item.key}
+                                            href={item.href}
+                                            className="flex items-center gap-4 py-4 first:pt-0 last:pb-0"
                                         >
-                                            <item.icon className="size-5" />
-                                        </span>
-                                        <span className="min-w-0 flex-1">
-                                            <span className="block text-sm font-bold">
-                                                {item.label}
+                                            <span
+                                                className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${adminToneClasses[item.tone]}`}
+                                            >
+                                                <Icon className="size-5" />
                                             </span>
-                                            <span className="mt-1 block text-xs text-scholarly-slate">
-                                                {item.note}
+                                            <span className="min-w-0 flex-1">
+                                                <span className="block text-sm font-bold">
+                                                    {item.label}
+                                                </span>
+                                                <span className="mt-1 block text-xs text-scholarly-slate">
+                                                    {item.note}
+                                                </span>
                                             </span>
-                                        </span>
-                                        <span className="text-right">
-                                            <span className="block text-xs font-bold text-scholarly-coral-dark">
-                                                {item.count}
+                                            <span className="text-right">
+                                                <span className="block text-xs font-bold text-scholarly-coral-dark">
+                                                    {item.count} pending
+                                                </span>
+                                                <ArrowRight className="mt-2 ml-auto size-4 text-scholarly-slate-light" />
                                             </span>
-                                            <ArrowRight className="mt-2 ml-auto size-4 text-scholarly-slate-light" />
-                                        </span>
-                                    </Link>
-                                ))}
+                                        </Link>
+                                    );
+                                })}
                             </div>
                             <Link
-                                href="/admin-coming-soon?feature=Moderation%20center"
+                                href="/admin-moderation"
                                 className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-scholarly-blue"
                             >
                                 Open moderation center{' '}
@@ -219,29 +190,30 @@ export default function AdminDashboard() {
                                 <CheckCircle2 className="size-5 text-scholarly-teal" />
                             </div>
                             <div className="mt-5 space-y-4">
-                                {[
-                                    'Web application',
-                                    'Scholarship search',
-                                    'Mentor messaging',
-                                    'Document storage',
-                                ].map((service) => (
+                                {checks.map((check) => (
                                     <div
-                                        key={service}
+                                        key={check.label}
                                         className="flex items-center justify-between rounded-lg bg-scholarly-blue-white p-3"
                                     >
                                         <span className="text-xs font-semibold">
-                                            {service}
+                                            {check.label}
                                         </span>
-                                        <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-scholarly-teal-dark">
-                                            <span className="size-2 rounded-full bg-scholarly-teal" />{' '}
-                                            Operational
+                                        <span
+                                            className={`inline-flex items-center gap-1.5 text-[11px] font-bold ${check.ok ? 'text-scholarly-teal-dark' : 'text-scholarly-coral-dark'}`}
+                                        >
+                                            {check.ok ? (
+                                                <CheckCircle2 className="size-3.5" />
+                                            ) : (
+                                                <XCircle className="size-3.5" />
+                                            )}
+                                            {check.note}
                                         </span>
                                     </div>
                                 ))}
                             </div>
                             <p className="mt-5 flex items-center gap-2 text-xs text-scholarly-slate">
-                                <Clock3 className="size-3.5" /> Last checked
-                                just now
+                                <Clock3 className="size-3.5" /> Last checked{' '}
+                                {relativeTime(checkedAt)}
                             </p>
                         </section>
                     </div>
@@ -256,7 +228,7 @@ export default function AdminDashboard() {
                                 </p>
                             </div>
                             <Link
-                                href="/admin-coming-soon?feature=All%20users"
+                                href="/admin-users"
                                 className="text-sm font-bold text-scholarly-blue"
                             >
                                 View all
@@ -265,11 +237,11 @@ export default function AdminDashboard() {
                         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                             {recentUsers.map((user) => (
                                 <div
-                                    key={user.name}
+                                    key={user.id}
                                     className="flex items-center gap-3 rounded-xl bg-scholarly-blue-white p-3"
                                 >
                                     <span
-                                        className={`flex size-10 items-center justify-center rounded-full text-xs font-bold ${user.tone === 'coral' ? 'bg-scholarly-coral-soft text-scholarly-coral-dark' : user.tone === 'teal' ? 'bg-scholarly-teal-soft text-scholarly-teal-dark' : user.tone === 'gold' ? 'bg-scholarly-gold-soft text-scholarly-gold-dark' : 'bg-scholarly-blue-soft text-scholarly-blue'}`}
+                                        className={`flex size-10 items-center justify-center rounded-full text-xs font-bold ${adminToneClasses[user.tone]}`}
                                     >
                                         {user.initials}
                                     </span>
@@ -278,12 +250,18 @@ export default function AdminDashboard() {
                                             {user.name}
                                         </span>
                                         <span className="mt-1 block text-xs text-scholarly-slate">
-                                            {user.type} · {user.joined}
+                                            {user.roleLabel} ·{' '}
+                                            {relativeTime(user.joinedAt)}
                                         </span>
                                     </span>
                                     <UserPlus className="size-4 text-scholarly-slate-light" />
                                 </div>
                             ))}
+                            {recentUsers.length === 0 && (
+                                <p className="text-sm text-scholarly-slate">
+                                    No registrations yet.
+                                </p>
+                            )}
                         </div>
                     </section>
                 </div>

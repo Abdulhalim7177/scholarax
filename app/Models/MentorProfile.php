@@ -37,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $learners_count
  * @property int $sessions_count
  * @property bool $is_featured
+ * @property-read int $active_learners_count
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
